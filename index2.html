@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv='cache-control' content='no-cache'>
+<meta http-equiv='expires' content='0'>
+<meta http-equiv='pragma' content='no-cache'>
+<!-- Jquery -->
+<script src="js/jquery.min.js"></script>
+<script src="http://127.0.0.1:8080/socket.io/socket.io.js"></script>
+<script src="js/keyDecode.js"></script>
+<script src="js/engine.js"></script>
+<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+<script>
+/*
+alert(document.domain);
+function getWindowHeight(){if (document.all){return document.body.offsetHeight;}else {return window.innerHeight;}}
+function getWindowWidth(){if (document.all){return document.body.offsetWidth;}else{return window.innerWidth;}}
+var X = ((Math.round(getWindowWidth()/10)*10)-40);
+var Y = ((Math.round(getWindowHeight()/10)*10)-40);
+if(X>800)X=800;
+if(Y>500)Y=500;
+*/
+$(document).keydown(function(e) {
+    key = keyDecode(e);
+    if (key === 'backspace' && document.activeElement.id != 'message-input') {
+    	//console.log(document.activeElement.id);
+        return false;
+    };
+    if (key === 'tab') {  
+    	return false;
+    }
+});
+</script>
+</head>
+<body>
+<!-- Lets make the most freaken complex snake game...ever... -->
+<canvas id='canvas' width='1000' height='500'></canvas>
+<br>
+<br>
+<div id="kill-container">
+	<div id="kill-log"><span id="k0"></span></div>
+</div>
+<div id="menu">
+    <h3 style="margin-left:-75px;">Multiplayer Snake</h3><br>
+    <button id="servers">Multiplayer</button><br>
+    <table id="serverBrowser" border="1" style="display: none;">
+        <tr id="browserHeader">
+            <td>Server Name</td><td># of players</td><td>Connect</td>
+        </tr>
+        <tr>
+        <td colspan="3"><button id="back">Back</button></td>
+        </tr>
+    </table>
+    <!--<button>Pratice</button><br>-->
+    <button id="play">Singleplayer</button><br>
+    <button id="settings">Settngs</button>
+</div>
+<div id="pos">
+    <div id="message-container">
+        <div id="message-log"><span id="m0"></span></div>
+        <input id="message-input" disabled="disabled" placeholder="Message <Enter>" maxlength="100" />
+    </div>
+</div>
+<div id="keypress" style="left:50%;"><span id="input0"></span></div>
+<!--<footer>Roch</footer>-->
+<!--
+<input id="keyboard"/>
+<script>document.getElementById('keyboard').focus();</script>
+<span id="messagefield">
+    <span id="message-box">
+        <form>
+            <span id="messages"></span>
+            <input id="message-input" placeholder="Message <Enter>" maxlength="100" />
+            <!--<input id="message-send" type="submit" value="Speak" />
+        </form>
+    </span>
+</span>-->
+</body>
+</html>
