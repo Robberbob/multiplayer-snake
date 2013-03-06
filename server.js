@@ -119,7 +119,7 @@ var SampleApp = function() {
     self.initializeServer = function() {
         self.createRoutes();
         self.app = express();
-        self.server = http.create(self.app);
+        self.server = http.createServer(self.app);
         //self.io = io.listen(server);
 
         //  Add handlers for the app (from the routes).
