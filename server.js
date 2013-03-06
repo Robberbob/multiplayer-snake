@@ -3,7 +3,7 @@
 var express = require('express');
 var fs      = require('fs');
 var io = require('socket.io');
-
+var http = require('http');
 /**
  *  Define the sample application.
  */
@@ -119,8 +119,8 @@ var SampleApp = function() {
     self.initializeServer = function() {
         self.createRoutes();
         self.app = express();
-        self.server = require('http').create(self.app);
-        self.io = io.listen(server);
+        self.server = http.create(self.app);
+        //self.io = io.listen(server);
 
         //  Add handlers for the app (from the routes).
         for (var r in self.routes) {
