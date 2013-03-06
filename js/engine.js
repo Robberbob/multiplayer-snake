@@ -1,6 +1,7 @@
 $(document).ready(function() {
 
-socket = io.connect('/',{port: 8080});
+//socket = io.connect('/',{port: 8080});
+socket = io.connect('/');
 function network() {
 
 	socket.on('clientid', function (data) {
