@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-socket = io.connect('http://msnake-rdl.rhcloud.com/',{port: 8080});
+socket = io.connect('/',{port: 8080});
 function network() {
 
 	socket.on('clientid', function (data) {
