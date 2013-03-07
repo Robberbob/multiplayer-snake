@@ -3,9 +3,7 @@
 var express = require('express');
 var fs      = require('fs');
 var io = require('socket.io');
-io.set('transports', [
-    'websocket'
-]);
+
 
 var http = require('http');
 /**
@@ -156,7 +154,7 @@ var SampleApp = function() {
         self.app = express();
         self.server = http.createServer(self.app);
         self.io = io.listen(self.server);
-
+        self.io.set('transports', ['websocket']);
         //  Add handlers for the app (from the routes).
         for (var r in self.routes) {
             self.app.get(r, self.routes[r]);
