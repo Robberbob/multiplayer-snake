@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
 if(window.location.protocol == 'https:')socket = io.connect('/',{port: 8443});
-else socket = io.connect('/',{port: 8080});
+else socket = io.connect('/',{port: 8000});
 //socket = io.connect('/');
 function network() {
 
