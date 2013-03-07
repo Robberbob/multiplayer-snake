@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-socket = io.connect('/',{port: 8000});
+socket = io.connect('/',{port: 8443});
 //socket = io.connect('/');
 function network() {
 
