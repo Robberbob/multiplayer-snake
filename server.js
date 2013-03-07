@@ -3,6 +3,10 @@
 var express = require('express');
 var fs      = require('fs');
 var io = require('socket.io');
+io.set('transports', [
+    'websocket'
+]);
+
 var http = require('http');
 /**
  *  Define the sample application.
