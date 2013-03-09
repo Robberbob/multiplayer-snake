@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
 if(window.location.protocol == 'https:')socket = io.connect('/',{port: 8443});
-else socket = io.connect('/',{port: 8000});
+else socket = io.connect('/',{/*port: 8080*/});
 //socket = io.connect('/');
 function network() {
 
@@ -158,26 +158,30 @@ function network() {
 					game_loop = setInterval(core, game.player.speed);
 					 //socket.emit('snake',[snake_array, color]);
 				},
-		home:{
-			home:function () 
-				{
-					$("#servers").css("display", "inline");
-					$("#play").css("display", "inline");
-					$("#settings").css("display", "inline");
-					$("#serverBrowser").css("display", "none");
+			root:{
+				home:function () 
+					{
+						$("#servers").css("display", "inline");
+						$("#play").css("display", "inline");
+						$("#settings").css("display", "inline");
+						$("#serverBrowser").css("display", "none");
+					}
 				}
-			}
 		},
 		getServers:function ()
 			{
 				socket.emit('getrooms', '', function (data) {
+					game.rooms = data;
 					for(i in data)if(i!='') console.log(i,data[i].length);
 					console.log(data);
 		  		});
+		  		console.log(game.rooms);
 		  		$("#servers").toggle();
 		  		$("#play").toggle();
 		  		$("#settings").toggle();
 				$("#serverBrowser").css("display", "inline");
+
+				$("<tr><td></td><td></td><td></td></tr>").insertAfter('#browserHeader');
 				/*
 				<tr>
 					<td></td><td></td><td></td>
@@ -216,7 +220,7 @@ function network() {
 	//$("#settings").bind("click",function(){render(); game.state.play(); $("#menu").toggle();});
 	console.log(game);
 	$("#servers").bind("click", function() {game.getServers();});
-	$("#back").bind("click", function() {console.log(game);game.Menu.home();});
+	$("#back").bind("click", function() {console.log(game);game.state.root.home();});
 	$("#settings").bind("click",function(){alert(":P what? You actually thought that would do something? \n -Signed \n The Sign Painter");});
 	//var input=0;
 

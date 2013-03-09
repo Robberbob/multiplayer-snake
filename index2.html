@@ -43,12 +43,12 @@ $(document).keydown(function(e) {
 <div id="menu">
     <h3 style="margin-left:-75px;">Multiplayer Snake</h3><br>
     <button id="servers">Multiplayer</button><br>
-    <table id="serverBrowser" border="1" style="display: none;">
+    <table id="serverBrowser" border="1" style="display: none; position: relative; left:-150px;">
         <tr id="browserHeader">
             <td>Server Name</td><td># of players</td><td>Connect</td>
         </tr>
         <tr>
-        <td colspan="3"><button id="back">Back</button></td>
+        <td><button id="back">Back</button></td><td><button id="refresh">Refresh</button></td><td><button id="connect">Connect</button></td>
         </tr>
     </table>
     <!--<button>Pratice</button><br>-->

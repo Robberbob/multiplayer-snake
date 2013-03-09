@@ -33,6 +33,14 @@ button {
     background-color:transparent;
     border:none;
 }
+#back, #connect, #refresh{
+    margin: 10px 0;
+    position: relative;
+    left:0%;
+    background-color:transparent;
+    border:none;
+    margin: auto auto;
+}
 button:hover{
     color:blue;
     width:100px;
