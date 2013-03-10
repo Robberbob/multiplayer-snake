@@ -53,6 +53,14 @@ button:hover{
     border:none;
 
 }
+tr{
+    background-color:#E6E6E6; 
+    //color: black;
+}
+tr:hover{
+    background-color:#A4A4A4; 
+    //color: blue;
+}
 #pos {
     position: absolute;
     left:50%;

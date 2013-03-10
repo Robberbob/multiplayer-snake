@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
 if(window.location.protocol == 'https:')socket = io.connect('/',{port: 8443});
-else socket = io.connect('/',{/*port: 8080*/});
+else socket = io.connect('/',{port: 8080});
 //socket = io.connect('/');
 function network() {
 
@@ -169,19 +169,20 @@ function network() {
 				}
 		},
 		getServers:function ()
-			{
+			{	
+				document.getElementById("serverTable").innerHTML = '<tr id="browserHeader"><td>Server Name</td><td># of players</td></tr>';
 				socket.emit('getrooms', '', function (data) {
 					game.rooms = data;
-					for(i in data)if(i!='') console.log(i,data[i].length);
+					for(i in data)if(i!=''){ console.log(i,data[i].length);$("<tr><td>"+i+"</td><td>"+data[i].length+"/6</td><</tr>").insertAfter('#browserHeader'); }
 					console.log(data);
 		  		});
 		  		console.log(game.rooms);
 		  		$("#servers").toggle();
 		  		$("#play").toggle();
 		  		$("#settings").toggle();
-				$("#serverBrowser").css("display", "inline");
+				$("#serverBrowser").css("display", "table");
 
-				$("<tr><td></td><td></td><td></td></tr>").insertAfter('#browserHeader');
+				//$("<tr><td></td><td></td><td></td></tr>").insertAfter('#browserHeader');
 				/*
 				<tr>
 					<td></td><td></td><td></td>
