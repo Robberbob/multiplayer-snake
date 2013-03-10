@@ -115,7 +115,8 @@ var SampleApp = function() {
 
         self.routes['/'] = function(req, res) {
             res.setHeader('Content-Type', 'text/html');
-            res.send(self.cache_get('index2.html') );
+            //res.send(self.cache_get('index2.html') );
+            res.sendfile(__dirname + '/index2.html');
         };
 
         self.routes['/snake'] = function(req, res) {
@@ -135,12 +136,14 @@ var SampleApp = function() {
 
         self.routes['/js/engine.js'] = function(req, res) {
             res.setHeader('Content-Type', 'text/javascript');
-            res.send(self.cache_get('js/engine.js') );
+            //res.send(self.cache_get('js/engine.js') );
+            res.sendfile(__dirname + '/js/engine.js');
         };
 
         self.routes['/style.css'] = function(req, res) {
             res.setHeader('Content-Type', 'text/css');
-            res.send(self.cache_get('style.css') );
+            //res.send(self.cache_get('style.css') );
+            res.sendfile(__dirname + '/style.css');
         };
     };
 
@@ -219,13 +222,6 @@ for(i in colors)
 {
   players[colors[i]] = new snake;
 }
-/*players={ 
-  blue:{taken:0, pos:{x:-1 , y:-1}, ping:0, score:0, kill_streak:0}, 
-  red:{taken:0, pos:{x:-1 , y:-1}, ping:0, score:0, kill_streak:0}, 
-  green:{taken:0, pos:{x:-1 , y:-1}, ping:0, score:0, kill_streak:0}, 
-  purple:{taken:0, pos:{x:-1 , y:-1}, ping:0, score:0, kill_streak:0}, 
-  orange:{taken:0, pos:{x:-1 , y:-1}, ping:0, score:0, kill_streak:0}, 
-  brown:{taken:0, pos:{x:-1 , y:-1}, ping:0, score:0, kill_streak:0} };*/
 var data_stream={};
 function check_collision(x,y,array)
 {
@@ -357,21 +353,22 @@ function create_map()
  var rfood = setInterval(function () { if(rotten_food.length < getRandomInt(6,15)/1000){create_rotten_food(1);} }, getRandomInt(12,18));
 
 // Update all the clients at the same time
+
+io.sockets.manager.rooms={"/game0":[],"/game1":[],"/game2":[],"/game3":[],"/game4":[]};
 io.sockets.on('connection', function (socket) {
-  socket.join('game');
-  //console.log(io.sockets.clients('game')[0].id);
-  //console.log(io.sockets.clients('game').length);
-  var OldLatency=0;
-  var NewLatency=0;
-  // Inital data
-  socket.on("join", function () {
-  socket.emit('map_array', map_array);
-  socket.emit('clientid', socket.id);
-  socket.emit('connections', check_connections());
-  socket.emit('food', food);
-  socket.emit('diamond', diamond);
-  socket.emit('rotten_food', rotten_food);
-});
+    //console.log(io.sockets.clients('game')[0].id);
+    //console.log(io.sockets.clients('game').length);
+    var OldLatency=0;
+    var NewLatency=0;
+    // Inital data
+    socket.on("join", function () {
+        socket.emit('map_array', map_array);
+        socket.emit('clientid', socket.id);
+        socket.emit('connections', check_connections());
+        socket.emit('food', food);
+        socket.emit('diamond', diamond);
+        socket.emit('rotten_food', rotten_food);
+    });
 
   socket.on('data_stream', function (data, fn) {
     for(i in data)
@@ -399,6 +396,13 @@ io.sockets.on('connection', function (socket) {
   // if not give them the color once finished give the position of any paused players.
   socket.on('getrooms', function (data, fn) {
     fn(io.sockets.manager.rooms);
+  });
+  socket.on('joinroom', function (data)
+  {
+    //if(io.sockets.manager.rooms[data].length)
+    console.log(io.sockets.manager.rooms[data].length);
+    socket.join(data);
+    console.log(io.sockets.manager.rooms[data].length);
   });
   socket.on('player', function (data, fn) {
     if(data=='request')
