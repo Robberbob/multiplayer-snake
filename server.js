@@ -200,16 +200,25 @@ var zapp = new SampleApp();
 zapp.initialize();
 zapp.start();
 io = zapp.io;
-
+io.set('log level', 1);
 function snake() {
-  return {
-    taken:0,
-    pos:{x:-1 , y:-1},
-    ping:0,
-    score:0,
-    kill_streak:0};
+    return {
+        taken:0,
+        pos:{x:-1 , y:-1},
+        ping:0,
+        score:0,
+        kill_streak:0};
+}
+function game() {
+    return {
+        food:[],
+        diamond:[],
+        rotten_food:[],
+        players:{}};
 }
 var colors=["blue","red","green","purple","orange","brown"];
+var num_rooms = 5;
+var rooms = {};
 var food=[];
 var diamond=[];
 var rotten_food=[];
@@ -217,12 +226,27 @@ var map_array;
 var food_spawn_array;
 var cw = 10;
 var w = 1000, h = 500;
-var players={};
-for(i in colors)
+//var players={};
+
+for(var i = 0; i < num_rooms; i++)
 {
-  players[colors[i]] = new snake;
+    var code =" rooms.game"+i+"= new game;";
+    //console.log(code);
+    eval(code);
+    for(j in colors)
+    {
+        var code ="rooms.game"+i+".players."+colors[j]+" = new snake;";
+        //console.log(code);
+        eval(code);
+    }
 }
-var data_stream={};
+console.log(rooms);
+/*
+for(j in colors)
+{
+  eval("players[colors[j]] = new snake;");
+}*/
+//var data_stream={};
 function check_collision(x,y,array)
 {
   for (var i = 0; i < array.length; i++)
@@ -231,7 +255,7 @@ function check_collision(x,y,array)
         return true;
     }
     return false;
-}
+}/*
 function players(data)
 {
   status = data[0];
@@ -240,7 +264,7 @@ function players(data)
   {}
   if(status === "disconnect")
   {}
-}
+}*/
 function check_connections()
 {
   return Object.keys(io.connected).length;
@@ -290,85 +314,120 @@ function create_map()
 
   }
 
-  function create_food(data)
-  {
-    while(true)
-    {   
-      var X = Math.round(Math.random()*(w-cw)/cw);
-      var Y = Math.round(Math.random()*(h-cw)/cw);
-      if(!check_collision(X,Y,food_spawn_array))
-      {
-        food.push({x:X,y:Y});
-        if(data == 1) io.sockets.emit('food', food);
-        break;
-      }
+function create_food(data, array, which)
+{
+  while(true)
+  {   
+    var X = Math.round(Math.random()*(w-cw)/cw);
+    var Y = Math.round(Math.random()*(h-cw)/cw);
+    if(!check_collision(X,Y,food_spawn_array))
+    {
+      //console.log("create_food for "+which);
+      rooms[which].food.push({x:X,y:Y});
+      if(data == 1) io.sockets.in(which).emit('food', rooms[which].food);
+      break;
     }
   }
+}
 
-  function create_rotten_food(data)
-  {
-    while(true)
-    {   
-      var X = Math.round(Math.random()*(w-cw)/cw);
-      var Y = Math.round(Math.random()*(h-cw)/cw);
-      if(!check_collision(X,Y,food_spawn_array))
-      {
-        rotten_food.push({x:X,y:Y});
-        if(data == 1) io.sockets.emit('rotten_food', rotten_food);
-        break;
-      }
+function create_rotten_food(data, array, which)
+{
+  while(true)
+  {   
+    var X = Math.round(Math.random()*(w-cw)/cw);
+    var Y = Math.round(Math.random()*(h-cw)/cw);
+    if(!check_collision(X,Y,food_spawn_array))
+    {
+      //console.log("create_rotten_food for "+which);
+      rooms[which].rotten_food.push({x:X,y:Y});
+      if(data == 1) io.sockets.in(which).emit('rotten_food', rooms[which].rotten_food);
+      break;
     }
   }
+}
 
-  function create_diamond(data)
-  {
-    while(true)
-    {   
-      var X = Math.round(Math.random()*(w-cw)/cw);
-      var Y = Math.round(Math.random()*(h-cw)/cw);
-      if(!check_collision(X,Y,food_spawn_array))
-      {
-        diamond.push({x:X,y:Y});
-        if(data == 1) io.sockets.emit('diamond', diamond);
-        break;
-      }
+function create_diamond(data, array, which)
+{
+  while(true)
+  {   
+    var X = Math.round(Math.random()*(w-cw)/cw);
+    var Y = Math.round(Math.random()*(h-cw)/cw);
+    if(!check_collision(X,Y,food_spawn_array))
+    {
+      //console.log("create_diamond for "+which);
+      rooms[which].diamond.push({x:X,y:Y});
+      if(data == 1) io.sockets.in(which).emit('diamond', rooms[which].diamond);
+      break;
     }
   }
+}
 
+function get_food(game)
+{
+  for(i in rooms)if(i == game) return rooms[i].food;
+}
 
+function get_diamond(game)
+{
+  for(i in rooms)if(i == game) return rooms[i].diamond;
+}
 
+function get_rotten_food(game)
+{
+  for(i in rooms)if(i == game) return rooms[i].rotten_food_eaten;
+}
 
-  //Spawn map
-  create_map();
-  //Spawn Food
+function update_food(game, x, y)
+{
+  for(i in rooms) if(i == game) for(var j in rooms[i].food) if(rooms[i].food[j].x == x && rooms[i].food[j].y == y) { rooms[i].food.splice(j,1);}
+}
 
-  create_food(0);
-  create_diamond(0);
-  create_rotten_food(0);
+function update_diamond(game, x, y)
+{
+  for(i in rooms) if(i == game) for(var j in rooms[i].diamond) if(rooms[i].diamond[j].x == x && rooms[i].diamond[j].y == y) { rooms[i].diamond.splice(j,1);}
+}
 
- var gfood = setInterval(function () { if(food.length < 10)create_food(1);  }, getRandomInt(1,4));
+function update_rotten_food(game, x, y)
+{
+  for(i in rooms) if(i == game) for(var j in rooms[i].rotten_food) if(rooms[i].rotten_food[j].x == x && rooms[i].rotten_food[j].y == y) { rooms[i].rotten_food.splice(j,1);}
+}
 
- var dfood = setInterval(function () { if(diamond.length < 10)create_diamond(1); }, getRandomInt(2,6));
+function get_players(game)
+{
+  for(i in rooms)if(i == game)return rooms[i].players;
+}
 
- var rfood = setInterval(function () { if(rotten_food.length < getRandomInt(6,15)/1000){create_rotten_food(1);} }, getRandomInt(12,18));
+function update_players(game, color, array)
+{
+  for(i in rooms)if(i == game){rooms[i].players[color].pos = array; return [color,rooms[i].players[color].pos];}
+}
 
-// Update all the clients at the same time
+//Spawn map
+create_map();
 
-io.sockets.manager.rooms={"/game0":[],"/game1":[],"/game2":[],"/game3":[],"/game4":[]};
-io.sockets.on('connection', function (socket) {
-    //console.log(io.sockets.clients('game')[0].id);
-    //console.log(io.sockets.clients('game').length);
-    var OldLatency=0;
-    var NewLatency=0;
-    // Inital data
-    socket.on("join", function () {
-        socket.emit('map_array', map_array);
-        socket.emit('clientid', socket.id);
-        socket.emit('connections', check_connections());
-        socket.emit('food', food);
-        socket.emit('diamond', diamond);
-        socket.emit('rotten_food', rotten_food);
-    });
+//Spawn Food
+for(i in rooms)
+{
+  create_food(0, rooms[i].food, i);
+  create_diamond(0, rooms[i].diamond, i);
+  create_rotten_food(0, rooms[i].rotten_food, i);
+}
+
+var gfood = setInterval(function () { for(i in rooms)if(rooms[i].food.length< 10)create_food(1, rooms[i].food, i);  }, getRandomInt(1,4));
+
+var dfood = setInterval(function () { for(i in rooms)if(rooms[i].diamond.length< 10)create_diamond(1, rooms[i].diamond, i); }, getRandomInt(2,6));
+
+var rfood = setInterval(function () { for(i in rooms)if(rooms[i].rotten_food.length< getRandomInt(6,15)/1000)create_rotten_food(1, rooms[i].rotten_food, i); }, getRandomInt(12,18));
+
+function room(which, socket)
+{
+  self = this;
+  self.data_stream={};
+  self.OldLatency=0;
+  self.NewLatency=0;
+  game = which.substring(1);
+  socket.emit('players', get_players(game));
+  console.log(which.substring(1));
 
   socket.on('data_stream', function (data, fn) {
     for(i in data)
@@ -376,95 +435,120 @@ io.sockets.on('connection', function (socket) {
         //if(i == 'chat')console.log(true);
         //if(i=='snake')console.log(data[i][1]);
         //console.log(i);
-        if(i=='snake'){players[data[i][0]].pos=data[i][1]; /*data_stream.player=players[data[i][1]];*/ data_stream.player=data[i]; }
-        if(i=='kill_log') data_stream.kill_log=data[i]; 
-        if(i=='reset_food')for(var j in food) if(food[j].x == data[i][0] && food[j].y == data[i][1]) { food.splice(j,1); data_stream.food=food;}
-        if(i=='reset_rotten_food')for(var j in rotten_food) if(rotten_food[j].x == data[i][0] && rotten_food[j].y == data[i][1]) {rotten_food.splice(j,1); data_stream.rotten_food=rotten_food;}
-        if(i=='reset_diamond')for(var j in diamond) if(diamond[j].x == data[i][0] && diamond[j].y == data[i][1]) {diamond.splice(j,1); data_stream.diamond=diamond;}
-        if(i=='score')for(var j in players) if(socket.id == players[j].taken) {players[j].score=data[i]; data_stream.score=[j,data[i]];}
+        if(i=='snake'){ self.data_stream.player=update_players(game, data[i][0], data[i][1]);}
+        if(i=='kill_log') self.data_stream.kill_log=data[i]; 
+        if(i=='food_eaten'){ update_food(game, data[i][0], data[i][1]); self.data_stream.food=get_food(game);}
+        if(i=='rotten_food_eaten'){update_rotten_food(game, data[i][0], data[i][1]); self.data_stream.rotten_food=get_rotten_food(game);}
+        if(i=='diamond_eaten'){update_diamond(game, data[i][0], data[i][1]); self.data_stream.diamond=get_diamond(game);}
+        //if(i=='score')for(var j in get_players(game)) if(socket.id == get_players(game)[j].taken) {get_players(game)[j].score=data[i]; self.data_stream.score=[j,data[i]];}
       }
-  //console.log(data['snake'][1]);
-  fn(data_stream);
-  socket.broadcast.emit('data_stream',data_stream);
-  //socket.emit('data_stream',data_stream);
-  data_stream={};
+      //console.log(data['snake'][1]);
+      fn(self.data_stream);
+      //console.log(self.data_stream);
+      socket.broadcast.to(self.which).emit('data_stream',self.data_stream);
+      //socket.emit('data_stream',data_stream);
+      self.data_stream={};
   });
-
-//setInterval(function () { socket.emit('players', players) }, 2000);
 
   // Once player request a color go through the list of colors, check if their taken,
   // if not give them the color once finished give the position of any paused players.
-  socket.on('getrooms', function (data, fn) {
-    fn(io.sockets.manager.rooms);
-  });
-  socket.on('joinroom', function (data)
-  {
-    //if(io.sockets.manager.rooms[data].length)
-    console.log(io.sockets.manager.rooms[data].length);
-    socket.join(data);
-    console.log(io.sockets.manager.rooms[data].length);
-  });
+
   socket.on('player', function (data, fn) {
     if(data=='request')
     {
-      for(var i in players)
+        console.log(data);
+      for(var i in get_players(game))
       {
         //console.log(i);
-        if(players[i].taken == 0)
+        if(get_players(game)[i].taken == 0)
         {
-          socket.broadcast.emit('kill_log', ['joined',i] );
-          players[i].taken = socket.id;
-          fn([socket.id, i]);
-          console.log(i+' connected');
-          break;
+            socket.broadcast.to(self.which).emit('kill_log', ['joined',i] );
+            get_players(game)[i].taken = socket.id;
+            fn([socket.id, i]);
+            console.log(i+' connected');
+            socket.emit('map_array', map_array);
+            socket.emit('clientid', socket.id);
+            socket.emit('connections', check_connections());
+            socket.emit('food', rooms[game].food);
+            socket.emit('diamond', rooms[game].diamond);
+            socket.emit('rotten_food', rooms[game].rotten_food);
+            break;
         }
       }
     }
-  socket.emit('players', players);
-
   });
-// Client latency after it gets its color
-setInterval(function() {
-    emitTime = +new Date;
-    socket.emit('ping');
-  }, 2000);
+
+  // Client latency after it gets its color
+  setInterval(function() {
+      emitTime = +new Date;
+      socket.emit('ping');
+    }, 2000);
 
   socket.on('pong', function() {
-    OldLatency = NewLatency;
-    NewLatency = (Math.round((((+new Date - emitTime)/2+OldLatency)/2)*10)/10);
-    //NewLatency = (((+new Date - emitTime)/2)+OldLatency)/2;
-    for(var i in players)
-    {
-      if(players[i].taken == socket.id)
+      self.OldLatency = self.NewLatency;
+      self.NewLatency = (Math.round((((+new Date - emitTime)/2+self.OldLatency)/2)*10)/10);
+      //self.NewLatency = (((+new Date - emitTime)/2)+OldLatency)/2;
+      for(var i in get_players(game))
       {
-        players[i].ping = NewLatency;
-      } 
-    }
+        if(get_players(game)[i].taken == socket.id)
+        {
+          get_players(game)[i].ping = self.NewLatency;
+        } 
+      }
   });
-// Send the chat to other clients
+  // Send the chat to other clients
   socket.on('chat', function (data) {
     var words = data[0].split(' ');
     //console.log(words);
-    if(words[0] == '/kick' && words[1]!=''){ for(var i in players){ if(i == words[1]){socket.broadcast.emit('kick',words[1]); console.log('kicked '+words[1])}}}
-    else {socket.broadcast.emit('chat', data); console.log(data[1]+ ": "+data[0]) ;}
+    if(words[0] == '/kick' && words[1]!=''){ for(var i in get_players(game)){ if(i == words[1]){socket.broadcast.to(self.which).emit('kick',words[1]); console.log('kicked '+words[1])}}}
+    else {socket.broadcast.to(self.which).emit('chat', data); console.log(data[1]+ ": "+data[0]) ;}
   });
 
   setInterval(function () {socket.emit('connections', check_connections())}, 5000);
 
-  socket.on('disconnect', function (data) {
-    for(var i in players)
-    {
-      if(players[i].taken == socket.id)
-      {
-        players[i] = new snake;
-        socket.broadcast.emit('kill_log', ['disconnected',i]);
-        console.log("client "+i+" disconnected");
+}
 
-      } 
+//for(i in num_rooms)io.sockets.manager.rooms["/game"+i]=[];
+setInterval(function() {for (i in rooms) if(!io.sockets.manager.rooms.hasOwnProperty("/"+i)) {console.log("room missing");io.sockets.manager.rooms["/"+i] = new Array();}}, 1000);
+io.sockets.manager.rooms={"/game0":[],"/game1":[],"/game2":[],"/game3":[],"/game4":[]};
 
-      //console.log(players[i]);
-    }
-    //console.log("Client "+socket.id+" disconnected!")
-  });
+io.sockets.on('connection', function (socket) {
+    self = this;
+    /*if(io.sockets.clients('game1').length == 0)socket.join("game1");
+    else socket.join("game2");*/
+    socket.on("join_room", function (data){
+      socket.join(data);
+    });
+    //socket.join("game0");
+    socket.on('getrooms', function (data, fn) {
+        fn(io.sockets.manager.rooms);
+    });
+    //console.log(io.sockets.clients('game')[0].id);
+    //console.log(io.sockets.clients('game').length);
+    socket.on("join", function (data){
+       for(i in io.sockets.manager.rooms)if(i!="")for(j in io.sockets.manager.rooms[i])if(socket.id == io.sockets.manager.rooms[i][j]){/*console.log("\n im in room "+i);*/var p_room = new room(i, socket);}
+    });
+    
+    socket.on('disconnect', function (data) {
+        console.log(data);
+        for(j in rooms)
+          {
+          
+          //console.log("disconnect "+j,game);
+          for(var i in rooms[j].players)
+              {
+              if(rooms[j].players[i].taken == socket.id)
+                  {
+                  rooms[j].players[i] = new snake;
+                  //console.log(rooms[j].players[i]);
+                  socket.broadcast.to(j).emit('kill_log', ['disconnected',i]);
+                  console.log("client "+socket.id+" disconnected");
+                  }
+              } 
+          }
+
+
+       
+      });
 });
 

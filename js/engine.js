@@ -3,7 +3,6 @@ $(document).ready(function() {
 if(window.location.protocol == 'https:')socket = io.connect('/',{port: 8443});
 else socket = io.connect('/',{port: 8080});
 //socket = io.connect('/');
-function network() {
 
 	socket.on('clientid', function (data) {
 		console.log(data);
@@ -11,7 +10,7 @@ function network() {
 	});
 
 	socket.on('map_array',function (data) {
-		  console.log(data);
+		  //console.log(data);
 		  map_array = data;
 		});
 
@@ -22,6 +21,7 @@ function network() {
 
 	socket.on('data_stream',function (data) {
 		process_stream(data);
+		//console.log("got data from server");
 	})
 
 	socket.on('players',function (data) {
@@ -40,20 +40,20 @@ function network() {
 	});
 
 	socket.on('food',function (data) {
-		//console.log(data);
+		console.log(data);
 		food = data;
 	});
 	socket.on('diamond',function (data) {
-		//console.log(data);
+		console.log(data);
 		diamond = data;
 	});
 	socket.on('rotten_food',function (data) {
-		//console.log(data);
+		console.log(data);
 		rotten_food = data;
 	});
 
 	socket.on('connections',function (data) {
-		//console.log(data);
+		console.log(data);
 		connections = data;
 	});
 
@@ -87,16 +87,18 @@ function network() {
 			stkl.kill_self(data);
 		}
 	});
+  	socket.on('ping', function(client) {
+  		socket.emit('pong');
+	});
+function network() {
 
+	socket.emit('join');
 	socket.emit('player', 'request', function (data) {
 		console.log(data);
 		color = data[1];
 		id = data[0];
   	});
-  	socket.on('ping', function(client) {
-  		socket.emit('pong');
-	});
-	socket.emit('join');
+	//socket.emit('join', "join");
 }
 
 	var lastLoop = new Date;
@@ -168,27 +170,36 @@ function network() {
 					}
 				}
 		},
+		rooms:{},
 		getServers:function ()
 			{	
 				document.getElementById("serverTable").innerHTML = '<tr id="browserHeader"><td>Server Name</td><td># of players</td></tr>';
 				socket.emit('getrooms', '', function (data) {
 					game.rooms = data;
-					for(i in data)if(i!=''){ console.log(i,data[i].length);$("<tr><td>"+i+"</td><td>"+data[i].length+"/6</td><</tr>").insertAfter('#browserHeader'); }
-					console.log(data);
+					//console.log(game);
+					var j = 0;
+					for(i in data)if(i!=''){ 
+						//i=i.substring(1);
+						//console.log(data);
+						//console.log(i,data[i].length);
+						$("<tr id='"+i.substring(1)+"'><td>"+i.substring(1)+"</td><td>"+data[i].length+"/6</td><</tr>").insertAfter('#browserHeader')/*.bind("click", function() {(game.join("game"+j));})*/;
+						j++;
+					}
+					//console.log(data);
+
+			  		console.log(game.rooms);
+			  		for(i in game.rooms)if(i!=""){
+			  			var server = document.getElementById(i.substring(1));
+			  			//server.name = i.substring(1);
+			  			server.addEventListener("click", function() {
+			  					game.join(this.id);
+			  				}, false);
+			  			console.log(i);}
 		  		});
-		  		console.log(game.rooms);
-		  		$("#servers").toggle();
-		  		$("#play").toggle();
-		  		$("#settings").toggle();
+		  		$("#servers").css("display", "none");
+		  		$("#play").css("display", "none");
+		  		$("#settings").css("display", "none");
 				$("#serverBrowser").css("display", "table");
-
-				//$("<tr><td></td><td></td><td></td></tr>").insertAfter('#browserHeader');
-				/*
-				<tr>
-					<td></td><td></td><td></td>
-				</tr>
-				*/
-
 			},
 		player:{
 			movement:[],
@@ -209,23 +220,26 @@ function network() {
 		    ping:0,
 		    score:0,
 		    kill_streak:0};
+		},
+		join:function(data) {
+			socket.emit("join_room", data);
+			var join = new network; 
+			setTimeout(function(){
+				render(); game.state.play(); createText("Use the arrow keys to move, 't' to talk, 'space bar' to pause, 'tab' to show the scoreboard.","Help"); $("#menu").toggle();}, 500);
 		}
 	}
-
 
 	$("#play").bind("click",function()
 		{
 			var join = new network; 
 			setTimeout(function(){
-				render(); game.state.play(); createText("Use the arrow keys to move, 't' to talk, 'space bar' to pause, 'tab' to show the scoreboard.","Help"); $("#menu").toggle();}, 500);});
+				render(); game.state.play(); createText("Use the arrow keys to move, 't' to talk, 'space bar' to pause, 'tab' to show the scoreboard.","Help"); $("#menu").toggle();}, 500);
+		});
 	//$("#settings").bind("click",function(){render(); game.state.play(); $("#menu").toggle();});
-	console.log(game);
 	$("#servers").bind("click", function() {game.getServers();});
+	$("#refresh").bind("click", function() {game.getServers();});
 	$("#back").bind("click", function() {console.log(game);game.state.root.home();});
 	$("#settings").bind("click",function(){alert(":P what? You actually thought that would do something? \n -Signed \n The Sign Painter");});
-	//var input=0;
-
-
 
 	var reset={
 		diamond:function ()
@@ -248,10 +262,9 @@ function network() {
 		}
 	}
 
-
-	
 	function process_stream(data)
 	{
+		console.log(data);
 		for(i in data)
 		{
 			if(i=='player')players[data[i][0]].pos = data[i][1];
@@ -601,7 +614,7 @@ function network() {
 				if(nx == food[i].x && ny == food[i].y)
 				{
 					//socket.emit('reset_food',[nx,ny]);
-					stream_buffer.reset_food=[nx,ny];
+					stream_buffer.food_eaten=[nx,ny];
 					food.splice(i,1);
 					var tail = {x: nx, y: ny};
 					game.player.score+=5;
@@ -624,7 +637,7 @@ function network() {
 				if(nx == rotten_food[i].x && ny == rotten_food[i].y)
 				{
 					//socket.emit('reset_rotten_food',[nx,ny]);
-					stream_buffer.reset_rotten_food=[nx,ny];
+					stream_buffer.rotten_food_eaten=[nx,ny];
 					rotten_food.splice(i,1);
 					//console.log(eaten);
 					var tail = {x: nx, y: ny};
@@ -647,7 +660,7 @@ function network() {
 				if(nx == diamond[i].x && ny == diamond[i].y)
 				{
 					//socket.emit('reset_diamond',[nx,ny]);
-					stream_buffer.reset_diamond=[nx,ny];
+					stream_buffer.diamond_eaten=[nx,ny];
 					diamond.splice(i,1);
 					var tail = {x: nx, y: ny};
 					game.player.score +=25;
@@ -687,6 +700,7 @@ function network() {
 				tail.x = nx; tail.y = ny;
 			}
     		game.player.snake_array.unshift(tail);//puts back the tail as the first cell
+    		console.log(color,game.player.snake_array);
 			stream_buffer.snake=[color,game.player.snake_array];
 			//console.log(stream_buffer);
     		socket.emit('data_stream', stream_buffer, function (data) {
