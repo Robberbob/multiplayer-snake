@@ -397,10 +397,18 @@ function get_players(game)
   for(i in rooms)if(i == game)return rooms[i].players;
 }
 
-function update_players(game, color, array)
-{
-  for(i in rooms)if(i == game){rooms[i].players[color].pos = array; return [color,rooms[i].players[color].pos];}
+var update_players={
+  pos:function (game, color, array)
+  {
+    for(i in rooms)if(i == game){rooms[i].players[color].pos = array; return [color,rooms[i].players[color].pos];}
+  },
+  score:function (game, color, score)
+  {
+    for(i in rooms)if(i == game){rooms[i].players[color].score = score; return [color,rooms[i].players[color].score];}
+  }
 }
+
+
 
 //Spawn map
 create_map();
@@ -434,18 +442,19 @@ function room(which, socket)
       {
         //if(i == 'chat')console.log(true);
         //if(i=='snake')console.log(data[i][1]);
-        //console.log(i);
-        if(i=='snake'){ self.data_stream.player=update_players(game, data[i][0], data[i][1]);}
+        console.log(i, data);
+        if(i==="score")var score = data[i];for(var j in get_players(game))if(socket.id == get_players(game)[j].taken){console.log("line 446",j, score);} //self.data_stream.score=data[i];}
+        if(i=='snake'){ self.data_stream.player=update_players.pos(game, data[i][0], data[i][1]);}
         if(i=='kill_log') self.data_stream.kill_log=data[i]; 
         if(i=='food_eaten'){ update_food(game, data[i][0], data[i][1]); self.data_stream.food=get_food(game);}
         if(i=='rotten_food_eaten'){update_rotten_food(game, data[i][0], data[i][1]); self.data_stream.rotten_food=get_rotten_food(game);}
         if(i=='diamond_eaten'){update_diamond(game, data[i][0], data[i][1]); self.data_stream.diamond=get_diamond(game);}
-        //if(i=='score')for(var j in get_players(game)) if(socket.id == get_players(game)[j].taken) {get_players(game)[j].score=data[i]; self.data_stream.score=[j,data[i]];}
       }
       //console.log(data['snake'][1]);
       fn(self.data_stream);
       //console.log(self.data_stream);
-      socket.broadcast.to(self.which).emit('data_stream',self.data_stream);
+      //console.log(game);
+      socket.broadcast.to(game).emit('data_stream',self.data_stream);
       //socket.emit('data_stream',data_stream);
       self.data_stream={};
   });
@@ -462,7 +471,7 @@ function room(which, socket)
         //console.log(i);
         if(get_players(game)[i].taken == 0)
         {
-            socket.broadcast.to(self.which).emit('kill_log', ['joined',i] );
+            socket.broadcast.to(game).emit('kill_log', ['joined',i] );
             get_players(game)[i].taken = socket.id;
             fn([socket.id, i]);
             console.log(i+' connected');
@@ -500,8 +509,9 @@ function room(which, socket)
   socket.on('chat', function (data) {
     var words = data[0].split(' ');
     //console.log(words);
-    if(words[0] == '/kick' && words[1]!=''){ for(var i in get_players(game)){ if(i == words[1]){socket.broadcast.to(self.which).emit('kick',words[1]); console.log('kicked '+words[1])}}}
-    else {socket.broadcast.to(self.which).emit('chat', data); console.log(data[1]+ ": "+data[0]) ;}
+    //if(words[0] == '/kick' && words[1]!=''){ for(var i in get_players(game)){ if(i == words[1]){socket.broadcast.to(game).emit('kick',words[1]); console.log('kicked '+words[1])}}}
+    //else 
+    socket.broadcast.to(game).emit('chat', data); console.log("["+game+"]"+data[1]+ ": "+data[0]) ;
   });
 
   setInterval(function () {socket.emit('connections', check_connections())}, 5000);
