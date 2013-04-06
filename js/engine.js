@@ -116,14 +116,11 @@ function network() {
 
 	var cw = 10;
 	var d;
-	//var food_loop; //=[];
 	var eaten = true;
-	var state;
-	//var score=0, hi_score=[0,'blue'];
-	var speed;
+	var state; //
+	//var speed; // Speed of the the game core/snake
 	var diamond_add;
-	//Lets create the snake now
-	var snake_array; //an array of cells to make up the snake
+	//var snake_array; //an array of cells to make up the snake
 	var grow;
 	var dt;
 	var movement;
@@ -149,12 +146,12 @@ function network() {
 			play:function ()
 				{
 					//move = "right";
-					game.player.movement=[];
-					game.player.score = 0;
+					//game.player.movement=[];
+					//game.player.score = 0;
 					//socket.emit('score', score);
-					stream_buffer.score=game.player.score;
-					game.player.speed = 150;
+					//game.player.speed = 150;
 					create_snake();
+					stream_buffer.score=game.player.score;
 					reset.diamond();
 					if(typeof game_loop != "undefined") clearInterval(game_loop);
 					game_loop = setInterval(core, game.player.speed);
@@ -215,17 +212,24 @@ function network() {
 		},
 		snake:function() {
 		  return {
-		    taken:0,
-		    pos:{x:-1 , y:-1},
 		    ping:0,
 		    score:0,
-		    kill_streak:0};
+			speed:150,
+			movement:[],
+		    kill_streak:0,
+		    snake_array:{x:-1 , y:-1}
+			};
 		},
 		join:function(data) {
 			socket.emit("join_room", data);
 			var join = new network; 
 			setTimeout(function(){
 				render(); game.state.play(); createText("Use the arrow keys to move, 't' to talk, 'space bar' to pause, 'tab' to show the scoreboard.","Help"); $("#menu").toggle();}, 500);
+		},
+		getPlayer:function(data) {
+			if(data == "pos") return game.player.snake;
+			if(data == "score") return game.player.score;
+			if(data == "ping") return game.player.ping;
 		}
 	}
 
@@ -297,7 +301,8 @@ function network() {
 	}
 
 	function create_snake()
-	{ 
+	{
+		game.player = new game.snake;
 		last_spawn = next_spawn;
 		next_spawn = getRandomInt(1,4);
 		if(last_spawn==next_spawn)while(last_spawn==next_spawn)next_spawn = getRandomInt(1,4);
@@ -575,6 +580,7 @@ function network() {
 				//play();
 				game.player.snake_array={x:-1,y:-1};
 				game.player.score=0;
+				stream_buffer['score']=game.getPlayer("score");
 				stream_buffer.snake=[color,game.player.snake_array];
 				console.log(stream_buffer);
 	    		socket.emit('data_stream',stream_buffer, function (data) {
@@ -594,6 +600,7 @@ function network() {
 				//play();
 				game.player.snake_array={x:-1,y:-1};
 				game.player.score=0;
+				stream_buffer['score']=game.getPlayer("score");
 				stream_buffer.snake=[color,game.player.snake_array];
 				console.log(stream_buffer);
 	    		socket.emit('data_stream',stream_buffer, function (data) {
@@ -619,7 +626,7 @@ function network() {
 					var tail = {x: nx, y: ny};
 					game.player.score+=5;
 					//socket.emit('game.player.score', game.player.score);
-					stream_buffer.score=game.player.score;
+					stream_buffer['score']=game.getPlayer("score");
 					//Create new food
 					//socket.emit createnew food
 					if(game.player.speed>80)
@@ -645,7 +652,7 @@ function network() {
 					for(var i = grow; i<1; i++)game.player.snake_array.pop();
 					game.player.score-=10;
 					//socket.emit('game.player.score', game.player.score);
-					stream_buffer.score=game.player.score;
+					stream_buffer['score']=game.getPlayer("score");
 					//Create new food
 					//socket.emit createnew food
 
@@ -665,10 +672,10 @@ function network() {
 					var tail = {x: nx, y: ny};
 					game.player.score +=25;
 					//socket.emit('game.player.score', game.player.score);
-					stream_buffer.score=game.player.score;
+					stream_buffer['score']=game.getPlayer("score");
+					console.log(game.player.score, game.getPlayer("score"), stream_buffer["score"]);
 					//Create new food
 					//socket.emit createnew food
-		
 					if(game.player.speed>80)
 					{
 						game.player.speed-=10;
@@ -703,13 +710,14 @@ function network() {
     		console.log(color,game.player.snake_array);
 			stream_buffer.snake=[color,game.player.snake_array];
 			//console.log(stream_buffer);
+			console.log(game.player.score, game.getPlayer("score"), stream_buffer["score"]);
     		socket.emit('data_stream', stream_buffer, function (data) {
     			//check data
     			process_stream(data);
-    			console.log(data);
+    			//console.log(data.score[1]);
+    			//for(i in data)if(i == "score")console.log(stream_buffer.score,game.player.score)//debugger
     		});
-
-
+			console.log(game.player.score, game.getPlayer("score"), stream_buffer["score"]);
     		stream_buffer={};
     		//socket.emit('snake',[game.snake_array, color]);
 			
