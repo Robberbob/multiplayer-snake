@@ -1,8 +1,8 @@
 $(document).ready(function() {
 
-if(window.location.protocol == 'https:')socket = io.connect('/',{port: 8443});
-else socket = io.connect('/',{port: 8080});
-//socket = io.connect('/');
+	if(window.location.protocol == 'https:')socket = io.connect('/',{port: 8443});
+	else socket = io.connect('/');
+	//socket = io.connect('/');
 
 	socket.on('clientid', function (data) {
 		console.log(data);
@@ -90,16 +90,16 @@ else socket = io.connect('/',{port: 8080});
   	socket.on('ping', function(client) {
   		socket.emit('pong');
 	});
-function network() {
+	function network() {
 
-	socket.emit('join');
-	socket.emit('player', 'request', function (data) {
-		console.log(data);
-		color = data[1];
-		id = data[0];
-  	});
-	//socket.emit('join', "join");
-}
+		socket.emit('join');
+		socket.emit('player', 'request', function (data) {
+			console.log(data);
+			color = data[1];
+			id = data[0];
+	  	});
+		//socket.emit('join', "join");
+	}
 
 	var lastLoop = new Date;
 	//Canvas stuff
@@ -145,11 +145,6 @@ function network() {
 		state:{
 			play:function ()
 				{
-					//move = "right";
-					//game.player.movement=[];
-					//game.player.score = 0;
-					//socket.emit('score', score);
-					//game.player.speed = 150;
 					create_snake();
 					stream_buffer.score=game.player.score;
 					reset.diamond();
@@ -314,8 +309,8 @@ function network() {
 		dead=false;
 	}
 
-//connect();
-//game.state.menu.play;
+	//connect();
+	//game.state.menu.play;
 
 	function getRandomInt (min, max) {
 	    return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -759,11 +754,12 @@ function network() {
 		//if(chat == true && key != 'left' && key != 'right' && key != 'up' && key != 'down' && key != '' && key != 'shift' && key != 'tab' && key != 'backspace' && key != 'enter') { if(key == 'space') key = ' ';message += key; console.log(key)}
 		//else if (key == 'backspace') message = message.substring(0, message.length - 1);
 
-		if(key == 'tab' && toggle_score == false) toggle_score = true;
-		else if(key == 'tab' && toggle_score == true) toggle_score = false;
+		/*if(key == 'tab' && toggle_score == false) toggle_score = true;
+		else if(key == 'tab' && toggle_score == true) toggle_score = false;*/
 		if((key == 'r'|| key == 'R') && !(chat) && state == 'play') game.state.play();
 		if(key == '`' && debug == false) debug = true;
 		else if(key == '`' && debug == true) debug = false;
+		if(key == 'f' && !(chat)) {document.getElementById("body").webkitRequestFullScreen();}
 		//input++;
 		//$('<span id="input'+input+'">'+key+'</span><br>').insertBefore('#input'+(input-1));
 
