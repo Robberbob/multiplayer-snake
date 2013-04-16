@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
 	if(window.location.protocol == 'https:')socket = io.connect('/',{port: 8443});
-	else socket = io.connect('/');
+	else socket = io.connect('/',{port: 8080});
 	//socket = io.connect('/');
 
 	socket.on('clientid', function (data) {
@@ -333,8 +333,7 @@ $(document).ready(function() {
 
 	var stkl={
 		// stkl = Send To Kill Log
-		kill_self:
-		function (data)
+		kill_self:function (data)
 		{
 			var command;
 			kill_id +=1;
@@ -345,8 +344,7 @@ $(document).ready(function() {
 			eval(command);
 
 		},
-		kill_color:
-		function (killer, killed)
+		kill_color:function (killer, killed)
 		{
 			var command;
 			kill_id +=1;
@@ -357,8 +355,7 @@ $(document).ready(function() {
 			eval(command);
 
 		},
-		kill_join:
-		function (data)
+		kill_join:function (data)
 		{
 			var command;
 			kill_id +=1;
@@ -369,8 +366,7 @@ $(document).ready(function() {
 			eval(command);
 
 		},
-		kill_disconnect:
-		function (data)
+		kill_disconnect:function (data)
 		{
 			var command;
 			kill_id +=1;
@@ -381,7 +377,7 @@ $(document).ready(function() {
 			eval(command);
 
 		}
-	}
+	};
 
 	function check_clients(cx,cy)
 	{
@@ -407,7 +403,6 @@ $(document).ready(function() {
 	//Lets paint the snake now
 	function render()
 	{
-
 
 		var score_text = "Score: "+game.player.score;
 		// Lets paint the canvas now
