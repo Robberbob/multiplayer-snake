@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv='cache-control' content='no-cache'>
+    <meta http-equiv='expires' content='0'>
+    <meta http-equiv='pragma' content='no-cache'>
+    <!-- Jquery -->
+    <script src="js/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/keyDecode.js"></script>
+    <script src="js/core.js"></script>
+    <script src="js/network.js"></script>
+    <script src="js/game.js"></script>
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+    <script>
+    $(document).keydown(function(e) {
+        key = keyDecode(e);
+        if (key === 'backspace' && document.activeElement.id != 'message-input') {
+          //console.log(document.activeElement.id);
+            return false;
+        };
+        if (key === 'tab') {  
+          return false;
+        }
+    });
+    </script>
+</head>
+<body id="body" style="border:thin solid pink;">
+<!-- Lets make the most freaken complex snake game...ever... -->
+<canvas id='canvas' width='1000' height='500'></canvas>
+<br>
+<br>
+<div id="kill-container">
+  <div id="kill-log"><span id="k0"></span></div>
+</div>
+<div id="menu">
+    <h3 style="margin-left:-75px;">Multiplayer Snake</h3><br>
+    <button id="servers">Multiplayer</button><br>
+    <div id="serverBrowser" style="display: none; position: relative; left:-150px;">
+        <table id="serverTable" border="0" style="margin:auto; width:250px; border-spacing:0px 5px;">
+        </table>
+        <button id="back">Back</button><button id="refresh">Refresh</button><button id="connect">Connect</button>
+    </div>
+    <!--<button>Pratice</button><br>-->
+    <button id="play">Singleplayer</button><br>
+    <button id="settings">Settings</button>
+</div>
+<div id="pos">
+    <div id="message-container">
+        <div id="message-log"><span id="m0"></span></div>
+        <input id="message-input" disabled="disabled" placeholder="Message <Enter>" maxlength="100" />
+    </div>
+</div>
+<!--<div id="keypress" style="left:50%;"><span id="input0"></span></div>-->
+
+</body>
+</html>
