@@ -142,7 +142,10 @@ tr:hover{
    -webkit-transition: opacity 1s ease-in-out;
 }
 
-
+.wh{
+    width: 1000px;
+    height: 500px;
+}
 /*
 #messagefield {
     text-align: left;

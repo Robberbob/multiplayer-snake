@@ -25,7 +25,7 @@ var SampleApp = function() {
     self.setupVariables = function() {
         //  Set the environment variables we need.
         self.ipaddress = process.env.OPENSHIFT_INTERNAL_IP;
-        self.port      = process.env.OPENSHIFT_INTERNAL_PORT || 8080;
+        self.port      = process.env.OPENSHIFT_INTERNAL_PORT || 8000;
 
         if (typeof self.ipaddress === "undefined") {
             //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
@@ -46,10 +46,8 @@ var SampleApp = function() {
 
         //  Local cache for static content.
         self.zcache['index.html'] = fs.readFileSync('./index.html');
-        self.zcache['index2.html'] = fs.readFileSync('./index2.html');
         self.zcache['js/jquery.min.js'] = fs.readFileSync('./js/jquery.min.js');
         self.zcache['js/keyDecode.js'] = fs.readFileSync('./js/keyDecode.js');
-        self.zcache['js/engine.js'] = fs.readFileSync('./js/engine.js');
         self.zcache['style.css'] = fs.readFileSync('./style.css');
         //self.zcache['index2.html'] = fs.readFileSync('./index2.html');
     };
@@ -116,18 +114,13 @@ var SampleApp = function() {
         self.routes['/'] = function(req, res) {
             res.setHeader('Content-Type', 'text/html');
             //res.send(self.cache_get('index2.html') );
-            res.sendfile(__dirname + '/index2.html');
+            res.sendfile(__dirname + '/index.html');
         };
 
         self.routes['/index'] = function(req, res) {
             res.setHeader('Content-Type', 'text/html');
             //res.send(self.cache_get('index2.html') );
             res.sendfile(__dirname + '/index.html');
-        };
-
-        self.routes['/snake'] = function(req, res) {
-            res.setHeader('Content-Type', 'text/html');
-            res.send(self.cache_get('index2.html') );
         };
 
         self.routes['/js/jquery.min.js'] = function(req, res) {
@@ -140,12 +133,6 @@ var SampleApp = function() {
             res.send(self.cache_get('js/keyDecode.js') );
         };
 
-        self.routes['/js/engine.js'] = function(req, res) {
-            res.setHeader('Content-Type', 'text/javascript');
-            //res.send(self.cache_get('js/engine.js') );
-            res.sendfile(__dirname + '/js/engine.js');
-        };
-
         self.routes['/js/game.js'] = function(req, res) {
             res.setHeader('Content-Type', 'text/javascript');
             //res.send(self.cache_get('game.js') );
@@ -156,6 +143,12 @@ var SampleApp = function() {
             res.setHeader('Content-Type', 'text/javascript');
             //res.send(self.cache_get('core.js') );
             res.sendfile(__dirname + '/js/core.js');
+        };
+
+        self.routes['/js/controls.js'] = function(req, res) {
+            res.setHeader('Content-Type', 'text/javascript');
+            //res.send(self.cache_get('controls.js') );
+            res.sendfile(__dirname + '/js/controls.js');
         };
 
         self.routes['/js/network.js'] = function(req, res) {
@@ -228,7 +221,7 @@ io.set('log level', 1);
 function snake() {
     return {
         taken:0,
-        pos:{x:-1 , y:-1},
+        pos:null,
         ping:0,
         score:0,
         kill_streak:0};
@@ -462,15 +455,22 @@ function room(which, socket)
   console.log(which.substring(1));
 
   socket.on('data_stream', function (data, fn) {
-    for(i in data)
+    for(var i in data)
       {
         //if(i == 'chat')console.log(true);
         //if(i=='snake')console.log(data[i][1]);
         console.log(i, data);
-        if(i==="score")var score = data[i];for(var j in get_players(game))if(socket.id == get_players(game)[j].taken){console.log("line 446",j, score);} //self.data_stream.score=data[i];}
+        if(i=="score"){var score = data[i];for(var j in get_players(game))if(socket.id == get_players(game)[j].taken){console.log("line 463",j, score); self.data_stream.score=data[i];}}
         if(i=='snake'){ self.data_stream.player=update_players.pos(game, data[i][0], data[i][1]);}
         if(i=='kill_log') self.data_stream.kill_log=data[i]; 
-        if(i=='food_eaten'){ update_food(game, data[i][0], data[i][1]); self.data_stream.food=get_food(game);}
+        if(i=='food_eaten'){ 
+          var x = data[i][0];
+          var y = data[i][1];
+          for(var j in rooms[game].food) if(rooms[game].food[j].x == x && rooms[game].food[j].y == y) { rooms[game].food.splice(j,1);}
+          //update_food(game, data[i][0], data[i][1]); 
+          self.data_stream.food=get_food(game); 
+          console.log("\n"+data[i]+"\n");
+        }
         if(i=='rotten_food_eaten'){update_rotten_food(game, data[i][0], data[i][1]); self.data_stream.rotten_food=get_rotten_food(game);}
         if(i=='diamond_eaten'){update_diamond(game, data[i][0], data[i][1]); self.data_stream.diamond=get_diamond(game);}
       }
@@ -547,7 +547,7 @@ setInterval(function() {for (i in rooms) if(!io.sockets.manager.rooms.hasOwnProp
 io.sockets.manager.rooms={"/game0":[],"/game1":[],"/game2":[],"/game3":[],"/game4":[]};
 
 io.sockets.on('connection', function (socket) {
-    self = this;
+    //self = this;
     /*if(io.sockets.clients('game1').length == 0)socket.join("game1");
     else socket.join("game2");*/
     socket.on("join_room", function (data){
@@ -564,7 +564,7 @@ io.sockets.on('connection', function (socket) {
     });
     
     socket.on('disconnect', function (data) {
-        console.log(data);
+        //console.log(data);
         for(j in rooms)
           {
           

@@ -1,133 +1,128 @@
-networkClass = {
+networkClass = Class.extend({
 	rooms:{},
-	setup: function(game)
+	setup: function()
 	{
-		if(window.location.protocol == 'https:')game.socket = io.connect('/',{port: 8443});
-		else game.socket = io.connect('/');
-		//game.socket = io.connect('/');
-		game.socket.on('clientid', function (data) {
-			console.log(data);
-			clientid = data;
-		});
-		game.socket.on('map_array',function (data) {
-			  //console.log(data);
-			  map_array = data;
-			});
-		game.socket.on('kick',function (data) {
+		if(window.location.protocol == 'https:')network.socket = io.connect('/',{port: 8443});
+		else network.socket = io.connect('/', {port:8000});
+		//network.socket = io.connect('/');
+		network.socket.on('clientid', function (data) {
 			//console.log(data);
-			if(data == color) {game.socket.disconnect(); console.log('disconnected');}
+			game.clientid = data;
 		});
-		game.socket.on('data_stream',function (data) {
-			process_stream(data);
+		network.socket.on('map_array',function (data) {
+			  //console.log(data);
+			  game.map_array = data;
+			});
+		network.socket.on('kick',function (data) {
+			//console.log(data);
+			if(data == color) {network.socket.disconnect(); console.log('disconnected');}
+		});
+		network.socket.on('data_stream',function (data) {
+			network.process_stream(data);
 			//console.log("got data from server");
 		})
-		game.socket.on('players',function (data) {
+		network.socket.on('players',function (data) {
 			//console.log(data);
-			players = data;
-			for(var i in players)
+			game.players = data;
+			for(var i in game.players)
 			{
-				if(i != color)
+				if(i != game.color)
 				{
-					var code = i+' = players[i].pos;';
+					var code = i+' = game.players[i].pos;';
+					//console.log(code);
 					eval(code);
 				}
 			}
 		});
-		game.socket.on('food',function (data) {
-			console.log(data);
-			food = data;
+		network.socket.on('food',function (data) {
+			//console.log(data);
+			game.food = data;
 		});
-		game.socket.on('diamond',function (data) {
-			console.log(data);
-			diamond = data;
+		network.socket.on('diamond',function (data) {
+			//console.log(data);
+			game.diamond = data;
 		});
-		game.socket.on('rotten_food',function (data) {
-			console.log(data);
-			rotten_food = data;
+		network.socket.on('rotten_food',function (data) {
+			//console.log(data);
+			game.rotten_food = data;
 		});
-		game.socket.on('connections',function (data) {
-			console.log(data);
-			connections = data;
+		network.socket.on('connections',function (data) {
+			//console.log(data);
+			game.connections = data;
 		});
 
 		// Redo network handling for chat and kill log.
 
-		game.socket.on('chat',function (data) {
+		network.socket.on('chat',function (data) {
 			console.log(data);
-			var words = data[0].split(' ');
-			if(words[0]=='/refresh'&& Object.prototype.toString.call(words[1]) != '[object Array]')document.location.reload(true);
-			else if(words[0]=='/refresh'&& Object.prototype.toString.call(words[1]) == '[object Array]') for(var i in players) if(i == color)document.location.reload(true);
-			if(words[0]!='/refresh')createText(data[0],data[1]);
+			game.createText(data[0],data[1]);
 		});
-		game.socket.on('kill_log',function (data) {
+
+		network.socket.on('kill_log',function (data) {
 			//console.log(data);
 			if( Object.prototype.toString.call( data ) === '[object Array]' && data[0] != 'joined' && data[0] != 'disconnected' ) 
 			{
-				stkl.kill_color(data[0],data[1]);
+				game.stkl.kill_color(data[0],data[1]);
 			}
 			else if(data[0]=='joined')
 			{
-				stkl.kill_join(data[1]);
-				players[data[1]] = new game.snake;
+				game.stkl.kill_join(data[1]);
+				game.players[data[1]] = new game.snake;
 			}
 			else if(data[0]=='disconnected')
 			{
-				stkl.kill_disconnect(data[1]);
-				delete players[data[1]];
-				//console.log(data[1]);
+				game.stkl.kill_disconnect(data[1]);
+				delete game.players[data[1]];
 			}
 			else
 			{
-				stkl.kill_self(data);
+				game.stkl.kill_self(data);
 			}
 		});
-	  	game.socket.on('ping', function(client) {
-	  		game.socket.emit('pong');
+	  	network.socket.on('ping', function(client) {
+	  		network.socket.emit('pong');
 		});
 	},
-	join:function(game) {
-		game.socket.emit('join');
-		game.socket.emit('player', 'request', function (data) {
-			console.log(data);
+	join_room:function(data) {
+		network.socket.emit("join_room", data);
+		network.socket.emit('join');
+		network.socket.emit('player', 'request', function (data) {
+			//console.log(data);
 			game.color = data[1];
 			game.id = data[0];
 	  	})
-	},
-	join_room:function(data) {
-		socket.emit("join_room", data);
-		var join = new this.join(); 
 		setTimeout(function(){
-			render(); game.state.play(); createText("Use the arrow keys to move, 't' to talk, 'space bar' to pause, 'tab' to show the scoreboard.","Help"); $("#menu").toggle();}, 500);
+			game.render(); game.state.play(); game.createText("Use the arrow keys to move, 't' to talk, 'space bar' to pause, 'tab' to show the scoreboard.","Help"); $("#menu").toggle();}, 500);
 	},
 	process_stream:function(data)
 	{
-		console.log(data);
-		for(i in data)
+		//console.log(data);
+		for(var i in data)
 		{
-			if(i=='player')players[data[i][0]].pos = data[i][1];
-			if(i=='score')players[data[i][0]].score = data[i][1];
+			if(i=='player')game.players[data.player[0]].pos = data[i][1];
+			if(i=='score')game.players[data.player[0]].score = data[i];
 
 			//console.log()
-			if(i=='food')food = data[i];
-			if(i=='rotten_food')rotten_food = data[i];
-			if(i=='diamond')diamond = data[i];
+			if(i=='food')game.food = data[i];
+			if(i=='rotten_food')game.rotten_food = data[i];
+			if(i=='diamond')game.diamond = data[i];
 			if(i=='kill_log')
 			{
 				if( Object.prototype.toString.call( data[i] ) === '[object Array]' && data[i][0] != 'joined' && data[i][0] != 'disconnected' ) 
 				{
-					stkl.kill_color(data[i][0],data[i][1]);
+					game.stkl.kill_color(data[i][0],data[i][1]);
 				}
 				else if(data[i][0]=='joined')
 				{
-					stkl.kill_join(data[i][1]);
+					game.stkl.kill_join(data[i][1]);
 				}
 				else if(data[i][0]=='disconnected')
 				{
-					stkl.kill_disconnect(data[i][1]);
+					game.stkl.kill_disconnect(data[i][1]);
 				}
 				else
 				{
-					stkl.kill_self(data[i]);
+					game.stkl.kill_self(data[i]);
 				}
 			}
 		}
@@ -135,25 +130,25 @@ networkClass = {
 	getServers:function ()
 		{	
 			document.getElementById("serverTable").innerHTML = '<tr id="browserHeader"><td>Server Name</td><td># of players</td></tr>';
-			socket.emit('getrooms', '', function (data) {
-				game.rooms = data;
-				//console.log(game);
+			network.socket.emit('getrooms', '', function (data) {
+				network.rooms = data;
+				//console.log(network);
 				var j = 0;
-				for(i in data)if(i!=''){ 
+				for(var i in data)if(i!=''){ 
 					//i=i.substring(1);
 					//console.log(data);
 					//console.log(i,data[i].length);
-					$("<tr id='"+i.substring(1)+"'><td>"+i.substring(1)+"</td><td>"+data[i].length+"/6</td><</tr>").insertAfter('#browserHeader')/*.bind("click", function() {(game.join("game"+j));})*/;
+					$("<tr id='"+i.substring(1)+"'><td>"+i.substring(1)+"</td><td>"+data[i].length+"/6</td><</tr>").insertAfter('#browserHeader')/*.bind("click", function() {(network.join("network"+j));})*/;
 					j++;
 				}
 				//console.log(data);
 
-		  		console.log(game.rooms);
-		  		for(i in game.rooms)if(i!=""){
+		  		console.log(network.rooms);
+		  		for(var i in network.rooms)if(i!=""){
 		  			var server = document.getElementById(i.substring(1));
 		  			//server.name = i.substring(1);
 		  			server.addEventListener("click", function() {
-		  					game.join(this.id);
+		  					network.join_room(this.id);
 		  				}, false);
 		  			console.log(i);}
 	  		});
@@ -162,4 +157,5 @@ networkClass = {
 	  		$("#settings").css("display", "none");
 			$("#serverBrowser").css("display", "table");
 		}
-};
+});
+var network = new networkClass;
