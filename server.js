@@ -459,8 +459,8 @@ function room(which, socket)
       {
         //if(i == 'chat')console.log(true);
         //if(i=='snake')console.log(data[i][1]);
-        console.log(i, data);
-        if(i=="score"){var score = data[i];for(var j in get_players(game))if(socket.id == get_players(game)[j].taken){console.log("line 463",j, score); self.data_stream.score=data[i];}}
+        //console.log(i, data);
+        if(i=="score"){var score = data[i];for(var j in get_players(game))if(socket.id == get_players(game)[j].taken){/*console.log("line 463",j, score);*/ self.data_stream.score=data[i];}}
         if(i=='snake'){ self.data_stream.player=update_players.pos(game, data[i][0], data[i][1]);}
         if(i=='kill_log') self.data_stream.kill_log=data[i]; 
         if(i=='food_eaten'){ 
@@ -469,7 +469,7 @@ function room(which, socket)
           for(var j in rooms[game].food) if(rooms[game].food[j].x == x && rooms[game].food[j].y == y) { rooms[game].food.splice(j,1);}
           //update_food(game, data[i][0], data[i][1]); 
           self.data_stream.food=get_food(game); 
-          console.log("\n"+data[i]+"\n");
+          //console.log("\n"+data[i]+"\n");
         }
         if(i=='rotten_food_eaten'){update_rotten_food(game, data[i][0], data[i][1]); self.data_stream.rotten_food=get_rotten_food(game);}
         if(i=='diamond_eaten'){update_diamond(game, data[i][0], data[i][1]); self.data_stream.diamond=get_diamond(game);}

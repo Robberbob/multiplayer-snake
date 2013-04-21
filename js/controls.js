@@ -30,9 +30,11 @@ function setupContols() {
 		if(key == '`' && !(game.debug)) game.debug = true;
 		else if(key == '`' && game.debug) game.debug = false;
 
-		if(key == 'f' && !(game.chat)) {document.getElementById("body").webkitRequestFullScreen();}
+		if((key == 'f' || key == 'F') && !(game.chat)) {document.getElementById("body").webkitRequestFullScreen();}
 
 		if(key == 'tab' && !(game.toggle_score))game.toggle_score=true;
 		else if(key == 'tab' && game.toggle_score)game.toggle_score=false;
+
+		if(key == 'h' || key == 'H')game.toggle_hint = (game.toggle_hint == true ? false : true);
 	}
 }

@@ -52,6 +52,7 @@ var gameClass = Class.extend({
 			game.kill_self = true;
 			game.contin_kills = 0;
 			game.toggle_score = false;
+			game.toggle_hint = false;
 			game.debug = false;
 			game.message = document.getElementById('message-input');
 			game.scroll_id = 0;
