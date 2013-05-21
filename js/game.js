@@ -101,6 +101,7 @@ var gameClass = Class.extend({
 	    ping:0,
 	    score:0,
 		speed:150,
+		state:"play",
 		movement:[],
 	    kill_streak:0,
 	    snake_array:null

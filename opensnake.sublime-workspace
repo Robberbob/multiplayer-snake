@@ -1,0 +1,1103 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"pla",
+				"players"
+			],
+			[
+				"up",
+				"update"
+			],
+			[
+				"ini",
+				"initCanvas"
+			],
+			[
+				"game",
+				"game"
+			],
+			[
+				"new",
+				"networkClass"
+			],
+			[
+				"re",
+				"refresh"
+			],
+			[
+				"set",
+				"setup"
+			],
+			[
+				"fun",
+				"fun	Function"
+			],
+			[
+				"get",
+				"getElementById"
+			],
+			[
+				"de",
+				"debugger"
+			],
+			[
+				"upa",
+				"update_players"
+			],
+			[
+				"so",
+				"socket"
+			],
+			[
+				"do",
+				"document"
+			],
+			[
+				"data",
+				"data"
+			],
+			[
+				"co",
+				"color"
+			],
+			[
+				"ro",
+				"rooms"
+			],
+			[
+				"rom",
+				"room"
+			],
+			[
+				"food",
+				"food_eaten"
+			],
+			[
+				"upd",
+				"update_food"
+			],
+			[
+				"w",
+				"which"
+			],
+			[
+				"crea",
+				"create_food"
+			],
+			[
+				"conn",
+				"connected"
+			],
+			[
+				"whi",
+				"which"
+			],
+			[
+				"s",
+				"self"
+			],
+			[
+				"dis",
+				"disconnect"
+			],
+			[
+				"con",
+				"console"
+			],
+			[
+				"mar",
+				"margin"
+			],
+			[
+				"bod",
+				"border"
+			],
+			[
+				"fon",
+				"font-size"
+			],
+			[
+				"sn",
+				"snake"
+			],
+			[
+				"pl",
+				"players"
+			],
+			[
+				"move",
+				"moveIndex"
+			],
+			[
+				"mov",
+				"moveIndex"
+			],
+			[
+				"mo",
+				"moveIndex"
+			],
+			[
+				"key",
+				"keypressed"
+			],
+			[
+				"kil",
+				"kill-log"
+			],
+			[
+				"in",
+				"input	Tag"
+			],
+			[
+				"mes",
+				"message-input"
+			],
+			[
+				"da",
+				"data"
+			],
+			[
+				"las",
+				"last_spawn"
+			],
+			[
+				"snak",
+				"snakepos"
+			],
+			[
+				"dat",
+				"data_stream"
+			],
+			[
+				"res",
+				"reset_food"
+			],
+			[
+				"kill",
+				"kill_log"
+			],
+			[
+				"spa",
+				"spawn"
+			],
+			[
+				"foo",
+				"food"
+			],
+			[
+				"c",
+				"console"
+			],
+			[
+				"sc",
+				"score"
+			],
+			[
+				"o",
+				"OldLatency"
+			],
+			[
+				"fo",
+				"focus"
+			],
+			[
+				"m",
+				"message"
+			],
+			[
+				"di",
+				"disconnected"
+			],
+			[
+				"ki",
+				"killer"
+			],
+			[
+				"fir",
+				"firstChild"
+			],
+			[
+				"cre",
+				"createElement"
+			],
+			[
+				"fad",
+				"fadeIn"
+			],
+			[
+				"fa",
+				"fadeIn"
+			],
+			[
+				"r",
+				"transparent"
+			],
+			[
+				"fou",
+				"focusCLI"
+			],
+			[
+				"v",
+				"v_animation"
+			],
+			[
+				"fil",
+				"fillText"
+			],
+			[
+				"to",
+				"toggle_score"
+			],
+			[
+				"ca",
+				"capitaliseFirstLetter"
+			],
+			[
+				"pr",
+				"purple"
+			],
+			[
+				"d",
+				"data"
+			],
+			[
+				"ch",
+				"check_collision"
+			],
+			[
+				"che",
+				"check_client"
+			],
+			[
+				"sna",
+				"snake_array"
+			],
+			[
+				"play",
+				"players"
+			],
+			[
+				"cl",
+				"clientnum"
+			],
+			[
+				"soc",
+				"socket"
+			],
+			[
+				"chec",
+				"check_connections"
+			],
+			[
+				"b",
+				"broadcast"
+			],
+			[
+				"dia",
+				"diamond"
+			],
+			[
+				"diam",
+				"diamond"
+			],
+			[
+				"map",
+				"map_array"
+			],
+			[
+				"creat",
+				"create_rotten_food"
+			],
+			[
+				"cr",
+				"create_food"
+			],
+			[
+				"create_",
+				"create_rotten_food"
+			],
+			[
+				"X",
+				"X"
+			],
+			[
+				"last",
+				"last_move"
+			],
+			[
+				"h",
+				"height"
+			],
+			[
+				"n",
+				"n"
+			],
+			[
+				"fod",
+				"food_loop"
+			],
+			[
+				"pai",
+				"paint_cell"
+			],
+			[
+				"pain",
+				"paint_diamond"
+			],
+			[
+				"cra",
+				"create_diamond"
+			],
+			[
+				"paint",
+				"paint_cell"
+			],
+			[
+				"stoke",
+				"stokeRect"
+			],
+			[
+				"st",
+				"stokeStyle"
+			],
+			[
+				"snake",
+				"snake_array"
+			],
+			[
+				"ret",
+				"return"
+			],
+			[
+				"user",
+				"user_n"
+			],
+			[
+				"us",
+				"user_n"
+			],
+			[
+				"curr",
+				"curr_usr"
+			],
+			[
+				"_",
+				"_SESSION"
+			],
+			[
+				"sel",
+				"selected"
+			],
+			[
+				"slec",
+				"selected"
+			],
+			[
+				"len",
+				"length"
+			],
+			[
+				"ser",
+				"service"
+			],
+			[
+				"start",
+				"start_pandora"
+			],
+			[
+				"ip",
+				"ip_clock"
+			],
+			[
+				"IP",
+				"ip_clock"
+			],
+			[
+				"audio",
+				"audio_levels"
+			],
+			[
+				"lcd",
+				"lcd_text"
+			],
+			[
+				"lev",
+				"level"
+			],
+			[
+				"scan_",
+				"scan_data"
+			],
+			[
+				"print",
+				"print_r"
+			],
+			[
+				"head",
+				"header"
+			],
+			[
+				"cha",
+				"char_set_begin"
+			],
+			[
+				"a",
+				"append"
+			],
+			[
+				"bs",
+				"bcs"
+			],
+			[
+				"char",
+				"char_set"
+			],
+			[
+				"cpu",
+				"cpu_cores"
+			],
+			[
+				"mysql",
+				"mysql_insert"
+			],
+			[
+				"insert",
+				"insert_word"
+			],
+			[
+				"md",
+				"md5_list"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "index.html",
+			"settings":
+			{
+				"buffer_size": 2145,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "style.css",
+			"settings":
+			{
+				"buffer_size": 2781,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "server.js",
+			"settings":
+			{
+				"buffer_size": 18273,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "js/game.js",
+			"settings":
+			{
+				"buffer_size": 18711,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "js/network.js",
+			"settings":
+			{
+				"buffer_size": 4688,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "js/controls.js",
+			"settings":
+			{
+				"buffer_size": 2146,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "package.json",
+			"settings":
+			{
+				"buffer_size": 670,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 327.0,
+		"selected_items":
+		[
+			[
+				"sftp",
+				"SFTP: Browse Server…"
+			],
+			[
+				"sft",
+				"SFTP: Browse Server…"
+			],
+			[
+				"sfp",
+				"SFTP: Show Panel"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"ssph",
+				"Set Syntax: PHP"
+			]
+		],
+		"width": 467.0
+	},
+	"console":
+	{
+		"height": 125.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/robertlech/Documents/opensnake/js/controlls.js",
+		"/Users/robertlech/Documents/opensnake/js/engine.js",
+		"/Users/robertlech/opensnake/style.css",
+		"/Users/robertlech/opensnake/index.html",
+		"/Users/robertlech/opensnake/js/engine.js",
+		"/Users/robertlech/opensnake/network.js",
+		"/Users/robertlech/opensnake/game.js",
+		"/Users/robertlech/opensnake/server.js",
+		"/Users/robertlech/snake/app_snake.js",
+		"/Users/robertlech/opensnake/index2.html",
+		"/Users/robertlech/opensnake/core.js",
+		"/Users/robertlech/opensnake/snake2.html",
+		"/Users/robertlech/opensnake/package.json",
+		"/Users/robertlech/opensnake/snake.js",
+		"/Users/robertlech/snake/js/keyDecode.js",
+		"/Users/robertlech/snake/single_player/engine.js",
+		"/Users/robertlech/snake/single_player/oldengine.js",
+		"/Users/robertlech/snake/single_player/index.html",
+		"/Users/robertlech/snake/single_player/snake.html",
+		"/Users/robertlech/snake/js/engine2.js",
+		"/Users/robertlech/snake/js/socket.io.js",
+		"/Users/robertlech/snake/test_index.html",
+		"/Users/robertlech/snake/test_app.js",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1358743108/norm00/var/www/spectate.html",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1357875670/norm00/var/www/js/spectate.js",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1358649806/norm00/var/www/style.css",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1357876982/norm00/var/www/snake2.html",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1357875623/norm00/var/www/js/engine2.js",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1357875609/norm00/var/www/app_snake.js",
+		"/Volumes/EVERIO_SD/Keys.txt",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1355971760/norm00/var/www/style.css",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1356059838/norm00/var/www/diamond.html",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1355971743/norm00/var/www/engine.js",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1355971147/norm00/var/www/index.html",
+		"/Users/robertlech/Library/Application Support/Sublime Text 2/Packages/User/sftp_servers/norm00",
+		"/Users/robertlech/JumpnBump_Clone/jnb-src/MAIN.C",
+		"/Users/robertlech/Library/Application Support/Sublime Text 2/Packages/SFTP/SFTP.sublime-settings",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1354064773/raspberrypi/home/pi/git/rpi-radio/www/gpio_display.py",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1354060745/raspberrypi/home/pi/git/rpi-radio/www/lcd",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1354383753/raspberrypi/home/pi/git/rpi-radio/www/ip_clock.py",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1354402348/raspberrypi/home/pi/git/rpi-radio/www/song.php",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1354392329/raspberrypi/home/pi/git/rpi-radio/www/test.php",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1354676581/raspberrypi/home/pi/git/rpi-radio/www/startStop.php",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1354407060/raspberrypi/home/pi/git/rpi-radio/www/select.php",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1354311719/raspberrypi/home/pi/git/rpi-radio/www/index.php",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1354055886/raspberrypi/home/pi/git/rpi-radio/www/wireless.php",
+		"/Users/robertlech/Library/Application Support/Sublime Text 2/Packages/User/sftp_servers/raspberrypi",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1355414468/raspberrypi/home/pi/git/rpi-radio/www/mpc_display.py",
+		"/var/folders/vl/1tn7t4c97nj6tlrzdfnc82z40000gn/T/sublime-sftp-browse-1354060695/raspberrypi/home/pi/git/rpi-radio/www/pandora.py",
+		"/Volumes/www/includes/visc/signup/css/style.css",
+		"/Volumes/www/includes/visc/signup/index.php",
+		"/Volumes/www/includes/visc/signup/js/jquery.main.js",
+		"/Volumes/EOS_DIGITAL/DCIM/100CANON/HDR_8619.SH",
+		"/Volumes/www/includes/visc/signup/js/jquery.inputfocus-0.9.min.js",
+		"/Volumes/www/includes/visc/signup.inc.php",
+		"/Volumes/www/includes/visc/signup/index.html",
+		"/Volumes/www/SimpleImage.php",
+		"/Volumes/www/resize.php",
+		"/Volumes/www/image.php",
+		"/Volumes/www/insert.php",
+		"/Volumes/www/index.php",
+		"/Volumes/www/gallery.php",
+		"/Users/robertlech/Documents/md5_generator.py",
+		"/Volumes/www/timthumb.php",
+		"/Volumes/www/imag.php",
+		"/Volumes/install/md5_generator2.py",
+		"/Volumes/install/split_char_set2.py",
+		"/Users/robertlech/Documents/cycles to internal addon.py",
+		"/Users/robertlech/Documents/md5_generator.php",
+		"/Volumes/www/download.py",
+		"/Volumes/www-1/includes/visc/visc.inc.php"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"require",
+			"SampleApp",
+			"zapp",
+			"'",
+			"i",
+			"message",
+			"state",
+			"c_state",
+			"state",
+			" ",
+			"diamond",
+			"debug",
+			"message",
+			"state",
+			"chat",
+			"Chat",
+			"chat",
+			"network",
+			"process_stream",
+			"grow",
+			"update",
+			"core",
+			"diamond",
+			"rotten_food",
+			"food",
+			"stream_buffer",
+			"kill_log",
+			"check_collision",
+			"capitaliseFirstLetter",
+			"kill_id",
+			"scroll_id",
+			"game.head",
+			"game",
+			"head",
+			"last_move",
+			"(move",
+			"move",
+			"players",
+			"var",
+			"ctx",
+			"var",
+			"game",
+			"js/engine",
+			"this",
+			"socket",
+			"canvas",
+			"getPlayer",
+			"game.player.score",
+			"self.which",
+			"game",
+			"hidden",
+			".toggle();",
+			"food",
+			"game0",
+			"return game",
+			"game",
+			".players",
+			"game.players",
+			"return game",
+			"game",
+			"rooms",
+			"game0",
+			"game.",
+			"return",
+			" return game1;",
+			"game1",
+			"game0",
+			"array",
+			".broadcast.to",
+			"rotten_food",
+			"self.game",
+			"self",
+			"reset_",
+			"emitTime",
+			"which",
+			"NewLatency",
+			"OldLatency",
+			"self.game",
+			"players",
+			"diamond",
+			"rotten_food",
+			"food",
+			"self.socket.",
+			".to(i)",
+			".of(which)",
+			"data_stream",
+			"to(i)",
+			"emit",
+			"i",
+			"0",
+			"while",
+			"</td><td>",
+			"html",
+			"index2.html",
+			"index2",
+			"snake2",
+			"Connect",
+			"# of players",
+			"Server Name",
+			"hi_score",
+			"high",
+			"high_sc",
+			"snake",
+			"hi_score",
+			"snake",
+			"game.score",
+			".score",
+			"speed",
+			"movement",
+			"snake_array",
+			".speed",
+			".movement",
+			".snake_array",
+			"movement",
+			"snake_array",
+			"score",
+			"snake_array",
+			"players",
+			"game.network.",
+			"map_array",
+			"color",
+			"id",
+			"rotten_food",
+			"otten_food",
+			"food",
+			"diamond",
+			"food",
+			"players"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"string_len"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 3,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "index.html",
+					"settings":
+					{
+						"buffer_size": 2145,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1204,
+								1206
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "style.css",
+					"settings":
+					{
+						"buffer_size": 2781,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								22,
+								22
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/CSS/CSS.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "server.js",
+					"settings":
+					{
+						"buffer_size": 18273,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								635,
+								635
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "js/game.js",
+					"settings":
+					{
+						"buffer_size": 18711,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								18263,
+								18265
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 8288.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "js/network.js",
+					"settings":
+					{
+						"buffer_size": 4688,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3065,
+								3065
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "js/controls.js",
+					"settings":
+					{
+						"buffer_size": 2146,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1642,
+								1642
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "package.json",
+					"settings":
+					{
+						"buffer_size": 670,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								498,
+								510
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JSON.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 17.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 25.0
+	},
+	"output.sftp":
+	{
+		"height": 112.0
+	},
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"",
+				"/Users/robertlech/Library/Application Support/Sublime Text 2/Packages/User/sftp_servers/raspberrypi"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 176.0,
+	"status_bar_visible": true
+}

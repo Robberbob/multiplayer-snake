@@ -31,7 +31,7 @@ var SampleApp = function() {
             //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
             //  allows us to run/test the app locally.
             console.warn('No OPENSHIFT_INTERNAL_IP var, using 127.0.0.1');
-            self.ipaddress = "127.0.0.1";
+            self.ipaddress = "192.168.1.109";
         };
     };
 
@@ -174,7 +174,7 @@ var SampleApp = function() {
         self.app = express();
         self.server = http.createServer(self.app);
         self.io = io.listen(self.server);
-        self.io.set('transports', ['websocket']);
+        self.io.set('transports', ['websocket','xhr-polling']);
         //  Add handlers for the app (from the routes).
         for (var r in self.routes) {
             self.app.get(r, self.routes[r]);
