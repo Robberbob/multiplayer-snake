@@ -214,7 +214,6 @@ var gameClass = Class.extend({
 				//stkl.kill_color(killer, killed);
 				//stkl(msg ,[killer, killed]);
 				return true;
-				//return false;
 			}
 		}
 		//return false;
@@ -548,6 +547,7 @@ var gameClass = Class.extend({
 				return false;}else return false;
 	}
 	});
+// Start game on load
 function init(){ 
 	game = new gameClass;
 	game.setup.game();
