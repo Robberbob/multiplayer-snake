@@ -1,4 +1,4 @@
-var gameClass = Class.extend({
+var gameClass ={
 	state:{
 		play:function ()
 			{
@@ -546,7 +546,7 @@ var gameClass = Class.extend({
 				}
 				return false;}else return false;
 	}
-	});
+};
 // Start game on load
 function init(){ 
 	game = new gameClass;
