@@ -10,6 +10,7 @@
     <script src="js/game.js"></script>
     <script src="js/block.js"></script>
     <script src="js/snake.js"></script>
+    <script src="js/level.js"></script>
     <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
     <script>
     window.onkeydown=function(e) {
@@ -23,9 +24,10 @@
           return false;
         }
     };
+    var game;
     </script>
 </head>
-<body id="body" style="border:thin solid white;" class="wh" onload="">
+<body id="body" style="border:thin solid white;" class="wh" onload="game = new game();">
 <!-- Lets make the most freaken complex snake game...ever... -->
 <canvas id='canvas' width='1000' height='500'></canvas>
 <br>
@@ -35,14 +37,14 @@
 </div>
 <div id="menu">
     <h3 style="margin-left:-75px;">Multiplayer Snake</h3><br>
-    <button id="servers">Multiplayer</button><br>
+    <button id="multi">Multiplayer</button><br>
     <div id="serverBrowser" style="display: none; position: relative; left:-150px;">
         <table id="serverTable" border="0" style="margin:auto; width:250px; border-spacing:0px 5px;">
         </table>
         <button id="back">Back</button><button id="refresh">Refresh</button><button id="connect">Connect</button>
     </div>
     <!--<button>Pratice</button><br>-->
-    <button id="play">Singleplayer</button><br>
+    <button id="single">Singleplayer</button><br>
     <button id="settings">Settings</button>
 </div>
 <div id="pos">
