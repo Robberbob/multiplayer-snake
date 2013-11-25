@@ -8,14 +8,14 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/keyDecode.js"></script>
     <script src="js/game.js"></script>
-    <script src="js/block.js"></script>
+    <script src="js/body.js"></script>
     <script src="js/snake.js"></script>
     <script src="js/level.js"></script>
     <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
     <script>
     window.onkeydown=function(e) {
         key = keyDecode(e);
-        console.log(e);
+        console.log(key);
         if (key === 'backspace' && document.activeElement.id != 'message-input') {
           //console.log(document.activeElement.id);
             return false;

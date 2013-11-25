@@ -2,7 +2,8 @@
 	"folders":
 	[
 		{
-			"path": "C:\Users\Robert\Documents\GitHub\multiplayer-snake"
+			"follow_symlinks": true,
+			"path": "/Users/robertlech/github/multiplayer-snake"
 		}
 	]
 }
