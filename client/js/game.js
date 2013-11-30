@@ -22,14 +22,11 @@ game.prototype.UI = function (self) {
 	document.getElementById("settings").addEventListener("click", function() {self.ui.settings()});
 	window.onkeydown=function(e) {
         var key = keyDecode(e);
-        console.log(e);
+        //console.log(key);
         if (key === "escape") {
-            if(!!this.oc)
-            	this.close();
-            else
-            	this.open(); 
-    	this.oc^=true;
-        };
+	        !!this.oc ? this.close() : this.open();
+	    	this.oc^=true;
+        }
     }.bind(this);
     this.home = function() {
 		console.log(this);
@@ -42,11 +39,11 @@ game.prototype.UI = function (self) {
 
 	this.close = function() {
 		$("#menu").css("display", "none");
-	}
+	};
 
 	this.open = function() {
 		$("#menu").css("display", "inline");
-	}
+	};
 
 	this.multiplayer = function() {
 		document.getElementById("serverTable").innerHTML = '<tr id="browserHeader"><td>Server Name</td><td># of players</td></tr>';
@@ -84,17 +81,14 @@ game.prototype.UI = function (self) {
 		//console.log(this,self);
 		this.close();
 		self.level = new level(100,50,self.ctx);
-		self.level.players.push(new snake());
+		self.level.addPlayer();
 		//console.log(this);
-
 	};
 
 	this.settings = function() {
 		alert(":P what? You actually thought that would do something? \n -Neo");
 	};
 };
-
-
 
 game.prototype.assets = function() {
 	//this.self = self;

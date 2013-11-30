@@ -16,7 +16,7 @@ div {
 }
 canvas {
 	display: inline-block;
-    border: solid thin black;
+    //border: solid thin black;
 }
 h3 {
     margin: 0;

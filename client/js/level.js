@@ -60,6 +60,12 @@ level.prototype.update = function () {};
 level.prototype.chat = function () {
 };
 
+level.prototype.addPlayer = function (color) {
+	this.players.push(new snake(this,color));
+		//self.level.players.push(new snake());
+	//self.level.players[0].spawn();
+}
+
 level.prototype.log = function () {
 	var self = this;
 	this.messages = new Array(0);
