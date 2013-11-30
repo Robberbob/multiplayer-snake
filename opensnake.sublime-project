@@ -2,7 +2,8 @@
 	"folders":
 	[
 		{
-			"path": "/Users/robertlech/Documents/opensnake"
+			"follow_symlinks": true,
+			"path": "/Users/robertlech/github/multiplayer-snake"
 		}
 	]
 }

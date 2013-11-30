@@ -259,12 +259,8 @@ for(var i = 0; i < num_rooms; i++)
     }
 }
 console.log(rooms);
-/*
-for(j in colors)
-{
-  eval("players[colors[j]] = new snake;");
-}*/
-//var data_stream={};
+
+
 function check_collision(x,y,array)
 {
   for (var i = 0; i < array.length; i++)
@@ -273,16 +269,8 @@ function check_collision(x,y,array)
         return true;
     }
     return false;
-}/*
-function players(data)
-{
-  status = data[0];
+}
 
-  if(status === "join")
-  {}
-  if(status === "disconnect")
-  {}
-}*/
 function check_connections()
 {
   return Object.keys(io.connected).length;
@@ -458,9 +446,6 @@ function room(which, socket)
   socket.on('data_stream', function (data, fn) {
     for(var i in data)
       {
-        //if(i == 'chat')console.log(true);
-        //if(i=='snake')console.log(data[i][1]);
-        //console.log(i, data);
         if(i=="score"){var score = data[i];for(var j in get_players(game))if(socket.id == get_players(game)[j].taken){/*console.log("line 463",j, score);*/ self.data_stream.score=data[i];}}
         if(i=='snake'){ self.data_stream.player=update_players.pos(game, data[i][0], data[i][1]);}
         if(i=='kill_log') self.data_stream.kill_log=data[i]; 
@@ -468,19 +453,15 @@ function room(which, socket)
           var x = data[i][0];
           var y = data[i][1];
           for(var j in rooms[game].food) if(rooms[game].food[j].x == x && rooms[game].food[j].y == y) { rooms[game].food.splice(j,1);}
-          //update_food(game, data[i][0], data[i][1]); 
+
           self.data_stream.food=get_food(game); 
-          //console.log("\n"+data[i]+"\n");
         }
         if(i=='rotten_food_eaten'){update_rotten_food(game, data[i][0], data[i][1]); self.data_stream.rotten_food=get_rotten_food(game);}
         if(i=='diamond_eaten'){update_diamond(game, data[i][0], data[i][1]); self.data_stream.diamond=get_diamond(game);}
       }
-      //console.log(data['snake'][1]);
       fn(self.data_stream);
-      //console.log(self.data_stream);
-      //console.log(game);
       socket.broadcast.to(game).emit('data_stream',self.data_stream);
-      //socket.emit('data_stream',data_stream);
+
       self.data_stream={};
   });
 
@@ -548,34 +529,24 @@ setInterval(function() {for (i in rooms) if(!io.sockets.manager.rooms.hasOwnProp
 io.sockets.manager.rooms={"/game0":[],"/game1":[],"/game2":[],"/game3":[],"/game4":[]};
 
 io.sockets.on('connection', function (socket) {
-    //self = this;
-    /*if(io.sockets.clients('game1').length == 0)socket.join("game1");
-    else socket.join("game2");*/
     socket.on("join_room", function (data){
       socket.join(data);
     });
-    //socket.join("game0");
     socket.on('getrooms', function (data, fn) {
         fn(io.sockets.manager.rooms);
     });
-    //console.log(io.sockets.clients('game')[0].id);
-    //console.log(io.sockets.clients('game').length);
     socket.on("join", function (data){
        for(i in io.sockets.manager.rooms)if(i!="")for(j in io.sockets.manager.rooms[i])if(socket.id == io.sockets.manager.rooms[i][j]){/*console.log("\n im in room "+i);*/var p_room = new room(i, socket);}
     });
     
     socket.on('disconnect', function (data) {
-        //console.log(data);
         for(j in rooms)
           {
-          
-          //console.log("disconnect "+j,game);
           for(var i in rooms[j].players)
               {
               if(rooms[j].players[i].taken == socket.id)
                   {
                   rooms[j].players[i] = new snake;
-                  //console.log(rooms[j].players[i]);
                   socket.broadcast.to(j).emit('kill_log', ['disconnected',i]);
                   console.log("client "+socket.id+" disconnected");
                   }
