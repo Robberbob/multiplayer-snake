@@ -6,11 +6,13 @@ import httplib, urllib, sys, os
 # a URL-safe format.
 
 
-
-
-
 params = urllib.urlencode([
-    ('code_url','hello'), # <--- This parameter has a new name!
+    ('code_url','https://raw.github.com/Robberbob/multiplayer-snake/dev/client/js/body.js'),
+    ('code_url','https://raw.github.com/Robberbob/multiplayer-snake/dev/client/js/game.js'),
+    ('code_url','https://raw.github.com/Robberbob/multiplayer-snake/dev/client/js/jquery.min.js'),
+    ('code_url','https://raw.github.com/Robberbob/multiplayer-snake/dev/client/js/keyDecode.js'),
+    ('code_url','https://raw.github.com/Robberbob/multiplayer-snake/dev/client/js/level.js'),
+    ('code_url','https://raw.github.com/Robberbob/multiplayer-snake/dev/client/js/snake.js'), # <--- This parameter has a new name!
     ('compilation_level', 'WHITESPACE_ONLY'),
     ('output_format', 'text'),
     ('output_info', 'compiled_code'),

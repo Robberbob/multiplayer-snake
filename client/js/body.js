@@ -1,8 +1,8 @@
 'use strict';
 // body constructor
-function body () {
+function body (color) {
 	this.body=[{x:0,y:0}];
-	this.color='blue';
+	this.color=color||"blue";
 };
 
 body.prototype.render = function() {

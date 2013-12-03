@@ -2,52 +2,55 @@
 function level (width,height,canvas) {
 	// Create alias for body
 	this.map=this.body;
+
 	//generate map
-	//gererate x grid
-	for (var i=0;i<width;i++) {
-		//gererate y grid
-		this.map[i] = new Array(height);
-	}
-	for (var x=0;x<width;x++) {
-		this.map[x][0]="grey";
-		this.map[x][height-1]="grey";
-	}
-	for (var y=0;y<height;y++) {
-		this.map[0][y]="grey";
-		this.map[width-1][y]="grey";
-	}
+	this.width=width*10;
+	this.height=height*10;
+
+	for(var i=0;i<this.width/10;i++)
+	    {
+	      this.map.push({x:i,y:0});
+	      this.map.push({x:i,y:height-1});
+	    }
+	for(var i=0;i<this.height/10-2;i++)
+	    {
+	      this.map.push({x:0,y:i+1});
+	      this.map.push({x:width-1,y:i+1});
+	    }
 	this.players = new Array(0);
 	this.logger = new this.log();
 	this.ctx=canvas;
+  	this.ctx.font = 'normal 12px Helvetica Neue';
 	this.render();
 
 };
 
-level.prototype = new body();
+level.prototype = new body("grey");
 
 level.prototype.getblock = function (x,y) {
 	return this.map[x][y];
 };
 
 level.prototype.render = function () {
+	// Reset to white
 	this.ctx.fillStyle = "white";
-	this.ctx.fillRect(0,0,1000,500);
+	this.ctx.fillRect(0,0,this.width,this.height);
 	this.ctx.strokeStyle = "black";
-	this.ctx.strokeRect(0,0,1000,500);
+	this.ctx.strokeRect(0,0,this.width,this.height);
 
-	for(var x=0;x<this.map.length;x++){
-		for(var y=0;y<this.map[x].length;y++){
-			if(this.map[x][y] != null) {
-				this.ctx.fillStyle=this.map[x][y];
-				//outline color
-				this.ctx.strokeStyle="white";
-				this.ctx.fillRect(x*10,y*10,10,10);
-				this.ctx.strokeRect(x*10,y*10,10,10);
-			}
-		}
+	this.ctx.fillStyle=this.color;
+	this.ctx.strokeStyle="white";
+	for(var i=0;i<this.body.length;i++) {
+		this.ctx.fillRect(this.body[i].x*10,this.body[i].y*10,10,10);
+		this.ctx.strokeRect(this.body[i].x*10,this.body[i].y*10,10,10);
 	}
+
 	for(var p=0;p<this.players.length;p++) {
 		this.players[p].render();
+    	this.ctx.textAlign = "center";
+		this.ctx.fillText(this.players[p].input,this.width/2,this.height/2);
+    	this.ctx.textAlign = "left";
+		
 	}
 	requestAnimFrame(function() {
 		this.render();

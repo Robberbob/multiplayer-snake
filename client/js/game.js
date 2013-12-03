@@ -78,10 +78,11 @@ game.prototype.UI = function (self) {
 	};
 
 	this.singleplayer = function(self) {
-		//console.log(this,self);
+		console.log(self);
+		console.log(this);
 		this.close();
-		self.level = new level(100,50,self.ctx);
-		self.level.addPlayer();
+		//self.level = new level(100,50,self.ctx);
+		//self.level.addPlayer();
 		//console.log(this);
 	};
 
