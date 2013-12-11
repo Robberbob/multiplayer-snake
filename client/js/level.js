@@ -4,25 +4,26 @@ function level (width,height,canvas) {
 	this.map=this.body;
 
 	//generate map
-	this.width=width*10;
-	this.height=height*10;
+	this.width=width;
+	this.height=height;
 
 	for(var i=0;i<this.width/10;i++)
 	    {
 	      this.map.push({x:i,y:0});
-	      this.map.push({x:i,y:height-1});
+	      this.map.push({x:i,y:height/10-1});
 	    }
 	for(var i=0;i<this.height/10-2;i++)
 	    {
 	      this.map.push({x:0,y:i+1});
-	      this.map.push({x:width-1,y:i+1});
+	      this.map.push({x:width/10-1,y:i+1});
 	    }
 	this.players = new Array(0);
 	this.logger = new this.log();
 	this.ctx=canvas;
   	this.ctx.font = 'normal 12px Helvetica Neue';
 	this.render();
-
+	this.cell=10*(this.ctx.canvas.width/this.width);
+	console.log(this.cell);
 };
 
 level.prototype = new body("grey");
@@ -32,25 +33,21 @@ level.prototype.getblock = function (x,y) {
 };
 
 level.prototype.render = function () {
-	// Reset to white
-	this.ctx.fillStyle = "white";
-	this.ctx.fillRect(0,0,this.width,this.height);
-	this.ctx.strokeStyle = "black";
-	this.ctx.strokeRect(0,0,this.width,this.height);
+	// Clear canvas
+	this.ctx.clearRect(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
 
+	this.cell=10*(this.ctx.canvas.width/this.width);
 	this.ctx.fillStyle=this.color;
 	this.ctx.strokeStyle="white";
 	for(var i=0;i<this.body.length;i++) {
-		this.ctx.fillRect(this.body[i].x*10,this.body[i].y*10,10,10);
-		this.ctx.strokeRect(this.body[i].x*10,this.body[i].y*10,10,10);
+		this.ctx.fillRect(this.body[i].x*this.cell,this.body[i].y*this.cell,this.cell,this.cell);
+		this.ctx.strokeRect(this.body[i].x*this.cell,this.body[i].y*this.cell,this.cell,this.cell);
 	}
 
 	for(var p=0;p<this.players.length;p++) {
 		this.players[p].render();
-    	this.ctx.textAlign = "center";
 		this.ctx.fillText(this.players[p].input,this.width/2,this.height/2);
-    	this.ctx.textAlign = "left";
-		
+    	//this.ctx.textAlign = "left";
 	}
 	requestAnimFrame(function() {
 		this.render();
@@ -64,7 +61,7 @@ level.prototype.chat = function () {
 };
 
 level.prototype.addPlayer = function (color) {
-	this.players.push(new snake(this,color));
+	this.players.push(new snake(this,color,this.cell));
 		//self.level.players.push(new snake());
 	//self.level.players[0].spawn();
 }

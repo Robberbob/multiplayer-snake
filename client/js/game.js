@@ -6,12 +6,40 @@ function game () {
 	      window.setTimeout(callback, 1000 / 60);
         };
 	})();
-	this.ui = new this.UI(this);
+	this.ui = new this._ui(this);
 	this.assets();
 	this.ctx=document.getElementById("canvas").getContext("2d");
+	this.width=window.innerWidth;
+	this.height=window.innerHeight;
+
+	this.cellw=Math.floor((this.height*1.77777778)/10)*10;
+	this.cellh=Math.floor(this.height/10)*10;
+
+	$("#body").css("width", this.cellw);
+	$("#body").css("height", this.cellh);
+
+	$("#message-container").css("left", screen.width/2-Math.round(this.height/1.77777778)*1.5);
+
+	this.ctx.canvas.width=Math.floor((this.height*1.77777778)/10)*10;
+	this.ctx.canvas.height=this.cellh;
+
+	console.log(this.ctx.canvas);
+	console.log(Math.round((this.height*1.77777778)/10)*10+"x"+Math.round(this.height/10)*10);
+
+	window.addEventListener("resize", function () {
+		this.width=window.innerWidth;
+		this.height=window.innerHeight;
+		this.cellw=Math.floor((this.height*1.77777778)/10)*10;
+		this.cellh=Math.floor(this.height/10)*10;
+		$("#body").css("width", this.cellw);
+		$("#body").css("height", this.cellh);
+		this.ctx.canvas.width=Math.floor((this.height*1.77777778)/10)*10;
+		this.ctx.canvas.height=this.cellh;
+		$("#message-container").css("left", screen.width/2-Math.round(this.height/1.77777778)*1.5);
+	}.bind(this));
 };
 
-game.prototype.UI = function (self) {
+game.prototype._ui = function (self) {
 	this.self = self;
 	// boolean open/closed
 	this.oc=true;
@@ -20,14 +48,23 @@ game.prototype.UI = function (self) {
 	document.getElementById("refresh").addEventListener("click", function(){network.getServers();} );
 	document.getElementById("back").addEventListener("click", function(){self.ui.home()});
 	document.getElementById("settings").addEventListener("click", function() {self.ui.settings()});
-	window.onkeydown=function(e) {
+	window.addEventListener("keydown",function(e) {
         var key = keyDecode(e);
         //console.log(key);
         if (key === "escape") {
-	        !!this.oc ? this.close() : this.open();
+	        $("#menu").css("display", !!this.oc ? "none" : "inline");
 	    	this.oc^=true;
+	    	console.log("esc");
         }
-    }.bind(this);
+        if (key === 'backspace' && document.activeElement.id != 'message-input') {
+          //console.log(document.activeElement.id);
+            return false;
+        };
+        if (key === 'tab') {  
+          return false;
+        }
+
+    }.bind(this));
     this.home = function() {
 		console.log(this);
 		$("#multi").css("display", "inline");
@@ -39,10 +76,12 @@ game.prototype.UI = function (self) {
 
 	this.close = function() {
 		$("#menu").css("display", "none");
+		this.oc=false;
 	};
 
 	this.open = function() {
 		$("#menu").css("display", "inline");
+		this.oc=true;
 	};
 
 	this.multiplayer = function() {
@@ -78,12 +117,11 @@ game.prototype.UI = function (self) {
 	};
 
 	this.singleplayer = function(self) {
-		console.log(self);
-		console.log(this);
-		this.close();
-		//self.level = new level(100,50,self.ctx);
-		//self.level.addPlayer();
+		//console.log(self);
 		//console.log(this);
+		this.close();
+		self.level = new level(1000,560,self.ctx);
+		self.level.addPlayer();
 	};
 
 	this.settings = function() {

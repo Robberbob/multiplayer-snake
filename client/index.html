@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="wh">
+<html class="">
 <head>
     <meta http-equiv='cache-control' content='no-cache'>
     <meta http-equiv='expires' content='0'>
@@ -16,18 +16,12 @@
     window.onkeydown=function(e) {
         key = keyDecode(e);
         console.log(key);
-        if (key === 'backspace' && document.activeElement.id != 'message-input') {
-          //console.log(document.activeElement.id);
-            return false;
-        };
-        if (key === 'tab') {  
-          return false;
-        }
+        
     };
     var game;
     </script>
 </head>
-<body id="body" style="" class="wh" onload="game = new game();">
+<body id="body" style="margin:auto auto;" class="" onload="game = new game();">
 <!-- Lets make the most freaken complex snake game...ever... -->
 <canvas id='canvas' width='1000' height='500'></canvas>
 <br>
@@ -47,12 +41,12 @@
     <button id="single">Singleplayer</button><br>
     <button id="settings">Settings</button>
 </div>
-<div id="pos">
+<!--<div id="pos">-->
     <div id="message-container">
         <div id="message-log"><span id="m0"></span></div>
         <input id="message-input" disabled="disabled" placeholder="Message <Enter>" maxlength="100" />
     </div>
-</div>
+<!--</div>-->
 <!--<div id="keypress" style="left:50%;"><span id="input0"></span></div>-->
 
 </body>

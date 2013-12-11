@@ -1,6 +1,6 @@
 'use strict';
 //snake constuctor
-function snake(level,color) {
+function snake(level,color,cell) {
 	// active level
 	this.level=level;
 	// 2d canvas
@@ -11,12 +11,11 @@ function snake(level,color) {
 	this.state="play";
 	this.grow=0;
 	this.color=color||"blue";
-
+	this.cell=cell;
 	this.stats={ping:0,score:0};
 	this.input=[];
 	window.onkeydown=this.eventHandler.bind(this);
 	//this.eventHandler(this);
-	this.controls = 0 | 1 | 2 | 3;
 };
 snake.prototype = new body();
 
