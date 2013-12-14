@@ -1,6 +1,6 @@
 'use strict';
 //snake constuctor
-function snake(level,color,cell) {
+function snake(level,color) {
 	// active level
 	this.level=level;
 	// 2d canvas
@@ -11,10 +11,10 @@ function snake(level,color,cell) {
 	this.state="play";
 	this.grow=0;
 	this.color=color||"blue";
-	this.cell=cell;
 	this.stats={ping:0,score:0};
 	this.input=[];
 	window.onkeydown=this.eventHandler.bind(this);
+	this.cell=this.level.cell;
 	//this.eventHandler(this);
 };
 snake.prototype = new body();
@@ -33,6 +33,20 @@ snake.prototype.spawn = function () {
 	}
 };
 
+/*
+snake.prototype.render = function() {
+	//solid color
+	this.ctx.fillStyle=this.color;
+	//outline color
+	//this.cell=10*(this.ctx.canvas.width/1000);
+	this.ctx.strokeStyle="white";
+	for(var i=0;i<this.body.length;i++) {
+		this.ctx.fillRect(this.body[i].x*this.level.cell,this.body[i].y*this.level.cell,this.level.cell,this.level.cell);
+		this.ctx.strokeRect(this.body[i].x*this.level.cell,this.body[i].y*this.level.cell,this.level.cell,this.level.cell);
+	}
+};
+*/
+
 snake.prototype.eventHandler = function (evt) {
 	//console.log(this);
     evt = evt || window.event;
@@ -45,6 +59,7 @@ snake.prototype.eventHandler = function (evt) {
     		this.spawn();
     		break;
     }
+    console.log(key);
     // Controls
 	if((this.input[this.input.length-1] != key)&&
 	   ((key=="up" && this.input[this.input.length-1] != "down")||
@@ -63,14 +78,19 @@ snake.prototype.eventHandler = function (evt) {
 snake.prototype.checkCollision = function() {
 	// Check self collision
 	for(var i=0;i<this.body.length-1;i++){
-		if(this.body[this.body.length-1].x==this.body[i].x && this.body[this.body.length-1].y==this.body[i].y)
+		if(this.body[this.body.length-1].x==this.body[i].x && this.body[this.body.length-1].y==this.body[i].y) {
+			window.dispatchEvent(new CustomEvent('log', {detail :{ 'snake': this.color, 'killer': this.color }}));
 			return true;
+		}
 	}
 	// Check Walls
 	for(var i=0;i<this.level.map.length-1;i++){
-		if(this.body[this.body.length-1].x==this.level.map[i].x && this.body[this.body.length-1].y==this.level.map[i].y)
+		if(this.body[this.body.length-1].x==this.level.map[i].x && this.body[this.body.length-1].y==this.level.map[i].y) {
+			window.dispatchEvent(new CustomEvent('log', {detail :{ 'snake': this.color, 'killer': this.color }}));
 			return true;
+		}
 	}
+
 	return false;
 };
 snake.prototype.update = function () {

@@ -9,33 +9,15 @@ function game () {
 	this.ui = new this._ui(this);
 	this.assets();
 	this.ctx=document.getElementById("canvas").getContext("2d");
-	this.width=window.innerWidth;
-	this.height=window.innerHeight;
 
-	this.cellw=Math.floor((this.height*1.77777778)/10)*10;
-	this.cellh=Math.floor(this.height/10)*10;
-
-	$("#body").css("width", this.cellw);
-	$("#body").css("height", this.cellh);
-
-	$("#message-container").css("left", screen.width/2-Math.round(this.height/1.77777778)*1.5);
-
-	this.ctx.canvas.width=Math.floor((this.height*1.77777778)/10)*10;
-	this.ctx.canvas.height=this.cellh;
+	this.viewport = {};
 
 	console.log(this.ctx.canvas);
-	console.log(Math.round((this.height*1.77777778)/10)*10+"x"+Math.round(this.height/10)*10);
-
+	//console.log(Math.round((this.height*1.77777778)/10)*10+"x"+Math.round(this.height/10)*10);
+	this.ui.resize();
 	window.addEventListener("resize", function () {
-		this.width=window.innerWidth;
-		this.height=window.innerHeight;
-		this.cellw=Math.floor((this.height*1.77777778)/10)*10;
-		this.cellh=Math.floor(this.height/10)*10;
-		$("#body").css("width", this.cellw);
-		$("#body").css("height", this.cellh);
-		this.ctx.canvas.width=Math.floor((this.height*1.77777778)/10)*10;
-		this.ctx.canvas.height=this.cellh;
-		$("#message-container").css("left", screen.width/2-Math.round(this.height/1.77777778)*1.5);
+		//console.log(this);
+		this.ui.resize();
 	}.bind(this));
 };
 
@@ -43,6 +25,7 @@ game.prototype._ui = function (self) {
 	this.self = self;
 	// boolean open/closed
 	this.oc=true;
+	this.fc=false;
 	document.getElementById("single").addEventListener("click", function() {self.ui.singleplayer(self)});
 	document.getElementById("multi").addEventListener("click", function() {self.ui.multiplayer(self)});
 	document.getElementById("refresh").addEventListener("click", function(){network.getServers();} );
@@ -55,6 +38,13 @@ game.prototype._ui = function (self) {
 	        $("#menu").css("display", !!this.oc ? "none" : "inline");
 	    	this.oc^=true;
 	    	console.log("esc");
+        }
+
+        if(key === "f") {
+        	document.getElementById("body").webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+        	document.getElementById("canvas").focus();
+        	//window.focus();
+        	//this.fc^=true;
         }
         if (key === 'backspace' && document.activeElement.id != 'message-input') {
           //console.log(document.activeElement.id);
@@ -127,6 +117,43 @@ game.prototype._ui = function (self) {
 	this.settings = function() {
 		alert(":P what? You actually thought that would do something? \n -Neo");
 	};
+
+	this.resize = function() {
+		//console.log(self.viewport);
+		self.width=window.innerWidth;
+		self.height=window.innerHeight;
+
+		document.getElementsByTagName("html")[0].setAttribute("style","width:"+self.width+"px;");
+		// use this if the screen is wider than it is longer
+		self.viewport.x=Math.floor((self.height*1.78571429)/10)*10;
+
+		if(self.viewport.x > window.innerWidth) {
+			// if the screen is longer than it is wider use this
+			self.viewport.x=Math.floor(self.width/10)*10;
+			self.viewport.y=Math.floor((self.width/1.78571429)/10)*10;
+			//$("#body").css("background-color","pink");
+		}else {
+			// continue with first calculation
+			self.viewport.y=Math.floor(self.height/10)*10;
+			//$("#body").css("background-color","black");
+		}
+
+		self.ctx.canvas.width=self.viewport.x;
+		self.ctx.canvas.height=self.viewport.y;
+
+		$("#body").css("width", self.viewport.x);
+		$("#body").css("height", self.viewport.y);
+
+		// set cell size here so it's not recalculating it every frame
+		if(self.level !== null) {
+			self.level.cell.x=10*(self.level.ctx.canvas.width/self.level.width);
+			self.level.cell.y=10*(self.level.ctx.canvas.height/self.level.height);
+		}
+
+		// this is very inaccurate and needs a lot of thought
+		$("#message-container").css("left", screen.width/2-Math.round(self.height/1.78571429)*1.5);
+
+	}
 };
 
 game.prototype.assets = function() {

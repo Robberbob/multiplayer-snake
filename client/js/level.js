@@ -18,30 +18,28 @@ function level (width,height,canvas) {
 	      this.map.push({x:width/10-1,y:i+1});
 	    }
 	this.players = new Array(0);
+
 	this.logger = new this.log();
 	this.ctx=canvas;
   	this.ctx.font = 'normal 12px Helvetica Neue';
+	this.cell={ x: 10*(this.ctx.canvas.width/this.width),
+				y: 10*(this.ctx.canvas.height/this.height)};
+
 	this.render();
-	this.cell=10*(this.ctx.canvas.width/this.width);
-	console.log(this.cell);
+	console.log(this.cell.x,this.cell.y);
 };
 
 level.prototype = new body("grey");
-
-level.prototype.getblock = function (x,y) {
-	return this.map[x][y];
-};
 
 level.prototype.render = function () {
 	// Clear canvas
 	this.ctx.clearRect(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
 
-	this.cell=10*(this.ctx.canvas.width/this.width);
 	this.ctx.fillStyle=this.color;
 	this.ctx.strokeStyle="white";
 	for(var i=0;i<this.body.length;i++) {
-		this.ctx.fillRect(this.body[i].x*this.cell,this.body[i].y*this.cell,this.cell,this.cell);
-		this.ctx.strokeRect(this.body[i].x*this.cell,this.body[i].y*this.cell,this.cell,this.cell);
+		this.ctx.fillRect(this.body[i].x*this.cell.x,this.body[i].y*this.cell.y,this.cell.x,this.cell.y);
+		this.ctx.strokeRect(this.body[i].x*this.cell.x,this.body[i].y*this.cell.y,this.cell.x,this.cell.y);
 	}
 
 	for(var p=0;p<this.players.length;p++) {
@@ -61,8 +59,8 @@ level.prototype.chat = function () {
 };
 
 level.prototype.addPlayer = function (color) {
-	this.players.push(new snake(this,color,this.cell));
-		//self.level.players.push(new snake());
+	this.players.push(new snake(this,color));
+	//self.level.players.push(new snake());
 	//self.level.players[0].spawn();
 }
 
@@ -70,6 +68,10 @@ level.prototype.log = function () {
 	var self = this;
 	this.messages = new Array(0);
 	this.message_id=0;
+	window.addEventListener("log", function (e) {
+		console.log(e.detail);
+		console.log(e.detail.snake+" killed by "+e.detail.killer);
+	});
 	/*
 	this.addEventListener('kill_self', function(){self.kill_self});
 	this.kill_self = function (data) {
