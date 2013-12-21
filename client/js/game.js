@@ -1,16 +1,14 @@
 'use strict';
 function game () {
-	window.requestAnimFrame = (function(callback) {
-	    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
-	    function(callback) {
-	      window.setTimeout(callback, 1000 / 60);
-        };
-	})();
 	this.ui = new this._ui(this);
 	this.assets();
 	this.ctx=document.getElementById("canvas").getContext("2d");
 
 	this.viewport = {};
+
+	this.playerConfigs=[
+	{up: "up", down: "down", right: "right", left: "left"},
+	{up: "w", down: "s", right: "d", left: "a"}];
 
 	console.log(this.ctx.canvas);
 	//console.log(Math.round((this.height*1.77777778)/10)*10+"x"+Math.round(this.height/10)*10);
@@ -33,6 +31,8 @@ game.prototype._ui = function (self) {
 	document.getElementById("settings").addEventListener("click", function() {self.ui.settings()});
 	window.addEventListener("keydown",function(e) {
         var key = keyDecode(e);
+
+   		e.preventDefault();
         //console.log(key);
         if (key === "escape") {
 	        $("#menu").css("display", !!this.oc ? "none" : "inline");
@@ -42,7 +42,7 @@ game.prototype._ui = function (self) {
 
         if(key === "f") {
         	document.getElementById("body").webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-        	document.getElementById("canvas").focus();
+        	//document.getElementById("canvas").focus();
         	//window.focus();
         	//this.fc^=true;
         }
@@ -111,7 +111,8 @@ game.prototype._ui = function (self) {
 		//console.log(this);
 		this.close();
 		self.level = new level(1000,560,self.ctx);
-		self.level.addPlayer();
+		//self.level.addPlayer(self.playerConfigs.shift());
+		//self.level.addPlayer(self.playerConfigs.shift());
 	};
 
 	this.settings = function() {
@@ -119,7 +120,9 @@ game.prototype._ui = function (self) {
 	};
 
 	this.resize = function() {
-		//console.log(self.viewport);
+		// this = _ui
+		// self = game
+
 		self.width=window.innerWidth;
 		self.height=window.innerHeight;
 
@@ -146,12 +149,13 @@ game.prototype._ui = function (self) {
 
 		// set cell size here so it's not recalculating it every frame
 		if(self.level !== null) {
-			self.level.cell.x=10*(self.level.ctx.canvas.width/self.level.width);
-			self.level.cell.y=10*(self.level.ctx.canvas.height/self.level.height);
+			self.level.cell.x=10*(self.viewport.x/self.level.width);
+			self.level.cell.y=10*(self.viewport.y/self.level.height);
 		}
 
+		console.log(self.width/self.height, self.viewport.x/self.viewport.y);
 		// this is very inaccurate and needs a lot of thought
-		$("#message-container").css("left", screen.width/2-Math.round(self.height/1.78571429)*1.5);
+		$("#message-container").css("left", screen.width/2-Math.round(self.height/(self.viewport.x/self.viewport.y))*1.5);
 
 	}
 };

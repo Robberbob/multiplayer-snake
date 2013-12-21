@@ -1,23 +1,29 @@
 'use strict';
 //snake constuctor
-function snake(level,color) {
+function snake(level,config) {
+	body.call(this, config.color);
 	// active level
 	this.level=level;
 	// 2d canvas
 	this.ctx=level.ctx;
+	// config
+	this.config=config;
 	// Temporary id
 	this.id=Math.random();
 	this.speed=150;
 	this.state="play";
 	this.grow=0;
-	this.color=color||"blue";
 	this.stats={ping:0,score:0};
 	this.input=[];
-	window.onkeydown=this.eventHandler.bind(this);
 	this.cell=this.level.cell;
+	//this.body=[{x:0,y:0}];
+	window.addEventListener("keydown",function(e){this.eventHandler(e)}.bind(this));
 	//this.eventHandler(this);
 };
+
 snake.prototype = new body();
+
+snake.prototype.constructor=snake;
 
 snake.prototype.spawn = function () {
 	this.body.length=0;
@@ -26,26 +32,12 @@ snake.prototype.spawn = function () {
 		//console.log("new link");
 		this.body.push({x: i,y:1});
 	} 
-	this.input.push("right");
+	this.input.push(this.config.right);
 	if(typeof this.tick==="undefined") {
 		//console.log(typeof this.tick);
 		this.tick=setInterval(function(){this.update()}.bind(this),this.speed);
 	}
 };
-
-/*
-snake.prototype.render = function() {
-	//solid color
-	this.ctx.fillStyle=this.color;
-	//outline color
-	//this.cell=10*(this.ctx.canvas.width/1000);
-	this.ctx.strokeStyle="white";
-	for(var i=0;i<this.body.length;i++) {
-		this.ctx.fillRect(this.body[i].x*this.level.cell,this.body[i].y*this.level.cell,this.level.cell,this.level.cell);
-		this.ctx.strokeRect(this.body[i].x*this.level.cell,this.body[i].y*this.level.cell,this.level.cell,this.level.cell);
-	}
-};
-*/
 
 snake.prototype.eventHandler = function (evt) {
 	//console.log(this);
@@ -56,17 +48,18 @@ snake.prototype.eventHandler = function (evt) {
     		this.update();
     		break;
     	case "r":
-    		this.spawn();
+    		//this.spawn();
     		break;
     }
     console.log(key);
     // Controls
 	if((this.input[this.input.length-1] != key)&&
-	   ((key=="up" && this.input[this.input.length-1] != "down")||
-		(key=="down" && this.input[this.input.length-1] != "up")||
-		(key=="right" && this.input[this.input.length-1] != "left")||
-		(key=="left" && this.input[this.input.length-1] != "right")))
+	   ((key==this.config.up && this.input[this.input.length-1] != this.config.down)||
+		(key==this.config.down && this.input[this.input.length-1] != this.config.up)||
+		(key==this.config.right && this.input[this.input.length-1] != this.config.left)||
+		(key==this.config.left && this.input[this.input.length-1] != this.config.right))){
 			this.input.push(key);
+		}
 
     //if(key =="b")this.update();
 	//if((key == "left"/* || key == "a" && game.chat == false*/) /*&& game.player.state != "pause" && key != this.input[0]*/)this.input.push("left");
@@ -77,6 +70,22 @@ snake.prototype.eventHandler = function (evt) {
 };
 snake.prototype.checkCollision = function() {
 	// Check self collision
+	var p1;
+	var p2;
+
+	for (var i = 0; i < this.level.players.length; i++) {
+		p2=this.level.players[i];
+		if(this.color !== p2.color) {
+			//console.log(p2);
+			for(var j=0;j<p2.body.length;j++) {
+				if(this.body[this.body.length-1].x == p2.body[j].x && this.body[this.body.length-1].y == p2.body[j].y) {
+					window.dispatchEvent( new CustomEvent('log', {detail :{ 'snake': this.color, 'killer': p2.color }}));
+					return true;
+				}
+			}
+		}
+	};
+
 	for(var i=0;i<this.body.length-1;i++){
 		if(this.body[this.body.length-1].x==this.body[i].x && this.body[this.body.length-1].y==this.body[i].y) {
 			window.dispatchEvent(new CustomEvent('log', {detail :{ 'snake': this.color, 'killer': this.color }}));
@@ -100,17 +109,19 @@ snake.prototype.update = function () {
 		if(this.input.length>1)
 			this.input.shift();
 		switch(this.input[0]) {
-			case "right":
+			case this.config.right:
 				nx++;
 				break;
-			case "left":
+			case this.config.left:
 				nx--;
 				break;
-			case "up":
+			case this.config.up:
 				ny--;
 				break;
-			case "down":
+			case this.config.down:
 				ny++;
+				break;
+			default:
 				break;
 		}
 		var tail = this.body.shift(); //pops out the last cell
