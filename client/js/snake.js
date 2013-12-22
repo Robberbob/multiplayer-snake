@@ -6,16 +6,16 @@ function snake(level,config) {
 	this.level=level;
 	// 2d canvas
 	this.ctx=level.ctx;
+	this.cell=this.level.cell;
 	// config
 	this.config=config;
 	// Temporary id
-	this.id=Math.random();
+	this.id=Math.floor(Math.random()*100)+1;
 	this.speed=150;
 	this.state="play";
 	this.grow=0;
 	this.stats={ping:0,score:0};
 	this.input=[];
-	this.cell=this.level.cell;
 	//this.body=[{x:0,y:0}];
 	window.addEventListener("keydown",function(e){this.eventHandler(e)}.bind(this));
 	//this.eventHandler(this);

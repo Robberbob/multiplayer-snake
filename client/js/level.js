@@ -25,10 +25,12 @@ function level (width,height,canvas) {
 	this.cell={ x: 10*(this.ctx.canvas.width/this.width),
 				y: 10*(this.ctx.canvas.height/this.height)};
 
-	this.render();
 	this.kitchen = new kitchen(this);
+
+	this.render();
 	window.addEventListener("keydown",function(e){this.eventHandler(e);}.bind(this));
 	console.log(this.cell.x,this.cell.y);
+	//console.log(this.kitchen.render);
 };
 
 level.prototype = new body();
@@ -45,6 +47,9 @@ level.prototype.render = function () {
 		this.ctx.fillRect(this.body[i].x*this.cell.x,this.body[i].y*this.cell.y,this.cell.x,this.cell.y);
 		this.ctx.strokeRect(this.body[i].x*this.cell.x,this.body[i].y*this.cell.y,this.cell.x,this.cell.y);
 	}
+
+
+	this.kitchen.render();
 
 	for(var p=0;p<this.players.length;p++) {
 		if(typeof this.players[p] !== "undefined") {

@@ -2,13 +2,12 @@
 // body constructor
 function body (color) {
 	console.log(typeof color,color);
-	console.log(this);
 	this.body=[{x:0,y:0}];
 	if(typeof color === "object")
 		this.color="rgba("+color.r+","+color.g+","+color.b+",1)";
 	else if(typeof color === "string")
 		this.color=color;
-	else this.color="blue";
+	console.log(this);
 };
 
 body.prototype.render = function() {

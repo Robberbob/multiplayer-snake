@@ -154,8 +154,10 @@ game.prototype._ui = function (self) {
 		}
 
 		console.log(self.width/self.height, self.viewport.x/self.viewport.y);
-		// this is very inaccurate and needs a lot of thought
-		$("#message-container").css("left", screen.width/2-Math.round(self.height/(self.viewport.x/self.viewport.y))*1.5);
+
+		$('.menu').css({right:-(self.viewport.x/3)+"px"});
+
+ 		$("#message-container").css("left", -(self.viewport.x/2.1)+"px");
 
 	}
 };

@@ -1,3 +1,16 @@
+@font-face {
+    font-family: 'mecharegular';
+    src: url('mecha-webfont.eot');
+    src: url('mecha-webfont.eot?#iefix') format('embedded-opentype'),
+         url('mecha-webfont.woff') format('woff'),
+         url('mecha-webfont.ttf') format('truetype'),
+         url('mecha-webfont.svg#mecharegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
 html {
     margin:0px;
     padding: 0px;
@@ -22,7 +35,8 @@ canvas {
     background-color: #FFFFFF;
 	display: inline-block;
 }
-h3 {
+h1, h2, h3 {
+    font-family: 'mecharegular';
     margin: 0;
     padding: 0;
     display: inherit;
@@ -33,15 +47,16 @@ h3 {
     left:50%;
     text-align: left;
 }
-button {
+h3.menu {
     width:100px;
     height:50px;
-    font-size: 12pt;
     margin: 10px 0;
+    text-align: right;
     position: relative;
-    left:-50px;
-    background-color:transparent;
-    border:none;
+    right:-250px;
+}
+h3.menu:hover{
+    color:blue;
 }
 #back, #connect, #refresh{
     margin: 10px 0;
@@ -50,18 +65,6 @@ button {
     background-color:transparent;
     border:none;
     margin: auto auto;
-}
-button:hover{
-    color:blue;
-    width:100px;
-    height:50px;
-    font-size: 12pt;
-    margin: 10px 0;
-    position: relative;
-    left:-50px;
-    background-color:transparent;
-    border:none;
-
 }
 tr{
     background-color:#E6E6E6; 
@@ -72,7 +75,7 @@ tr:hover{
 #pos {
     position: absolute;
     left:50%;
-    top: 390px;
+    bottom: 10px;
 }
 #message-container {
     text-align: left;
@@ -140,10 +143,7 @@ tr:hover{
    -webkit-transition: opacity 1s ease-in-out;
 }
 
-.wh{
-    width: 1000px;
-    height: 500px;
-}
+
 /*
 #messagefield {
     text-align: left;
