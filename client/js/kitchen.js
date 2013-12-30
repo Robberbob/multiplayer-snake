@@ -6,17 +6,15 @@ function kitchen (level) {
 
 	this.pot=[];
 
-	for(var i in this.foods) {
-		this.pot.push(new food(this.foods[i],this));
+	for(var i=0;i<this.foods.order.length; i++) {
+		this.pot.push(new food(this.foods[this.foods.order[i]],this));
 	}
 }
 
-// update
-kitchen.prototype.stir = function () {
+kitchen.prototype.update = function () {
 	for(var i=0;i<this.pot.length;i++) {
 		this.pot[i].update();
 	}
-
 };
 
 kitchen.prototype.render = function () {
@@ -26,19 +24,36 @@ kitchen.prototype.render = function () {
 };
 
 kitchen.prototype.lookup = function (head) {
-	var index = this.dictionary.indexOf(head);
+	var index=-1;
+	for(var i=0; i<this.dictionary.length; i++) {
+		if(head.x === this.dictionary[i].link.x && head.y === this.dictionary[i].link.y) {
+			index=this.dictionary[i].id;
+		}
+	}
 	if(index !== -1) {
-		return this.dictionary[index];
+		return this.dictionary[index].id;
 	}
 	else return false;
 };
 
+kitchen.prototype.eat = function (food) {
+	// splice(index,1)
+	console.log(food);
+	for(var i=0; i<this.dictionary.length;i++) {
+		if(food.link.x == this.dictionary[i].x && food.link.y == this.dictionary[i].y) {
+			this.pot[this.dictionary[i].id].body.splice(this.dictionary[i].index,1);
+			this.dictionary.splice(i,1);
+		}
+	}
+}
+
 kitchen.prototype.foods = {
-	apple:{id:0,max:6,color:{r:88,g:99,b:128}},
-	berries:{id:1,max:6,color:{r:88,g:99,b:128}},
-	diamonds:{id:2,max:6,color:{r:88,g:99,b:128}},
-	wormhole:{id:3,max:6,color:{r:88,g:99,b:128}},
-	beer:{id:4,max:6,color:{r:88,g:99,b:128}}};
+	apple:{id:0,max:6,color:{r:200,g:99,b:128}},
+	berries:{id:1,max:6,color:{r:200,g:99,b:128}},
+	diamonds:{id:2,max:6,color:{r:200,g:99,b:128}},
+	wormhole:{id:3,max:6,color:{r:200,g:99,b:128}},
+	beer:{id:4,max:6,color:{r:200,g:99,b:128}},
+	order:["apple","berries","diamonds","wormhole","beer"]};
 
 function food(type,self) {
 	body.call(this, type.color);
@@ -62,11 +77,15 @@ food.prototype.spawn = function() {
 	// pick random number where there isn't already something there
 	// append to dictionary
 	var link={};
-	link.x=Math.floor(Math.random() * this.self.level.width -2) + 1;
-	link.y=Math.floor(Math.random() * this.self.level.width -2) + 1;
+	link.x=Math.floor(Math.random() * this.self.level.width/10 -2) + 1;
+	link.y=Math.floor(Math.random() * this.self.level.height/10 -2) + 1;
 	for(var i in this.self.pot) {
 		if(this.self.pot[i].body.indexOf(link) === -1){
-			this.body.push(link);
+			//this.body.push(link);
+			this.self.dictionary.push(
+				{"link":link,
+				id:this.config.id,
+				index:this.body.push(link)-1});
 			console.log(link);
 			return true;
 		}

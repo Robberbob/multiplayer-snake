@@ -103,9 +103,11 @@ snake.prototype.checkCollision = function() {
 	return false;
 };
 snake.prototype.update = function () {
+	var head = this.body.length-1;
+	var tail={};
 	if(this.body.length>0) {
-		var nx = this.body[this.body.length-1].x;
-		var ny = this.body[this.body.length-1].y;
+		var nx = this.body[head].x;
+		var ny = this.body[head].y;
 		if(this.input.length>1)
 			this.input.shift();
 		switch(this.input[0]) {
@@ -124,11 +126,48 @@ snake.prototype.update = function () {
 			default:
 				break;
 		}
-		var tail = this.body.shift(); //pops out the last cell
-		tail.x=nx;
-		tail.y=ny;
-		this.body.push(tail);
+		if(this.grow==0) {
+			this.body.shift(); //pops out the last cell
+			tail.x=nx;
+			tail.y=ny;
+			this.body.push(tail);
+		} else if(this.grow>0) {
+			tail.x=nx;
+			tail.y=ny;
+			this.body.push(tail);
+			this.grow--;
+		} else if(this.grow<0) {
+			this.body.shift(); //pops out the last cell
+			this.body.shift(); //pops out the last cell
+			tail.x=nx;
+			tail.y=ny;
+			this.body.push(tail);
+			this.grow++;
+		}
 	}
+
+	switch(this.level.kitchen.lookup(this.body[this.body.length-1])) {
+		case false:
+			//console.log(this.level.kitchen.lookup(this.body[this.body.length-1]));
+			break;
+		case this.level.kitchen.foods.apple.id:
+			console.log("apple");
+			this.level.kitchen.eat({link:this.body[this.body.length-1],id: this.level.kitchen.foods.apple.id});
+			this.grow+=5;
+			break;
+		case this.level.kitchen.foods.berries.id:
+			console.log("berries");
+			this.level.kitchen.eat({link:this.body[this.body.length-1],id:this.level.kitchen.foods.berries.id});
+			this.grow-=3;
+			break;
+		case this.level.kitchen.foods.diamonds.id:
+			this.level.kitchen.eat({link:this.body[this.body.length-1],id:this.level.kitchen.foods.diamonds.id});
+			console.log("diamonds");
+			this.grow+=10;
+			break;
+
+	}
+
 	if(this.checkCollision()) {
 		this.body.length=0;
 		clearInterval(this.tick);

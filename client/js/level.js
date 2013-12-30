@@ -66,13 +66,13 @@ level.prototype.eventHandler = function(evt) {
   	evt = evt || window.event;
     var key = keyDecode(evt);
     switch(key){
-    	case "f1":
+    	case "1":
     			if(typeof this.players[0] !== "undefined")
     				this.players[0].spawn();
     			else this.players[0]=new snake(this,{up:"up",down:"down",right:"right",left:"left",color:this.requestColor(0)});
     				//this.addPlayer({up:"up",down:"down",right:"right",left:"left"});
     		break;
-    	case "f2":
+    	case "2":
     			if(typeof this.players[1] !== "undefined")
     				this.players[1].spawn();
     			else this.players[1]=new snake(this,{up:"w",down:"s",right:"d",left:"a",color:this.requestColor(1)});
