@@ -4,7 +4,13 @@ function body (color) {
 	console.log(typeof color,color);
 	this.body=[{x:0,y:0}];
 	if(typeof color === "object")
-		this.color="rgba("+color.r+","+color.g+","+color.b+",1)";
+		this.color={
+			rgb:[color.r,color.g,color.b],
+			name:"",
+			toString : function () {
+				return "rgba("+this.rgb[0]+","+this.rgb[1]+","+this.rgb[2]+",1)";
+			}
+		}
 	else if(typeof color === "string")
 		this.color=color;
 	console.log(this);
@@ -12,8 +18,7 @@ function body (color) {
 
 body.prototype.render = function() {
 	//solid color
-	//console.log(String.replace("rgba(%s,%s,%s,1)",this.color.r,this.color.g,this.color.b));
-	this.ctx.fillStyle=this.color;
+	this.ctx.fillStyle=this.color.toString();
 	//outline color
 	this.ctx.strokeStyle="white";
 	for(var i=0;i<this.body.length;i++) {

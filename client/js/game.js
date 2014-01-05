@@ -57,9 +57,9 @@ game.prototype._ui = function (self) {
     }.bind(this));
     this.home = function() {
 		console.log(this);
-		$("#multi").css("display", "inline");
-		$("#single").css("display", "inline");
-		$("#settings").css("display", "inline");
+		$("#multi").css("display", "block");
+		$("#single").css("display", "block");
+		$("#settings").css("display", "block");
 		$("#serverBrowser").css("display", "none");
 
 	};
@@ -111,8 +111,7 @@ game.prototype._ui = function (self) {
 		//console.log(this);
 		this.close();
 		self.level = new level(1000,560,self.ctx);
-		//self.level.addPlayer(self.playerConfigs.shift());
-		//self.level.addPlayer(self.playerConfigs.shift());
+		setInterval(function(){self.level.update()}.bind(this), 500);
 	};
 
 	this.settings = function() {
@@ -120,6 +119,7 @@ game.prototype._ui = function (self) {
 	};
 
 	this.resize = function() {
+		// scope
 		// this = _ui
 		// self = game
 
@@ -153,7 +153,7 @@ game.prototype._ui = function (self) {
 			self.level.cell.y=10*(self.viewport.y/self.level.height);
 		}
 
-		console.log(self.width/self.height, self.viewport.x/self.viewport.y);
+		//console.log(self.width/self.height, self.viewport.x/self.viewport.y);
 
 		$('.menu').css({right:-(self.viewport.x/3)+"px"});
 

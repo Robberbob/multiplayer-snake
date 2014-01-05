@@ -138,33 +138,72 @@ snake.prototype.update = function () {
 			this.grow--;
 		} else if(this.grow<0) {
 			this.body.shift(); //pops out the last cell
-			this.body.shift(); //pops out the last cell
-			tail.x=nx;
-			tail.y=ny;
-			this.body.push(tail);
+			//this.body.shift(); //pops out the last cell
 			this.grow++;
 		}
 	}
 
 	switch(this.level.kitchen.lookup(this.body[this.body.length-1])) {
 		case false:
-			//console.log(this.level.kitchen.lookup(this.body[this.body.length-1]));
 			break;
 		case this.level.kitchen.foods.apple.id:
-			console.log("apple");
+			console.log("Collision with apple");
 			this.level.kitchen.eat({link:this.body[this.body.length-1],id: this.level.kitchen.foods.apple.id});
 			this.grow+=5;
 			break;
 		case this.level.kitchen.foods.berries.id:
-			console.log("berries");
+			console.log("Collision with berries");
 			this.level.kitchen.eat({link:this.body[this.body.length-1],id:this.level.kitchen.foods.berries.id});
 			this.grow-=3;
 			break;
 		case this.level.kitchen.foods.diamonds.id:
+			console.log("Collision with diamonds");
 			this.level.kitchen.eat({link:this.body[this.body.length-1],id:this.level.kitchen.foods.diamonds.id});
-			console.log("diamonds");
 			this.grow+=10;
 			break;
+		case this.level.kitchen.foods.wormhole.id:
+			console.log("Collision with wormhole");
+			var index = Math.floor(Math.random()*10)%this.level.kitchen.pot[3].body.length;
+			switch(this.input[0]) {
+				case this.config.up:
+					this.body[this.body.length-1].x = this.level.kitchen.pot[3].body[index].x;
+					this.body[this.body.length-1].y = this.level.kitchen.pot[3].body[index].y-1;
+					break;
+				case this.config.down:
+					this.body[this.body.length-1].x = this.level.kitchen.pot[3].body[index].x;
+					this.body[this.body.length-1].y = this.level.kitchen.pot[3].body[index].y+1;
+					break;
+				case this.config.right:
+					this.body[this.body.length-1].x = this.level.kitchen.pot[3].body[index].x+1;
+					this.body[this.body.length-1].y = this.level.kitchen.pot[3].body[index].y;
+					break;
+				case this.config.left:
+					this.body[this.body.length-1].x = this.level.kitchen.pot[3].body[index].x-1;
+					this.body[this.body.length-1].y = this.level.kitchen.pot[3].body[index].y;
+					break;
+			}
+
+			break;
+		case this.level.kitchen.foods.beer.id:
+			console.log("Collision with beer");
+			this.level.kitchen.eat({link:this.body[this.body.length-1],id:this.level.kitchen.foods.beer.id});
+			switch(this.input[0]) {
+				case this.config.up: 
+					this.input.push(this.config.down);
+					break;
+				case this.config.down: 
+					this.input.push(this.config.up);
+					break;
+				case this.config.right: 
+					this.input.push(this.config.left);
+					break;
+				case this.config.left: 
+					this.input.push(this.config.right);
+					break;
+			}
+			this.body.reverse();
+			break;
+
 
 	}
 

@@ -41,7 +41,7 @@ level.prototype.render = function () {
 	// Clear canvas
 	this.ctx.clearRect(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
 
-	this.ctx.fillStyle=this.color;
+	this.ctx.fillStyle=this.color.toString();
 	this.ctx.strokeStyle="white";
 	for(var i=0;i<this.body.length;i++) {
 		this.ctx.fillRect(this.body[i].x*this.cell.x,this.body[i].y*this.cell.y,this.cell.x,this.cell.y);
@@ -78,10 +78,15 @@ level.prototype.eventHandler = function(evt) {
     			else this.players[1]=new snake(this,{up:"w",down:"s",right:"d",left:"a",color:this.requestColor(1)});
     				//this.addPlayer({up:"w",down:"s",right:"d",left:"a"});
     		break;
+    	case "r":
+    		this.kitchen.regenerate();
+    		break;
     }
 }
 
-level.prototype.update = function () {};
+level.prototype.update = function () {
+	this.kitchen.update();
+};
 
 
 level.prototype.chat = function () {
@@ -93,7 +98,7 @@ level.prototype.addPlayer = function (config) {
 			this.players[i]=new snake(this,this.requestColor(),config);
 			break;
 		}
-		console.log("player taken"+i);
+		console.log("player"+i+" taken");
 	}
 }
 
