@@ -74,6 +74,9 @@ snake.prototype.checkCollision = function() {
 	var p2;
 
 	for (var i = 0; i < this.level.players.length; i++) {
+		if(typeof this.level.players[i] === "undefined") {
+			continue;
+		}
 		p2=this.level.players[i];
 		if(this.color !== p2.color) {
 			//console.log(p2);
@@ -142,69 +145,67 @@ snake.prototype.update = function () {
 			this.grow++;
 		}
 	}
+	head = this.body.length-1;
+	var food = this.level.kitchen.lookup(this.body[this.body.length-1])
+	if(food.falsy) {
+		switch(food.type) {
+			case false:
+				break;
+			case "apple":
+				console.log("Collision with apple");
+				this.level.kitchen.eat(food.index);
+				this.grow+=5;
+				break;
+			case "berries":
+				console.log("Collision with berries");
+				this.level.kitchen.eat(food.index);
+				this.grow-=3;
+				break;
+			case "diamonds":
+				console.log("Collision with diamonds");
+				this.level.kitchen.eat(food.index);
+				this.grow+=10;
+				break;
+			case "wormhole":
+				console.log("Collision with wormhole");
+				var index = Math.floor(Math.random()*10)%this.level.kitchen.pot[3].body.length;
+				switch(this.input[0]) {
+					case this.config.up:
+						this.body[head].x = this.level.kitchen.pot[3].body[index].x;
+						this.body[head].y = this.level.kitchen.pot[3].body[index].y-1;
+						break;
+					case this.config.down:
+						this.body[head].x = this.level.kitchen.pot[3].body[index].x;
+						this.body[head].y = this.level.kitchen.pot[3].body[index].y+1;
+						break;
+					case this.config.right:
+						this.body[head].x = this.level.kitchen.pot[3].body[index].x+1;
+						this.body[head].y = this.level.kitchen.pot[3].body[index].y;
+						break;
+					case this.config.left:
+						this.body[head].x = this.level.kitchen.pot[3].body[index].x-1;
+						this.body[head].y = this.level.kitchen.pot[3].body[index].y;
+						break;
+				}
 
-	switch(this.level.kitchen.lookup(this.body[this.body.length-1])) {
-		case false:
-			break;
-		case this.level.kitchen.foods.apple.id:
-			console.log("Collision with apple");
-			this.level.kitchen.eat({link:this.body[this.body.length-1],id: this.level.kitchen.foods.apple.id});
-			this.grow+=5;
-			break;
-		case this.level.kitchen.foods.berries.id:
-			console.log("Collision with berries");
-			this.level.kitchen.eat({link:this.body[this.body.length-1],id:this.level.kitchen.foods.berries.id});
-			this.grow-=3;
-			break;
-		case this.level.kitchen.foods.diamonds.id:
-			console.log("Collision with diamonds");
-			this.level.kitchen.eat({link:this.body[this.body.length-1],id:this.level.kitchen.foods.diamonds.id});
-			this.grow+=10;
-			break;
-		case this.level.kitchen.foods.wormhole.id:
-			console.log("Collision with wormhole");
-			var index = Math.floor(Math.random()*10)%this.level.kitchen.pot[3].body.length;
-			switch(this.input[0]) {
-				case this.config.up:
-					this.body[this.body.length-1].x = this.level.kitchen.pot[3].body[index].x;
-					this.body[this.body.length-1].y = this.level.kitchen.pot[3].body[index].y-1;
-					break;
-				case this.config.down:
-					this.body[this.body.length-1].x = this.level.kitchen.pot[3].body[index].x;
-					this.body[this.body.length-1].y = this.level.kitchen.pot[3].body[index].y+1;
-					break;
-				case this.config.right:
-					this.body[this.body.length-1].x = this.level.kitchen.pot[3].body[index].x+1;
-					this.body[this.body.length-1].y = this.level.kitchen.pot[3].body[index].y;
-					break;
-				case this.config.left:
-					this.body[this.body.length-1].x = this.level.kitchen.pot[3].body[index].x-1;
-					this.body[this.body.length-1].y = this.level.kitchen.pot[3].body[index].y;
-					break;
-			}
-
-			break;
-		case this.level.kitchen.foods.beer.id:
-			console.log("Collision with beer");
-			this.level.kitchen.eat({link:this.body[this.body.length-1],id:this.level.kitchen.foods.beer.id});
-			switch(this.input[0]) {
-				case this.config.up: 
-					this.input.push(this.config.down);
-					break;
-				case this.config.down: 
-					this.input.push(this.config.up);
-					break;
-				case this.config.right: 
+				break;
+			case "beer":
+				console.log("Collision with beer");
+				this.level.kitchen.eat(food.index);
+				if(this.body[0].x == this.body[1].x-1)
 					this.input.push(this.config.left);
-					break;
-				case this.config.left: 
+
+				else if(this.body[0].x == this.body[1].x+1)
 					this.input.push(this.config.right);
-					break;
-			}
-			this.body.reverse();
-			break;
 
+				else if(this.body[0].y == this.body[1].y-1)
+					this.input.push(this.config.up);
 
+				else if(this.body[0].y == this.body[1].y+1)
+					this.input.push(this.config.down);
+				this.body.reverse();
+				break;
+		}
 	}
 
 	if(this.checkCollision()) {

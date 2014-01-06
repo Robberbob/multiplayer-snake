@@ -2,8 +2,6 @@
 function kitchen (level) {
 	this.level=level;
 
-	this.dictionary=[];
-
 	this.pot=[];
 
 	for(var i=0;i<this.foods.order.length; i++) {
@@ -12,7 +10,6 @@ function kitchen (level) {
 }
 
 kitchen.prototype.regenerate = function () {
-	this.dictionary.length=0;
 	for(var i=0;i<this.pot.length; i++) {
 		this.pot[i].body.length=0;
 	}
@@ -31,29 +28,18 @@ kitchen.prototype.render = function () {
 };
 
 kitchen.prototype.lookup = function (head) {
-	var index=-1;
-	for(var i=0; i<this.dictionary.length; i++) {
-		if(head.x === this.dictionary[i].link.x && head.y === this.dictionary[i].link.y) {
-			index=i;
+	for(var i=0; i<this.pot.length;i++) {
+		for(var j=0; j<this.pot[i].body.length;j++) {
+			if(head.x == this.pot[i].body[j].x && head.y == this.pot[i].body[j].y) {
+				return {type:this.foods.order[i],falsy:true,index:{food:i,link:j}};
+			}
 		}
 	}
-	if(index !== -1) {
-		console.log(index, this.dictionary[index]);
-		return this.dictionary[index].id;
-	}
-	else return false;
+	return {falsy:false};
 };
 
-kitchen.prototype.eat = function (food) {
-	// splice(index,1)
-	console.log(food);
-	for(var i=0; i<this.dictionary.length;i++) {
-		if(food.link.x == this.dictionary[i].link.x && food.link.y == this.dictionary[i].link.y) {
-			console.log(this.pot[this.dictionary[i].id]);
-			this.pot[this.dictionary[i].id].body.splice(this.dictionary[i].index,1);
-			this.dictionary.splice(i,1);
-		}
-	}
+kitchen.prototype.eat = function (index) {
+	this.pot[index.food].body.splice(index.link,1);
 }
 
 kitchen.prototype.foods = {
@@ -92,10 +78,7 @@ food.prototype.spawn = function() {
 	for(var i in this.self.pot) {
 		if(this.self.pot[i].body.indexOf(link) === -1){
 			//this.body.push(link);
-			this.self.dictionary.push(
-				{"link":link,
-				id:this.config.id,
-				index:this.body.push(link)-1});
+			this.body.push(link);
 			console.log(link);
 			return true;
 		}

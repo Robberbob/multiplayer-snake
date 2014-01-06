@@ -147,7 +147,7 @@ game.prototype._ui = function (self) {
 		$("#body").css("width", self.viewport.x);
 		$("#body").css("height", self.viewport.y);
 
-		// set cell size here so it's not recalculating it every frame
+		// set cell size on resize
 		if(self.level !== null) {
 			self.level.cell.x=10*(self.viewport.x/self.level.width);
 			self.level.cell.y=10*(self.viewport.y/self.level.height);

@@ -78,6 +78,12 @@ level.prototype.eventHandler = function(evt) {
     			else this.players[1]=new snake(this,{up:"w",down:"s",right:"d",left:"a",color:this.requestColor(1)});
     				//this.addPlayer({up:"w",down:"s",right:"d",left:"a"});
     		break;
+    	case "3":
+    			if(typeof this.players[2] !== "undefined")
+    				this.players[2].spawn();
+    			else this.players[2]=new snake(this,{up:"i",down:"k",right:"l",left:"j",color:this.requestColor(2)});
+    				//this.addPlayer({up:"w",down:"s",right:"d",left:"a"});
+    		break;
     	case "r":
     		this.kitchen.regenerate();
     		break;
