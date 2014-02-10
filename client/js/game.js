@@ -8,7 +8,8 @@ function game () {
 
 	this.playerConfigs=[
 	{up: "up", down: "down", right: "right", left: "left"},
-	{up: "w", down: "s", right: "d", left: "a"}];
+	{up: "w", down: "s", right: "d", left: "a"},
+	{up: "i", down: "k", right: "l", left: "j"}];
 
 	console.log(this.ctx.canvas);
 	//console.log(Math.round((this.height*1.77777778)/10)*10+"x"+Math.round(this.height/10)*10);
@@ -32,8 +33,12 @@ game.prototype._ui = function (self) {
 	window.addEventListener("keydown",function(e) {
         var key = keyDecode(e);
 
-   		e.preventDefault();
-        //console.log(key);
+
+        // Allow reload.
+        if((key !== "r" && e.metaKey !== false)) {
+   			e.preventDefault();
+        }
+
         if (key === "escape") {
 	        $("#menu").css("display", !!this.oc ? "none" : "inline");
 	    	this.oc^=true;
@@ -41,9 +46,18 @@ game.prototype._ui = function (self) {
         }
 
         if(key === "f") {
-        	document.getElementById("body").webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+
+    		if (document.getElementById("body").requestFullscreen) {
+			  document.getElementById("body").requestFullscreen();
+			} else if (document.getElementById("body").msRequestFullscreen) {
+			  document.getElementById("body").msRequestFullscreen();
+			} else if (document.getElementById("body").mozRequestFullScreen) {
+			  document.getElementById("body").mozRequestFullScreen();
+			} else if (document.getElementById("body").webkitRequestFullscreen) {
+			  document.getElementById("body").webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+			}
+        	//document.getElementById("body").webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
         	//document.getElementById("canvas").focus();
-        	//window.focus();
         	//this.fc^=true;
         }
         if (key === 'backspace' && document.activeElement.id != 'message-input') {
@@ -110,9 +124,17 @@ game.prototype._ui = function (self) {
 		//console.log(self);
 		//console.log(this);
 		this.close();
+		this.scoreboard(true);
 		self.level = new level(1000,560,self.ctx);
 		setInterval(function(){self.level.update()}.bind(this), 500);
 	};
+
+	this.scoreboard = function(display) {
+		if(display===true)
+			$("#scoreboard").css("display","inline");
+		else
+			$("#scoreboard").css("display","none");
+	}
 
 	this.settings = function() {
 		alert(":P what? You actually thought that would do something? \n -Neo");
@@ -146,6 +168,10 @@ game.prototype._ui = function (self) {
 
 		$("#body").css("width", self.viewport.x);
 		$("#body").css("height", self.viewport.y);
+
+
+		$("#viewport").css("width", self.viewport.x);
+		$("#viewport").css("height", self.viewport.y);
 
 		// set cell size on resize
 		if(self.level !== null) {

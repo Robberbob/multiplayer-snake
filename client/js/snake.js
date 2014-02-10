@@ -51,7 +51,7 @@ snake.prototype.eventHandler = function (evt) {
     		//this.spawn();
     		break;
     }
-    console.log(key);
+    //console.log(key);
     // Controls
 	if((this.input[this.input.length-1] != key)&&
 	   ((key==this.config.up && this.input[this.input.length-1] != this.config.down)||
@@ -82,7 +82,7 @@ snake.prototype.checkCollision = function() {
 			//console.log(p2);
 			for(var j=0;j<p2.body.length;j++) {
 				if(this.body[this.body.length-1].x == p2.body[j].x && this.body[this.body.length-1].y == p2.body[j].y) {
-					window.dispatchEvent( new CustomEvent('log', {detail :{ 'snake': this.color, 'killer': p2.color }}));
+					window.dispatchEvent( new CustomEvent('log', {detail :{ 'snake': this.color.name, 'killer': p2.color.name }}));
 					return true;
 				}
 			}
@@ -91,7 +91,7 @@ snake.prototype.checkCollision = function() {
 
 	for(var i=0;i<this.body.length-1;i++){
 		if(this.body[this.body.length-1].x==this.body[i].x && this.body[this.body.length-1].y==this.body[i].y) {
-			window.dispatchEvent(new CustomEvent('log', {detail :{ 'snake': this.color, 'killer': this.color }}));
+			window.dispatchEvent(new CustomEvent('log', {detail :{ 'snake': this.color.name, 'killer': this.color.name }}));
 			return true;
 		}
 	}

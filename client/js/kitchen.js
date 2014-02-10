@@ -79,7 +79,7 @@ food.prototype.spawn = function() {
 		if(this.self.pot[i].body.indexOf(link) === -1){
 			//this.body.push(link);
 			this.body.push(link);
-			console.log(link);
+			//console.log(link);
 			return true;
 		}
 		console.log(this.self.pot[i].body.indexOf(link));

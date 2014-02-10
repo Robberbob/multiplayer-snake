@@ -1,10 +1,12 @@
 <!doctype html>
 <html id="html">
 <head>
+    <title>Snake</title>
     <meta http-equiv='cache-control' content='no-cache'>
     <meta http-equiv='expires' content='0'>
     <meta http-equiv='pragma' content='no-cache'>
     <!-- Jquery -->
+    <script src="js/ntc.js"></script>
     <script src="js/jquery.min.js"></script>
     <script src="js/keyDecode.js"></script>
     <script src="js/game.js"></script>
@@ -65,33 +67,48 @@
     };
     </script>
 </head>
-<body id="body" style="margin:0 auto;" class="" onload="window.game = new game();">
+<body id="body" style="margin:0 auto;" onload="window.game = new game();">
 <!-- Lets make the most freaken complex snake game...ever... -->
 <canvas id='canvas' width='1000' height='500'></canvas>
 <br>
 <br>
-<div id="kill-container">
-  <div id="kill-log"><span id="k0"></span></div>
-</div>
-<div id="menu">
-    <h2 style="margin-left:-75px;">Multiplayer Snake</h2><br>
-    <h3 id="multi" class="menu">Multiplayer</h3><br>
-    <div id="serverBrowser" style="display: none; position: relative; left:-150px;">
-        <table id="serverTable" border="0" style="margin:auto; width:250px; border-spacing:0px 5px;">
-        </table>
-        <button id="back">Back</button><button id="refresh">Refresh</button><button id="connect">Connect</button>
+<div id="viewport" style=" position:absolute;top:0px; margin: 0 auto;">
+    <div id="scoreboard" style="display:none">
+        <h1 id="player1" style="margin:0; padding:0; position:absolute; top:15px; left:25px; text-align: left; font-size:1.7em;">PLAYER 1</h1>
+        <h1 id="player1score" style="margin:0; padding:0; position:absolute; top:45px; left:15px; text-align: left; font-size:1.1em;">Press '1' to Join</h1>
+
+        <h1 id="player2" style="margin:0; padding:0; position:absolute; top:15px; left:200px; text-align: left; font-size:1.7em;">PLAYER 2</h1>
+        <h1 id="player2score" style="margin:0; padding:0; position:absolute; top:45px; left:190px; text-align: left; font-size:1.1em;">Press '2' to Join</h1>
+
+        <h1 id="player3" style="margin:0; padding:0; position:absolute; top:15px; right:200px; text-align: left; font-size:1.7em;">PLAYER 3</h1>
+        <h1 id="player3score" style="margin:0; padding:0; position:absolute; top:45px; right:185px; text-align: left; font-size:1.1em;">Press '3' to Join</h1>
+
+        <h1 id="player4" style="margin:0; padding:0; position:absolute; top:15px; right:25px; text-align: left; font-size:1.7em;">PLAYER 4</h1>
+        <h1 id="player4score" style="margin:0; padding:0; position:absolute; top:45px; right:10px; text-align: left; font-size:1.1em;">Press '4' to Join</h1>
     </div>
-    <!--<button>Pratice</button><br>-->
-    <h3 id="single" class="menu">Singleplayer</h3><br>
-    <h3 id="settings" class="menu">Settings</h3>
-</div>
-<div id="pos">
-    <div id="message-container">
-        <div id="message-log"><span id="m0"></span></div>
-        <input id="message-input" disabled="disabled" placeholder="Message <Enter>" maxlength="100" />
+
+    <div id="kill-container">
+      <div id="kill-log"><span id="k0"></span></div>
+    </div>
+    <div id="menu">
+        <h2 style="margin-left:-75px;">Multiplayer Snake</h2><br>
+        <h3 id="multi" class="menu">Multiplayer</h3><br>
+        <div id="serverBrowser" style="display:none; position:relative; left:-150px;">
+            <table id="serverTable" border="0" style="margin:auto; width:250px; border-spacing:0px 5px;">
+            </table>
+            <button id="back">Back</button><button id="refresh">Refresh</button><button id="connect">Connect</button>
+        </div>
+        <!--<button>Pratice</button><br>-->
+        <h3 id="single" class="menu">Singleplayer</h3><br>
+        <h3 id="settings" class="menu">Settings</h3>
+    </div>
+    <div id="pos">
+        <div id="message-container">
+            <div id="message-log"><span id="m0"></span></div>
+            <input id="message-input" disabled="disabled" placeholder="Message <Enter>" maxlength="100" />
+        </div>
     </div>
 </div>
 <!--<div id="keypress" style="left:50%;"><span id="input0"></span></div>-->
-
 </body>
 </html>

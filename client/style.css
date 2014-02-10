@@ -17,15 +17,19 @@ html {
     overflow: hidden;
 }
 body {
-	text-align:center;
     margin:0;
     padding: 0;
     background-color: #000000;
 }
+/*
 body:-webkit-full-screen {
     width: 100%;
     height:100%;
 }
+body:-webkit-full-screen {
+    width: 100%;
+    height:100%;
+}*/
 div {
 	display: inline;
 }
@@ -142,35 +146,3 @@ tr:hover{
    -moz-transition: opacity 1s ease-in-out;
    -webkit-transition: opacity 1s ease-in-out;
 }
-
-
-/*
-#messagefield {
-    text-align: left;
-    color: #fff;
-    position: relative;
-    left: 35px;
-    border: thin solid pink;
-    position: absolute;
-    top: 200px;
-    width: 33%;
-    height: 200px;
-}
-#messages {
-    color: white;
-    display: block;
-    font-family: Consolas;
-    overflow: auto;
-    font-size: 12px;
-    height: 160px;
-}
-#message-box {
-    padding: 4px;
-    background: rgba(0, 0, 0, 0);
-    border-radius: 6px;
-}
-#messages, input {
-    user-select: auto;
-    -webkit-user-select: auto;
-}
-*/

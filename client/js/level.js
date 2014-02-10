@@ -125,7 +125,7 @@ level.prototype.log = function () {
 	this.messages = new Array(0);
 	this.message_id=0;
 	window.addEventListener("log", function (e) {
-		console.log(e.detail);
+		console.log(e);
 		console.log(e.detail.snake+" killed by "+e.detail.killer);
 	});
 	/*

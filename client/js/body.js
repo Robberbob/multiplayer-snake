@@ -1,19 +1,19 @@
 'use strict';
 // body constructor
 function body (color) {
-	console.log(typeof color,color);
+	//console.log(typeof color,color);
 	this.body=[{x:0,y:0}];
 	if(typeof color === "object")
 		this.color={
 			rgb:[color.r,color.g,color.b],
-			name:"",
+			name:ntc.name(color)[1],
 			toString : function () {
 				return "rgba("+this.rgb[0]+","+this.rgb[1]+","+this.rgb[2]+",1)";
 			}
 		}
 	else if(typeof color === "string")
 		this.color=color;
-	console.log(this);
+	//console.log(this);
 };
 
 body.prototype.render = function() {
