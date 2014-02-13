@@ -154,16 +154,19 @@ snake.prototype.update = function () {
 			case "apple":
 				console.log("Collision with apple");
 				this.level.kitchen.eat(food.index);
+				this.stats.score+=2
 				this.grow+=5;
 				break;
 			case "berries":
 				console.log("Collision with berries");
 				this.level.kitchen.eat(food.index);
+				this.stats.score-=1
 				this.grow-=3;
 				break;
 			case "diamonds":
 				console.log("Collision with diamonds");
 				this.level.kitchen.eat(food.index);
+				this.stats.score+=5
 				this.grow+=10;
 				break;
 			case "wormhole":

@@ -36,7 +36,7 @@ game.prototype._ui = function (self) {
 
         // Allow reload.
         if((key !== "r" && e.metaKey !== false)) {
-   			e.preventDefault();
+			e.preventDefault();
         }
 
         if (key === "escape") {
@@ -62,10 +62,10 @@ game.prototype._ui = function (self) {
         }
         if (key === 'backspace' && document.activeElement.id != 'message-input') {
           //console.log(document.activeElement.id);
-            return false;
+			e.preventDefault();
         };
         if (key === 'tab') {  
-          return false;
+			e.preventDefault();
         }
 
     }.bind(this));
@@ -126,6 +126,7 @@ game.prototype._ui = function (self) {
 		this.close();
 		this.scoreboard(true);
 		self.level = new level(1000,560,self.ctx);
+		this.resize();
 		setInterval(function(){self.level.update()}.bind(this), 500);
 	};
 
@@ -185,6 +186,25 @@ game.prototype._ui = function (self) {
 
  		$("#message-container").css("left", -(self.viewport.x/2.1)+"px");
 
+ 		var scale=0.0016190476190476;
+
+ 		$("#player1").css("font-size", self.viewport.x*scale+"em");
+ 		$("#player2").css("font-size", self.viewport.x*scale+"em");
+ 		$("#player3").css("font-size", self.viewport.x*scale+"em");
+ 		$("#player4").css("font-size", self.viewport.x*scale+"em");
+ 		try {
+ 			var padding=self.level.cell.x+5+"px";
+
+ 			$("#player1").css("margin-top", padding);
+ 			$("#player1").css("margin-left", padding);
+
+ 			$("#player2").css("margin-top", padding);
+ 			$("#player3").css("margin-top", padding);
+ 			$("#player4").css("margin-top", padding);
+ 			$("#player4").css("margin-right", padding);
+ 		} catch(e) {
+ 			console.log(e);
+ 		}
 	}
 };
 

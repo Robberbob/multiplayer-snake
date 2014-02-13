@@ -67,24 +67,19 @@
     };
     </script>
 </head>
-<body id="body" style="margin:0 auto;" onload="window.game = new game();">
+<body id="body" style="margin:auto;" onload="window.game = new game();">
 <!-- Lets make the most freaken complex snake game...ever... -->
 <canvas id='canvas' width='1000' height='500'></canvas>
 <br>
-<br>
-<div id="viewport" style=" position:absolute;top:0px; margin: 0 auto;">
-    <div id="scoreboard" style="display:none">
-        <h1 id="player1" style="margin:0; padding:0; position:absolute; top:15px; left:25px; text-align: left; font-size:1.7em;">PLAYER 1</h1>
-        <h1 id="player1score" style="margin:0; padding:0; position:absolute; top:45px; left:15px; text-align: left; font-size:1.1em;">Press '1' to Join</h1>
+<div id="viewport" style=" position:absolute;top:0px; margin:auto;">
+    <div id="scoreboard" style="display:none; position:relative; margin: 0 auto; padding:0; top:15px;  border:thin solid pink;">
+        <h1 id="player1" style="float:left; margin:0; padding:0; text-align: center; font-size:1.7em;">PLAYER 1 <br><span id="player1score" style="font-size:0.7em; text-align: left;">Press '1' to Join</span></h1>
 
-        <h1 id="player2" style="margin:0; padding:0; position:absolute; top:15px; left:200px; text-align: left; font-size:1.7em;">PLAYER 2</h1>
-        <h1 id="player2score" style="margin:0; padding:0; position:absolute; top:45px; left:190px; text-align: left; font-size:1.1em;">Press '2' to Join</h1>
+        <h1 id="player2" style="float:left; margin:0; padding:0; text-align: center; font-size:1.7em; margin-left:50px;">PLAYER 2 <br><span id="player2score" style="font-size:0.7em; text-align: left;">Press '2' to Join</span></h1>
 
-        <h1 id="player3" style="margin:0; padding:0; position:absolute; top:15px; right:200px; text-align: left; font-size:1.7em;">PLAYER 3</h1>
-        <h1 id="player3score" style="margin:0; padding:0; position:absolute; top:45px; right:185px; text-align: left; font-size:1.1em;">Press '3' to Join</h1>
+        <h1 id="player4" style="float:right; margin:0; padding:0; text-align: center; font-size:1.7em; margin-left:50px;">PLAYER 4<br><span id="player4score" style="font-size:0.7em; text-align: left;">Press '4' to Join</span></h1>
 
-        <h1 id="player4" style="margin:0; padding:0; position:absolute; top:15px; right:25px; text-align: left; font-size:1.7em;">PLAYER 4</h1>
-        <h1 id="player4score" style="margin:0; padding:0; position:absolute; top:45px; right:10px; text-align: left; font-size:1.1em;">Press '4' to Join</h1>
+        <h1 id="player3" style="float:right; margin:0; padding:0; text-align: center; font-size:1.7em;">PLAYER 3<br><span id="player3score" style="font-size:0.7em; text-align: left;">Press '3' to Join</span></h1>
     </div>
 
     <div id="kill-container">
