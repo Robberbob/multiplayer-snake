@@ -71,8 +71,8 @@
 <!-- Lets make the most freaken complex snake game...ever... -->
 <canvas id='canvas' width='1000' height='500'></canvas>
 <br>
-<div id="viewport" style=" position:absolute;top:0px; margin:auto;">
-    <div id="scoreboard" style="display:none; position:relative; margin: 0 auto; padding:0; top:15px;  border:thin solid pink;">
+<div id="viewport" style=" position:absolute; top:0px; margin:auto; border:thin solid pink;">
+    <div id="scoreboard" style="display:none; position:relative; margin: 0 auto; padding:0; top:15px;">
         <h1 id="player1" style="float:left; margin:0; padding:0; text-align: center; font-size:1.7em;">PLAYER 1 <br><span id="player1score" style="font-size:0.7em; text-align: left;">Press '1' to Join</span></h1>
 
         <h1 id="player2" style="float:left; margin:0; padding:0; text-align: center; font-size:1.7em; margin-left:50px;">PLAYER 2 <br><span id="player2score" style="font-size:0.7em; text-align: left;">Press '2' to Join</span></h1>
@@ -82,9 +82,6 @@
         <h1 id="player3" style="float:right; margin:0; padding:0; text-align: center; font-size:1.7em;">PLAYER 3<br><span id="player3score" style="font-size:0.7em; text-align: left;">Press '3' to Join</span></h1>
     </div>
 
-    <div id="kill-container">
-      <div id="kill-log"><span id="k0"></span></div>
-    </div>
     <div id="menu">
         <h2 style="margin-left:-75px;">Multiplayer Snake</h2><br>
         <h3 id="multi" class="menu">Multiplayer</h3><br>
@@ -97,11 +94,12 @@
         <h3 id="single" class="menu">Singleplayer</h3><br>
         <h3 id="settings" class="menu">Settings</h3>
     </div>
-    <div id="pos">
-        <div id="message-container">
-            <div id="message-log"><span id="m0"></span></div>
-            <input id="message-input" disabled="disabled" placeholder="Message <Enter>" maxlength="100" />
+    <div id="message-container" style="position:absolute; float:left; bottom:10px; margin-left:20px;width: 300px; display:block;">
+        <div id="message-log">
+            <span id="m0"></span>
+            <br id="m-br0">
         </div>
+        <input id="message-input" disabled="disabled" placeholder="Message <Enter>" maxlength="100" />
     </div>
 </div>
 <!--<div id="keypress" style="left:50%;"><span id="input0"></span></div>-->

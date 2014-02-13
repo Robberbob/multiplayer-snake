@@ -180,11 +180,7 @@ game.prototype._ui = function (self) {
 			self.level.cell.y=10*(self.viewport.y/self.level.height);
 		}
 
-		//console.log(self.width/self.height, self.viewport.x/self.viewport.y);
-
 		$('.menu').css({right:-(self.viewport.x/3)+"px"});
-
- 		$("#message-container").css("left", -(self.viewport.x/2.1)+"px");
 
  		var scale=0.0016190476190476;
 

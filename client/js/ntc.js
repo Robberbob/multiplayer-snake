@@ -119,7 +119,7 @@ var ntc = {
   },
 
   // adopted from: me
-  // rgb to hex
+  // @Robert_Lech
   rgbToHex: function(R,G,B) {return this.toHex(R)+this.toHex(G)+this.toHex(B)},
 
   toHex: function(n) {

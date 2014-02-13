@@ -19,6 +19,8 @@ function snake(level,config) {
 	//this.body=[{x:0,y:0}];
 	window.addEventListener("keydown",function(e){this.eventHandler(e)}.bind(this));
 	//this.eventHandler(this);
+	this.config.scoreboard.style.color="rgb("+this.color.rgb[0]+","+this.color.rgb[1]+","+this.color.rgb[2]+")";
+	this.updateScoreboard();
 };
 
 snake.prototype = new body();
@@ -38,6 +40,10 @@ snake.prototype.spawn = function () {
 		this.tick=setInterval(function(){this.update()}.bind(this),this.speed);
 	}
 };
+
+snake.prototype.updateScoreboard = function() {
+	this.config.scoreboard.innerHTML="Score: "+this.stats.score;
+}
 
 snake.prototype.eventHandler = function (evt) {
 	//console.log(this);
@@ -82,7 +88,8 @@ snake.prototype.checkCollision = function() {
 			//console.log(p2);
 			for(var j=0;j<p2.body.length;j++) {
 				if(this.body[this.body.length-1].x == p2.body[j].x && this.body[this.body.length-1].y == p2.body[j].y) {
-					window.dispatchEvent( new CustomEvent('log', {detail :{ 'snake': this.color.name, 'killer': p2.color.name }}));
+					window.dispatchEvent( new CustomEvent('log', {detail :{ 'snake': this.color, 'killer': p2.color }}));
+					this.stats.score=0;
 					return true;
 				}
 			}
@@ -91,7 +98,8 @@ snake.prototype.checkCollision = function() {
 
 	for(var i=0;i<this.body.length-1;i++){
 		if(this.body[this.body.length-1].x==this.body[i].x && this.body[this.body.length-1].y==this.body[i].y) {
-			window.dispatchEvent(new CustomEvent('log', {detail :{ 'snake': this.color.name, 'killer': this.color.name }}));
+			window.dispatchEvent(new CustomEvent('log', {detail :{ 'snake': this.color, 'killer': this.color }}));
+			this.stats.score=0;
 			return true;
 		}
 	}
@@ -99,6 +107,7 @@ snake.prototype.checkCollision = function() {
 	for(var i=0;i<this.level.map.length-1;i++){
 		if(this.body[this.body.length-1].x==this.level.map[i].x && this.body[this.body.length-1].y==this.level.map[i].y) {
 			window.dispatchEvent(new CustomEvent('log', {detail :{ 'snake': this.color, 'killer': this.color }}));
+			this.stats.score=0;
 			return true;
 		}
 	}
@@ -154,19 +163,22 @@ snake.prototype.update = function () {
 			case "apple":
 				console.log("Collision with apple");
 				this.level.kitchen.eat(food.index);
-				this.stats.score+=2
+				this.stats.score+=2;
+				this.updateScoreboard();
 				this.grow+=5;
 				break;
 			case "berries":
 				console.log("Collision with berries");
 				this.level.kitchen.eat(food.index);
-				this.stats.score-=1
+				this.stats.score-=1;
+				this.updateScoreboard();
 				this.grow-=3;
 				break;
 			case "diamonds":
 				console.log("Collision with diamonds");
 				this.level.kitchen.eat(food.index);
-				this.stats.score+=5
+				this.stats.score+=5;
+				this.updateScoreboard();
 				this.grow+=10;
 				break;
 			case "wormhole":
