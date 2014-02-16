@@ -50,13 +50,14 @@ level.prototype.render = function () {
 		this.ctx.strokeRect(this.body[i].x*this.cell.x,this.body[i].y*this.cell.y,this.cell.x,this.cell.y);
 	}
 
-
 	this.kitchen.render();
-
+	
 	for(var p=0;p<this.players.length;p++) {
 		if(typeof this.players[p] !== "undefined") {
 			this.players[p].render();
-			this.ctx.fillText(this.players[p].input,this.width/2,this.height/2);
+
+			// Render player input
+			//this.ctx.fillText(this.players[p].input,this.width/2,(this.height/2)+(p*10));
 		}
 	}
 	requestAnimationFrame(function() {
@@ -71,25 +72,25 @@ level.prototype.eventHandler = function(evt) {
     	case "1":
     			if(typeof this.players[0] !== "undefined")
     				this.players[0].spawn();
-    			else this.players[0]=new snake(this,{up:"up",down:"down",right:"right",left:"left",color:this.requestColor(0),scoreboard:document.getElementById("player1score")});
+    			else this.players[0]=new snake(this,game.playerConfigs[0]);
     				//this.addPlayer({up:"up",down:"down",right:"right",left:"left"});
     		break;
     	case "2":
     			if(typeof this.players[1] !== "undefined")
     				this.players[1].spawn();
-    			else this.players[1]=new snake(this,{up:"w",down:"s",right:"d",left:"a",color:this.requestColor(1),scoreboard:document.getElementById("player2score")});
+    			else this.players[1]=new snake(this,game.playerConfigs[1]);
     				//this.addPlayer({up:"w",down:"s",right:"d",left:"a"});
     		break;
     	case "3":
     			if(typeof this.players[2] !== "undefined")
     				this.players[2].spawn();
-    			else this.players[2]=new snake(this,{up:"i",down:"k",right:"l",left:"j",color:this.requestColor(2),scoreboard:document.getElementById("player3score")});
+    			else this.players[2]=new snake(this,game.playerConfigs[2]);
     				//this.addPlayer({up:"w",down:"s",right:"d",left:"a"});
     		break;
     	case "4":
     			if(typeof this.players[3] !== "undefined")
     				this.players[3].spawn();
-    			else this.players[3]=new snake(this,{up:"2",down:"5",right:"6",left:"4",color:this.requestColor(3),scoreboard:document.getElementById("player4score")});
+    			else this.players[3]=new snake(this,game.playerConfigs[3]);
     				//this.addPlayer({up:"w",down:"s",right:"d",left:"a"});
     		break;
     	case "r":
@@ -102,7 +103,6 @@ level.prototype.update = function () {
 	this.kitchen.update();
 };
 
-
 level.prototype.chat = function () {
 };
 
@@ -114,18 +114,6 @@ level.prototype.addPlayer = function (config) {
 		}
 		console.log("player"+i+" taken");
 	}
-}
-
-level.prototype.requestColor = function(index) {
-	var color;
-	if(typeof index !== "undefined")
-		return color = HSV((index * 0.618033988749895) % 1.0, 0.5, Math.sqrt(1.0 - (index * 0.618033988749895) % 0.5));
-	for (var i = 1; i < this.players.length; i++)
-		if(typeof this.players !== "undefined") {
-			color = HSV((i * 0.618033988749895) % 1.0, 0.5, Math.sqrt(1.0 - (i * 0.618033988749895) % 0.5));
-			console.log(color);
-    		return color;
-    	}
 }
 
 level.prototype.log = function () {
@@ -149,4 +137,3 @@ level.prototype.log = function () {
 		eval(command);
 	});
 };
-

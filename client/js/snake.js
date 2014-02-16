@@ -66,7 +66,12 @@ snake.prototype.eventHandler = function (evt) {
 		(key==this.config.left && this.input[this.input.length-1] != this.config.right))){
 			this.input.push(key);
 		}
-
+	if((key==this.config.up)||
+		(key==this.config.down) ||
+		(key==this.config.right)||
+		(key==this.config.left)) {
+			evt.preventDefault();
+		}
     //if(key =="b")this.update();
 	//if((key == "left"/* || key == "a" && game.chat == false*/) /*&& game.player.state != "pause" && key != this.input[0]*/)this.input.push("left");
 	//else if((key == "up"/* || key == "w" && game.chat == false*/) /*&& game.player.state != "pause" && key != this.input[0]*/)this.input.push("up");
@@ -89,7 +94,6 @@ snake.prototype.checkCollision = function() {
 			for(var j=0;j<p2.body.length;j++) {
 				if(this.body[this.body.length-1].x == p2.body[j].x && this.body[this.body.length-1].y == p2.body[j].y) {
 					window.dispatchEvent( new CustomEvent('log', {detail :{ 'snake': this.color, 'killer': p2.color }}));
-					this.stats.score=0;
 					return true;
 				}
 			}
@@ -99,7 +103,6 @@ snake.prototype.checkCollision = function() {
 	for(var i=0;i<this.body.length-1;i++){
 		if(this.body[this.body.length-1].x==this.body[i].x && this.body[this.body.length-1].y==this.body[i].y) {
 			window.dispatchEvent(new CustomEvent('log', {detail :{ 'snake': this.color, 'killer': this.color }}));
-			this.stats.score=0;
 			return true;
 		}
 	}
@@ -107,7 +110,6 @@ snake.prototype.checkCollision = function() {
 	for(var i=0;i<this.level.map.length-1;i++){
 		if(this.body[this.body.length-1].x==this.level.map[i].x && this.body[this.body.length-1].y==this.level.map[i].y) {
 			window.dispatchEvent(new CustomEvent('log', {detail :{ 'snake': this.color, 'killer': this.color }}));
-			this.stats.score=0;
 			return true;
 		}
 	}
@@ -225,6 +227,8 @@ snake.prototype.update = function () {
 
 	if(this.checkCollision()) {
 		this.body.length=0;
+		this.stats.score=0;
+		this.updateScoreboard();
 		clearInterval(this.tick);
 		delete this.tick;
 	}

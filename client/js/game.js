@@ -7,9 +7,10 @@ function game () {
 	this.viewport = {};
 
 	this.playerConfigs=[
-	{up: "up", down: "down", right: "right", left: "left"},
-	{up: "w", down: "s", right: "d", left: "a"},
-	{up: "i", down: "k", right: "l", left: "j"}];
+	{up:"up",down:"down",right:"right",left:"left",color:this.requestColor(0),scoreboard:document.getElementById("player1score")},
+	{up:"w",down:"s",right:"d",left:"a",color:this.requestColor(1),scoreboard:document.getElementById("player2score")},
+	{up:"i",down:"k",right:"l",left:"j",color:this.requestColor(2),scoreboard:document.getElementById("player3score")},
+	{up:"2",down:"5",right:"6",left:"4",color:this.requestColor(3),scoreboard:document.getElementById("player4score")}];
 
 	console.log(this.ctx.canvas);
 	//console.log(Math.round((this.height*1.77777778)/10)*10+"x"+Math.round(this.height/10)*10);
@@ -32,7 +33,6 @@ game.prototype._ui = function (self) {
 	document.getElementById("settings").addEventListener("click", function() {self.ui.settings()});
 	window.addEventListener("keydown",function(e) {
         var key = keyDecode(e);
-
 
         // Allow reload.
         if((key !== "r" && e.metaKey !== false)) {
@@ -174,6 +174,8 @@ game.prototype._ui = function (self) {
 		$("#viewport").css("width", self.viewport.x);
 		$("#viewport").css("height", self.viewport.y);
 
+		$("#viewport").css("margin-top", document.defaultView.getComputedStyle(document.getElementById("body"),null )["margin-top"]);
+
 		// set cell size on resize
 		if(self.level !== null) {
 			self.level.cell.x=10*(self.viewport.x/self.level.width);
@@ -203,6 +205,18 @@ game.prototype._ui = function (self) {
  		}
 	}
 };
+
+game.prototype.requestColor = function(index) {
+	var color;
+	if(typeof index !== "undefined")
+		return color = HSV((index * 0.618033988749895) % 1.0, 0.5, Math.sqrt(1.0 - (index * 0.618033988749895) % 0.5));
+	for (var i = 1; i < this.players.length; i++)
+		if(typeof this.players !== "undefined") {
+			color = HSV((i * 0.618033988749895) % 1.0, 0.5, Math.sqrt(1.0 - (i * 0.618033988749895) % 0.5));
+			console.log(color);
+    		return color;
+    	}
+}
 
 game.prototype.assets = function() {
 	//this.self = self;
