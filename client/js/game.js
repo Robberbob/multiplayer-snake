@@ -89,7 +89,7 @@ game.prototype._ui = function (self) {
 	};
 
 	this.multiplayer = function() {
-		document.getElementById("serverTable").innerHTML = '<tr id="browserHeader"><td>Server Name</td><td># of players</td></tr>';
+		//document.getElementById("serverTable").innerHTML = '<tr id="browserHeader"><td style="padding-right:25px;">Server Name</td><td># of players</td></tr>';
 		/*
 		network.socket.emit('getrooms', '', function (data) {
 			network.rooms = data;
@@ -117,7 +117,7 @@ game.prototype._ui = function (self) {
 		$("#multi").css("display", "none");
 		$("#single").css("display", "none");
 		$("#settings").css("display", "none");
-		$("#serverBrowser").css("display", "table");
+		$("#serverBrowser").css("display", "block");
 	};
 
 	this.singleplayer = function(self) {
@@ -132,7 +132,7 @@ game.prototype._ui = function (self) {
 
 	this.scoreboard = function(display) {
 		if(display===true)
-			$("#scoreboard").css("display","inline");
+			$("#scoreboard").css("display","block");
 		else
 			$("#scoreboard").css("display","none");
 	}
@@ -186,20 +186,19 @@ game.prototype._ui = function (self) {
 
  		var scale=0.0016190476190476;
 
- 		$("#player1").css("font-size", self.viewport.x*scale+"em");
- 		$("#player2").css("font-size", self.viewport.x*scale+"em");
- 		$("#player3").css("font-size", self.viewport.x*scale+"em");
- 		$("#player4").css("font-size", self.viewport.x*scale+"em");
+ 		$("#scoreboard").css("font-size", self.viewport.x*scale+"em");
+ 		$("#menu").css("font-size", self.viewport.x*scale+"em");
  		try {
  			var padding=self.level.cell.x+5+"px";
 
- 			$("#player1").css("margin-top", padding);
+ 			//$("#scoreboard").css("padding-top",padding);
  			$("#player1").css("margin-left", padding);
-
+ 			$("#player4").css("margin-right", padding);
+			
+			/*$("#player1").css("margin-top", padding);
  			$("#player2").css("margin-top", padding);
  			$("#player3").css("margin-top", padding);
- 			$("#player4").css("margin-top", padding);
- 			$("#player4").css("margin-right", padding);
+ 			$("#player4").css("margin-top", padding);*/
  		} catch(e) {
  			console.log(e);
  		}
