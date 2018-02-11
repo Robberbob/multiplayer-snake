@@ -33,7 +33,7 @@ snake.prototype.spawn = function () {
 	for(var i = 1; i<6; i++) {
 		//console.log("new link");
 		this.body.push({x: i,y:1});
-	} 
+	}
 	this.input.push(this.config.right);
 	if(typeof this.tick==="undefined") {
 		//console.log(typeof this.tick);
@@ -140,6 +140,7 @@ snake.prototype.update = function () {
 			default:
 				break;
 		}
+		if (game.network) game.network.update(['move',this.input[0]]);
 		if(this.grow==0) {
 			this.body.shift(); //pops out the last cell
 			tail.x=nx;
@@ -152,7 +153,6 @@ snake.prototype.update = function () {
 			this.grow--;
 		} else if(this.grow<0) {
 			this.body.shift(); //pops out the last cell
-			//this.body.shift(); //pops out the last cell
 			this.grow++;
 		}
 	}

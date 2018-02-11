@@ -10,7 +10,7 @@ var gameClass ={
 				 //socket.emit('snake',[snake_array, color]);
 			},
 		root:{
-			home:function () 
+			home:function ()
 				{
 					$("#servers").css("display", "inline");
 					$("#play").css("display", "inline");
@@ -44,9 +44,14 @@ var gameClass ={
 			game.move;
 			game.last_move;
 			game.head;
-			game.spawn={1:'for(var i = length; i>=1; i--) { game.player.snake_array.push({x: i,y:1}); } game.player.movement.unshift("right"); head="nx++";', 2:'for(var i = length; i>=1; i--) { game.player.snake_array.push({x: 98,y:i}); } game.player.movement.unshift("down"); head="ny++";', 3:'for(var i = length; i>=1; i--) { game.player.snake_array.push({x: -i+99,y:48}); } game.player.movement.unshift("left"); head="nx--";', 4:'for(var i = length; i>=1; i--) { game.player.snake_array.push({x: 1,y:-i+49}); } game.player.movement.unshift("up"); head="ny--";'};
+			game.spawn = {
+				1: (game, head) => {for(var i = length; i>=1; i--) { game.player.snake_array.push({x: i,y:1}); } game.player.movement.unshift("right"); head="nx++"; },
+				2: (game, head) => {for(var i = length; i>=1; i--) { game.player.snake_array.push({x: 98,y:i}); } game.player.movement.unshift("down"); head="ny++";},
+				3: (game, head) => {for(var i = length; i>=1; i--) { game.player.snake_array.push({x: -i+99,y:48}); } game.player.movement.unshift("left"); head="nx--";},
+				4: (game, head) => {for(var i = length; i>=1; i--) { game.player.snake_array.push({x: 1,y:-i+49}); } game.player.movement.unshift("up"); head="ny--";}
+			};
 			game.message_log=[];
-			game.kill_log=[]; 
+			game.kill_log=[];
 			game.kill_log_timeout=[];
 			game.chat = false;
 			game.kill_self = true;
@@ -59,7 +64,7 @@ var gameClass ={
 			game.kill_id = 0;
 			game.dead;
 			game.stream_buffer={};
-			game.last_spawn=5; 
+			game.last_spawn=5;
 			game.next_spawn;
 		}
 	},
@@ -100,9 +105,9 @@ var gameClass ={
 	  return {
 	    ping:0,
 	    score:0,
-		speed:150,
-		state:"play",
-		movement:[],
+			speed:150,
+			state:"play",
+			movement:[],
 	    kill_streak:0,
 	    snake_array:null
 		};
@@ -120,7 +125,7 @@ var gameClass ={
 		if(game.last_spawn==game.next_spawn)while(game.last_spawn==game.next_spawn)game.next_spawn = game.getRandomInt(1,4);
 		var length = 5;
 		game.player.snake_array = [];
-		eval(game.spawn[game.next_spawn]);
+		game.spawn[game.next_spawn]();
 		//eval(spawn[4]);
 		game.player.state = "play";
 		game.dead=false;
@@ -143,7 +148,7 @@ var gameClass ={
 	{
 	    return string.charAt(0).toUpperCase() + string.slice(1);
 	},
-	createText:function(data,p_col) 
+	createText:function(data,p_col)
 	{
 		var command;
 		game.scroll_id +=1;
@@ -228,9 +233,9 @@ var gameClass ={
 		game.ctx.fillRect(0,0,game.w,game.h);
 		game.ctx.strokeStyle = "black";
 		game.ctx.strokeRect(0,0,game.w,game.h);
-  		game.ctx.font = 'normal 12px Helvetica Neue';
-		
-		if(typeof game.player.snake_array != "undefined"){	
+		game.ctx.font = 'normal 12px Helvetica Neue';
+
+		if(typeof game.player.snake_array != "undefined"){
 				//for(var i = 0; i < game.player.snake_array.length; i++)
 				for(var i in game.player.snake_array)
 				{
@@ -254,7 +259,7 @@ var gameClass ={
 			}
 		}
 
-	
+
 		//for(var i = 0; i < map_array.length; i++)
 		for(var i in game.map_array)
 			{
@@ -272,14 +277,14 @@ var gameClass ={
 
 	    if(game.player.state == "pause" && game.dead == false)
 	    {
-			game.ctx.fillStyle = "rgba(100, 100, 100, .5)";
-			game.ctx.fillRect(0,0,game.w,game.h);
-			game.ctx.strokeStyle = "black";
-			game.ctx.strokeRect(0,0,game.w,game.h);
-			game.ctx.fillStyle = "black";
+				game.ctx.fillStyle = "rgba(100, 100, 100, .5)";
+				game.ctx.fillRect(0,0,game.w,game.h);
+				game.ctx.strokeStyle = "black";
+				game.ctx.strokeRect(0,0,game.w,game.h);
+				game.ctx.fillStyle = "black";
 	    	game.ctx.font = 'normal 24px Helvetica Neue';
 	    	game.ctx.textAlign = "center";
-			game.ctx.fillText("Game Paused",game.w/2,game.h/2);
+				game.ctx.fillText("Game Paused",game.w/2,game.h/2);
 	    	game.ctx.font = 'normal 12px Helvetica Neue';
 	    	game.ctx.textAlign = "left";
 	    }
@@ -287,11 +292,11 @@ var gameClass ={
 	// Text
 		game.ctx.fillStyle="blue";
 
-		
+
 		if(game.toggle_score)
 		{
 			var j=0;
-			for(var i in game.players) 
+			for(var i in game.players)
 				{
 					if(game.players[i].taken!=0)
 					{
@@ -301,9 +306,9 @@ var gameClass ={
 						//game.ctx.strokeStyle="rgba(60, 60, 60, .4)";
 						//game.ctx.strokeRect(199,15,100,11);
 						game.ctx.fillStyle=i;
-      					game.ctx.textAlign = 'left';
+  					game.ctx.textAlign = 'left';
 						game.ctx.fillText(game.capitaliseFirstLetter(i),200, 15+(j*15));
-      					game.ctx.textAlign = 'right';
+  					game.ctx.textAlign = 'right';
 						game.ctx.fillText(game.players[i].score+'',290,15+(j*15));
 						game.ctx.fillText(game.players[i].ping+'ms',345,15+(j*15));
 					}
@@ -316,37 +321,37 @@ var gameClass ={
 			game.ctx.strokeStyle = "black";
 			game.ctx.strokeRect(0,0,game.w,game.h);
 			game.ctx.fillStyle = "black";
-	    	game.ctx.font = 'normal 24px Helvetica Neue';
-	    	game.ctx.textAlign = "center";
+    	game.ctx.font = 'normal 24px Helvetica Neue';
+    	game.ctx.textAlign = "center";
 			game.ctx.fillText("Press 'r' to respawn.",game.w/2,(game.h/4));
 			game.ctx.fillText("Score: "+game.player.score,game.w/2,(game.h/3));
-	    	game.ctx.font = 'normal 12px Helvetica Neue';
-	    	game.ctx.textAlign = "left";
+    	game.ctx.font = 'normal 12px Helvetica Neue';
+    	game.ctx.textAlign = "left";
 		}
 		game.ctx.fillStyle="blue";
 
-      	game.ctx.textAlign = 'center';
+  	game.ctx.textAlign = 'center';
 		game.ctx.fillText('Hi-Score:',game.w/2,20);
 		game.ctx.fillStyle=game.hi_score()[1];
 		game.ctx.fillText(game.hi_score()[0],game.w/2,30);
 		game.ctx.fillStyle="blue";
-      	game.ctx.textAlign = 'left';
+  	game.ctx.textAlign = 'left';
 		game.ctx.fillText(score_text,10,20);
 		if(game.debug == true)
-		{	
+		{
 		/* Debug */
 			game.ctx.fillText("Client ID: "+game.clientid,10,31);
 			game.ctx.fillText("Clients: "+game.connections,10,43);
 			game.ctx.fillText("Snake: "+game.player.snake_array.length ,10,55);
 			//game.ctx.fillText("Blue: "+ players[0].taken +" Red: "+players[1].taken +" Green: "+players[2].taken+" Purple: "+players[3].taken ,10,60);
-			
+
 		/* Debug */
 		}
 		// request new frame
         requestAnimFrame(function() {
           game.render();
         });
-	    
+
 	},
 	update:function()
 	{
@@ -492,7 +497,7 @@ var gameClass ={
 					//diamond_add={t:false,n:6};
 					game.reset.diamond();
 					game.dt = false;
-					
+
 				}
 			}
 			if(game.dt == false && game.grow > 0)
@@ -524,7 +529,7 @@ var gameClass ={
 			console.log(game.player.score, game.getPlayer("score"), game.stream_buffer["score"]);
     		game.stream_buffer={};
     		//socket.emit('snake',[game.snake_array, color]);
-			
+
 		}
 
 	},
@@ -548,12 +553,12 @@ var gameClass ={
 	}
 };
 // Start game on load
-function init(){ 
+function init(){
 	game = new gameClass;
 	game.setup.game();
 	game.initUI();
 	game.setup.canvas();
-	network.setup();
+	//network.setup();
 	setupContols();
 	console.log(game);
 };

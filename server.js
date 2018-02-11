@@ -1,5 +1,4 @@
 #!/bin/env node
-require('strong-agent').profile();
 var express = require('express');
 var fs      = require('fs');
 
@@ -22,8 +21,8 @@ var frontEnd = function() {
      */
     self.setupVariables = function() {
         //  Set the environment variables we need.
-        self.ipaddress = process.env.OPENSHIFT_NODEJS_IP;
-        self.port      = process.env.OPENSHIFT_NODEJS_PORT || 8000;
+        self.ipaddress = process.env.GAME_IP;
+        self.port      = process.env.GAME_PORT || 8000;
 
         if (typeof self.ipaddress === "undefined") {
             //  Log errors on OpenShift but continue w/ 127.0.0.1 - this

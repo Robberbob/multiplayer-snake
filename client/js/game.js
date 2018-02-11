@@ -32,50 +32,48 @@ game.prototype._ui = function (self) {
 	document.getElementById("back").addEventListener("click", function(){self.ui.home()});
 	document.getElementById("settings").addEventListener("click", function() {self.ui.settings()});
 	window.addEventListener("keydown",function(e) {
-        var key = keyDecode(e);
+	  var key = keyDecode(e);
 
-        // Allow reload.
-        if((key !== "r" && e.metaKey !== false)) {
+	  // Allow reload.
+	  if((key !== "r" && e.metaKey !== false)) {
 			e.preventDefault();
-        }
+	  }
 
-        if (key === "escape") {
-	        $("#menu").css("display", !!this.oc ? "none" : "inline");
-	    	this.oc^=true;
-	    	console.log("esc");
-        }
+	  if (key === "escape") {
+	    $("#menu").css("display", !!this.oc ? "none" : "inline");
+		this.oc^=true;
+		console.log("esc");
+	  }
 
-        if(key === "f") {
+	  if(key === "f") {
 
-    		if (document.getElementById("body").requestFullscreen) {
-			  document.getElementById("body").requestFullscreen();
-			} else if (document.getElementById("body").msRequestFullscreen) {
-			  document.getElementById("body").msRequestFullscreen();
-			} else if (document.getElementById("body").mozRequestFullScreen) {
-			  document.getElementById("body").mozRequestFullScreen();
-			} else if (document.getElementById("body").webkitRequestFullscreen) {
-			  document.getElementById("body").webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-			}
-        	//document.getElementById("body").webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-        	//document.getElementById("canvas").focus();
-        	//this.fc^=true;
-        }
-        if (key === 'backspace' && document.activeElement.id != 'message-input') {
-          //console.log(document.activeElement.id);
+		if (document.getElementById("body").requestFullscreen) {
+	  	document.getElementById("body").requestFullscreen();
+		} else if (document.getElementById("body").msRequestFullscreen) {
+	  	document.getElementById("body").msRequestFullscreen();
+		} else if (document.getElementById("body").mozRequestFullScreen) {
+	  	document.getElementById("body").mozRequestFullScreen();
+		} else if (document.getElementById("body").webkitRequestFullscreen) {
+	  	document.getElementById("body").webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+		}
+	  	//document.getElementById("body").webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+	  	//document.getElementById("canvas").focus();
+	  	//this.fc^=true;
+	  }
+	  if (key === 'backspace' && document.activeElement.id != 'message-input') {
+	    //console.log(document.activeElement.id);
 			e.preventDefault();
-        };
-        if (key === 'tab') {  
+	  };
+	  if (key === 'tab') {
 			e.preventDefault();
-        }
-
-    }.bind(this));
-    this.home = function() {
+	  }
+  }.bind(this));
+  this.home = function() {
 		console.log(this);
 		$("#multi").css("display", "block");
 		$("#single").css("display", "block");
 		$("#settings").css("display", "block");
 		$("#serverBrowser").css("display", "none");
-
 	};
 
 	this.close = function() {
@@ -95,7 +93,7 @@ game.prototype._ui = function (self) {
 			network.rooms = data;
 			//console.log(network);
 			var j = 0;
-			for(var i in data)if(i!=''){ 
+			for(var i in data)if(i!=''){
 				//i=i.substring(1);
 				//console.log(data);
 				//console.log(i,data[i].length);
@@ -114,10 +112,18 @@ game.prototype._ui = function (self) {
 	  			console.log(i);}
 			});
 		*/
-		$("#multi").css("display", "none");
-		$("#single").css("display", "none");
-		$("#settings").css("display", "none");
-		$("#serverBrowser").css("display", "block");
+		game.network=new network();
+		this.close();
+		this.scoreboard(true);
+		self.level = new level(1000,560,self.ctx);
+		this.resize();
+		setInterval(function(){self.level.update()}.bind(this), 500);
+		//game.createText("Use the arrow keys to move, 't' to talk, 'space bar' to pause, 'tab' to show the scoreboard.","Help");
+		//$("#menu").toggle();
+		//$("#multi").css("display", "none");
+		//$("#single").css("display", "none");
+		//$("#settings").css("display", "none");
+		//$("#serverBrowser").css("display", "block");
 	};
 
 	this.singleplayer = function(self) {
@@ -189,16 +195,18 @@ game.prototype._ui = function (self) {
  		$("#scoreboard").css("font-size", self.viewport.x*scale+"em");
  		$("#menu").css("font-size", self.viewport.x*scale+"em");
  		try {
- 			var padding=self.level.cell.x+5+"px";
+			if (self.level !== null) {
+	 			var padding=self.level.cell.x+5+"px";
 
- 			//$("#scoreboard").css("padding-top",padding);
- 			$("#player1").css("margin-left", padding);
- 			$("#player4").css("margin-right", padding);
-			
-			/*$("#player1").css("margin-top", padding);
- 			$("#player2").css("margin-top", padding);
- 			$("#player3").css("margin-top", padding);
- 			$("#player4").css("margin-top", padding);*/
+	 			//$("#scoreboard").css("padding-top",padding);
+	 			$("#player1").css("margin-left", padding);
+	 			$("#player4").css("margin-right", padding);
+
+				/*$("#player1").css("margin-top", padding);
+	 			$("#player2").css("margin-top", padding);
+	 			$("#player3").css("margin-top", padding);
+	 			$("#player4").css("margin-top", padding);*/
+			}
  		} catch(e) {
  			console.log(e);
  		}
@@ -227,5 +235,4 @@ game.prototype.assets.load = function() {
 
 game.prototype.level = null;
 
-game.prototype.network = {}; // new network;
-
+game.prototype.network = null; // new network;
