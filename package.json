@@ -11,13 +11,12 @@
     "instagram": "@robert_lech"
   },
   "engines": {
-    "node": ">= 0.8.0",
-    "npm": ">= 1.0.0"
+    "node": ">= 18.0.0"
   },
   "dependencies": {
-    "rooms": "^1.0.1",
-    "uuid": "^3.1.0",
-    "ws": "^3.3.2"
+    "serve-static": "^1.15.0",
+    "uuid": "^9.0.0",
+    "ws": "^8.16.0"
   },
   "devDependencies": {},
   "bundleDependencies": [],
