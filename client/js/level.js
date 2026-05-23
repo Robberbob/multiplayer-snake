@@ -133,7 +133,6 @@ level.prototype.log = function () {
 			$('<br id="m-br'+self.message_id+'"><span id="m'+self.message_id+'"><span style="color:rgb('+e.detail.killer.rgb[0]+","+e.detail.killer.rgb[1]+","+e.detail.killer.rgb[2]+')">'+e.detail.killer.name+'</span> Humiliated <span style="color:rgb('+e.detail.snake.rgb[0]+","+e.detail.snake.rgb[1]+","+e.detail.snake.rgb[2]+')">'+e.detail.snake.name+'</span></span>').insertAfter('#m'+(self.message_id-1));
 		}
 		$("#message-log").scrollTop($("#m"+self.message_id).position().top);
-		command = "setTimeout(function() { $('#m"+self.message_id+"').addClass('fade'); }, 4000);";
-		eval(command);
+		setTimeout(function() { $('#m' + self.message_id).addClass('fade'); }, 4000);
 	});
 };

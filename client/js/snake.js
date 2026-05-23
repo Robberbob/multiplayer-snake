@@ -17,8 +17,7 @@ function snake(level,config) {
 	this.stats={ping:0,score:0};
 	this.input=[];
 	//this.body=[{x:0,y:0}];
-	window.addEventListener("keydown",function(e){this.eventHandler(e)}.bind(this));
-	//this.eventHandler(this);
+	this._hasKeydownListener = false;
 	this.config.scoreboard.style.color="rgb("+this.color.rgb[0]+","+this.color.rgb[1]+","+this.color.rgb[2]+")";
 	this.updateScoreboard();
 };

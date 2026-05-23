@@ -251,6 +251,8 @@ game.prototype._ui = function (self) {
 				// This is us - use the real player config
 				localPlayer = createSnakeEntity(pd);
 				snakesById[pd.id] = localPlayer;
+				// Only register keydown listener for the LOCAL player's snake
+				window.addEventListener("keydown", function(e) { localPlayer.eventHandler(e); });
 			} else {
 				var remote = createSnakeEntity(pd);
 				snakesById[pd.id] = remote;
@@ -271,7 +273,7 @@ game.prototype._ui = function (self) {
 				var fd = msg.food[f];
 				var typeKey = fd.type || 'apple';
 				// Map server food types to kitchen pot indices
-				var typeMap = { apple: 0, berries: 1, diamonds: 2, wormhole: 3, beer: 4 };
+				var typeMap = { apple: 0, berries: 1, diamond: 2, diamonds: 2, wormhole: 3, beer: 4 };
 				var idx = typeMap[typeKey];
 				if (idx !== undefined && self.level.kitchen.pot[idx]) {
 					self.level.kitchen.pot[idx].body.push({ x: fd.x, y: fd.y });
@@ -283,8 +285,9 @@ game.prototype._ui = function (self) {
 		game.network.on('move', function(msg) {
 			var s = snakesById[msg.playerId];
 			if (s && msg.direction) {
-				s.input.length = 0; // clear input queue
-				s.input.push(msg.direction);
+				if (!s.input.length || s.input[s.input.length - 1] !== msg.direction) {
+					s.input.push(msg.direction);
+				}
 			}
 		});
 
@@ -305,11 +308,14 @@ game.prototype._ui = function (self) {
 			var pd = { id: msg.playerId, color: msg.color, x: msg.x, y: msg.y, length: 5, direction: 'right' };
 			var s = createSnakeEntity(pd);
 			snakesById[msg.playerId] = s;
+			// Remove old dead snake from players array to avoid ghost accumulation
+			var idx = self.level.players.findIndex(function(psn) { return psn.id === msg.playerId; });
+			if (idx !== -1) self.level.players.splice(idx, 1);
 			self.level.players.push(s);
 		});
 
 		game.network.on('food', function(msg) {
-			var typeMap = { apple: 0, berries: 1, diamonds: 2, wormhole: 3, beer: 4 };
+			var typeMap = { apple: 0, berries: 1, diamond: 2, diamonds: 2, wormhole: 3, beer: 4 };
 			var idx = typeMap[msg.type];
 			if (idx !== undefined && self.level.kitchen.pot[idx]) {
 				self.level.kitchen.pot[idx].body.push({ x: msg.x, y: msg.y });
