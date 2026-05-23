@@ -140,7 +140,8 @@ snake.prototype.update = function () {
 			default:
 				break;
 		}
-		if (game.network) game.network.update(['move',this.input[0]]);
+		// Send direction to server via new network API
+		if(game.network && game.network.sendMove) game.network.sendMove(this.input[0]);
 		if(this.grow==0) {
 			this.body.shift(); //pops out the last cell
 			tail.x=nx;
@@ -226,6 +227,8 @@ snake.prototype.update = function () {
 	}
 
 	if(this.checkCollision()) {
+		// Notify server of death (server should detect from collision, but send anyway)
+		if(game.network && game.network.sendJSON) game.network.sendJSON({action:'death'});
 		this.body.length=0;
 		this.stats.score=0;
 		this.updateScoreboard();

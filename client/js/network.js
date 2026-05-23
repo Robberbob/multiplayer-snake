@@ -1,39 +1,120 @@
 'use strict';
-function network () {
-  const socket = new WebSocket('ws://localhost:8080');
-  this.socket=socket;
-  const EVENTS = {
-    MOVE:0,
-    CHAT:1,
-    GETFRIENDS:2,
-    GETROOMS:3,
-    JOINROOM:4,
-    LEAVEROOM:5
-  }
 
-  var uint8 = new Uint8Array([0,3]);
+/**
+ * Network layer for multiplayer WebSocket protocol.
+ * Connects to the game server, dispatches incoming messages via an event system,
+ * and provides convenience methods for sending actions.
+ */
+function network() {
+    var self = this;
+    self.playerId = null;
+    self.connected = false;
+    self._handlers = {};
+    self._socket = null;
+    self._reconnectTimer = null;
 
-  // Connection opened
-  window.onbeforeunload = function() {
-    socket.onclose = function () {}; // disable onclose handler first
-    socket.close()
-  };
-  socket.addEventListener('close', function (event) {
-    console.log("closing socket");
-    //socket.send({action:"disconnect"});
-  });
-  socket.addEventListener('open', function (event) {
-    //put startup code in here dummy
-      socket.send(JSON.stringify({action:"getrooms"}));
-      socket.send(JSON.stringify({action:"getfriends"}));
-      socket.send(uint8);
-      //socket.send(JSON.stringify({action:'chat',message:"hi"}));
-  });
-  // Listen for messages
-  socket.addEventListener('message', function (event) {
-      console.log(`Message from server:${event.data}`);
-  });
+    // Open connection immediately on construction
+    self.connect();
 }
-network.prototype.update = function (obj) {
-  this.socket.send(obj);
-}
+
+/** Establish or re-establish the WebSocket connection. */
+network.prototype.connect = function() {
+    var self = this;
+    var host = window.location.hostname || 'localhost';
+    var url = 'ws://' + host + ':8080';
+
+    // Clean up any existing socket first
+    if (self._socket) {
+        try { self._socket.close(); } catch(e) {}
+    }
+
+    self._socket = new WebSocket(url);
+
+    self._socket.onopen = function() {
+        console.log('[network] Connected to ' + url);
+        self.connected = true;
+        // Clear any pending reconnect timer
+        if (self._reconnectTimer) {
+            clearTimeout(self._reconnectTimer);
+            self._reconnectTimer = null;
+        }
+    };
+
+    self._socket.onmessage = function(event) {
+        var msg;
+        try {
+            msg = JSON.parse(event.data);
+        } catch(e) {
+            console.warn('[network] Failed to parse message:', event.data);
+            return;
+        }
+        // Dispatch to registered handlers for this message type
+        if (msg.type && self._handlers[msg.type]) {
+            var callbacks = self._handlers[msg.type];
+            for (var i = 0; i < callbacks.length; i++) {
+                callbacks[i](msg);
+            }
+        } else {
+            console.log('[network] Unhandled message type:', msg ? msg.type : 'unknown', msg);
+        }
+    };
+
+    self._socket.onclose = function(event) {
+        console.log('[network] Disconnected (code=' + event.code + '). Reconnecting in 2s...');
+        self.connected = false;
+        // Reconnect after 2 seconds
+        self._reconnectTimer = setTimeout(function() {
+            self.connect();
+        }, 2000);
+    };
+
+    self._socket.onerror = function(event) {
+        console.error('[network] WebSocket error');
+    };
+
+    // Graceful close on page unload
+    window.addEventListener('beforeunload', function() {
+        if (self._reconnectTimer) {
+            clearTimeout(self._reconnectTimer);
+        }
+        self.connected = false;
+        try { self._socket.close(); } catch(e) {}
+    });
+};
+
+/**
+ * Register a callback for a specific server message type.
+ * @param {string} eventType - One of: 'welcome', 'move', 'death', 'spawn',
+ *                              'food', 'food_eaten', 'chat', 'leave'
+ * @param {function} callback  - Called with the parsed message object.
+ */
+network.prototype.on = function(eventType, callback) {
+    if (!this._handlers[eventType]) {
+        this._handlers[eventType] = [];
+    }
+    this._handlers[eventType].push(callback);
+};
+
+/** Send a raw JSON object to the server. */
+network.prototype.sendJSON = function(obj) {
+    if (this._socket && this._socket.readyState === WebSocket.OPEN) {
+        this._socket.send(JSON.stringify(obj));
+    } else {
+        console.warn('[network] Cannot send — socket not open');
+    }
+};
+
+/** Tell the server we want to join a room. */
+network.prototype.joinRoom = function(room) {
+    this.sendJSON({ action: 'joinroom', room: room });
+};
+
+/** Send a direction change to the server. */
+network.prototype.sendMove = function(direction) {
+    this.sendJSON({ action: 'move', direction: direction });
+};
+
+/** Send a chat message to the server. */
+network.prototype.sendChat = function(message) {
+    this.sendJSON({ action: 'chat', message: message });
+};

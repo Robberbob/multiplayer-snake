@@ -87,44 +87,206 @@ game.prototype._ui = function (self) {
 	};
 
 	this.multiplayer = function() {
-		//document.getElementById("serverTable").innerHTML = '<tr id="browserHeader"><td style="padding-right:25px;">Server Name</td><td># of players</td></tr>';
-		/*
-		network.socket.emit('getrooms', '', function (data) {
-			network.rooms = data;
-			//console.log(network);
-			var j = 0;
-			for(var i in data)if(i!=''){
-				//i=i.substring(1);
-				//console.log(data);
-				//console.log(i,data[i].length);
-				$("<tr id='"+i.substring(1)+"'><td>"+i.substring(1)+"</td><td>"+data[i].length+"/6</td><</tr>").insertAfter('#browserHeader'));
-				j++;
-			}
-			//console.log(data);
+		game.network = new network();
 
-	  		console.log(network.rooms);
-	  		for(var i in network.rooms)if(i!=""){
-	  			var server = document.getElementById(i.substring(1));
-	  			//server.name = i.substring(1);
-	  			server.addEventListener("click", function() {
-	  					network.join_room(this.id);
-	  				}, false);
-	  			console.log(i);}
-			});
-		*/
-		game.network=new network();
+		// Registry of ALL snakes by playerId (not just local slot numbers).
+		var snakesById = {};
+
+		/** Build a snake config object from server color string. */
+		function makeConfig(colorStr) {
+			return {
+				up: 'up', down: 'down', right: 'right', left: 'left',
+				color: game.requestColor(0), // placeholder; overridden below
+				scoreboard: document.getElementById('player1score')
+			};
+		}
+
+		/** Create or re-use a snake entity for a remote player. */
+		function createSnakeEntity(playerData) {
+			var cfg = makeConfig();
+			// Build an RGB color object from the server's hex color string
+			var c = typeof playerData.color === 'string' ? playerData.color : '#00ff00';
+			var r = parseInt(c.slice(1,3), 16) || 0;
+			var g = parseInt(c.slice(3,5), 16) || 255;
+			var b = parseInt(c.slice(5,7), 16) || 0;
+			cfg.color = { r: r, g: g, b: b };
+
+			var s = new snake(self.level, cfg);
+			s.id = playerData.id; // use server playerId as the entity id
+			s.body.length = 0;
+			// Build body from server state (players come with length and position)
+			if (playerData.x !== undefined && playerData.y !== undefined) {
+				var len = playerData.length || 5;
+				for (var i = 0; i < len; i++) {
+					s.body.push({ x: playerData.x - i, y: playerData.y });
+				}
+			}
+			s.input.push(playerData.direction || 'right');
+
+			// Start the tick loop for this snake so it renders and moves locally
+			if (typeof s.tick === 'undefined') {
+				s.tick = setInterval(function() { s.update(); }.bind(s), s.speed);
+			}
+			return s;
+		}
+
+		// ---- Register event handlers for the new server protocol ----
+
+		// welcome: full game state on join
+		game.network.on('welcome', function(msg) {
+			console.log('[multiplayer] Welcome, playerId=' + msg.playerId);
+			game.network.playerId = msg.playerId;
+
+			// Set the map from server (walls)
+			if (msg.map && self.level) {
+				self.level.body.length = 0; // clear existing walls
+				for (var i = 0; i < msg.map.length; i++) {
+					self.level.body.push({ x: msg.map[i].x, y: msg.map[i].y });
+				}
+			}
+
+			// Create the local player snake in slot 0
+			var localPlayer = null;
+			for (var p = 0; p < msg.players.length; p++) {
+				var pd = msg.players[p];
+				if (pd.id === msg.playerId) {
+					// This is us - use the real player config
+					localPlayer = createSnakeEntity(pd);
+					snakesById[pd.id] = localPlayer;
+				} else {
+					var remote = createSnakeEntity(pd);
+					snakesById[pd.id] = remote;
+				}
+			}
+
+			// Add all snakes to the level's players array for rendering
+			self.level.players.length = 0;
+			for (var sid in snakesById) {
+				if (snakesById.hasOwnProperty(sid)) {
+					self.level.players.push(snakesById[sid]);
+				}
+			}
+
+			// Populate the kitchen with server food data
+			if (msg.food && self.level.kitchen) {
+				for (var f = 0; f < msg.food.length; f++) {
+					var fd = msg.food[f];
+					var typeKey = fd.type || 'apple';
+					// Map server food types to kitchen pot indices
+					var typeMap = { apple: 0, berries: 1, diamonds: 2, wormhole: 3, beer: 4 };
+					var idx = typeMap[typeKey];
+					if (idx !== undefined && self.level.kitchen.pot[idx]) {
+						self.level.kitchen.pot[idx].body.push({ x: fd.x, y: fd.y });
+					}
+				}
+			}
+
+			// Auto-join the room if not already joined
+			if (msg.room) {
+				game.network.joinRoom(msg.room);
+			}
+		});
+
+		// move: another player changed direction
+		game.network.on('move', function(msg) {
+			var s = snakesById[msg.playerId];
+			if (s && msg.direction) {
+				s.input.length = 0; // clear input queue
+				s.input.push(msg.direction);
+			}
+		});
+
+		// death: a player died
+		game.network.on('death', function(msg) {
+			var s = snakesById[msg.playerId];
+			if (s) {
+				// Dispatch kill log event for the UI
+				window.dispatchEvent(new CustomEvent('log', {
+					detail: { snake: s.color, killer: msg.killerId ? (snakesById[msg.killerId] || {}).color : s.color }
+				}));
+				// Clear body and stop tick
+				s.body.length = 0;
+				s.stats.score = 0;
+				s.updateScoreboard();
+				if (s.tick) { clearInterval(s.tick); delete s.tick; }
+			}
+		});
+
+		// spawn: a new player joined or respawned
+		game.network.on('spawn', function(msg) {
+			var pd = { id: msg.playerId, color: msg.color, x: msg.x, y: msg.y, length: 5, direction: 'right' };
+			var s;
+			if (msg.playerId === game.network.playerId) {
+				// Local player respawn - use real config
+				s = createSnakeEntity(pd);
+			} else {
+				s = createSnakeEntity(pd);
+			}
+			snakesById[msg.playerId] = s;
+			self.level.players.push(s);
+		});
+
+		// food: new food spawned on the map
+		game.network.on('food', function(msg) {
+			var typeMap = { apple: 0, berries: 1, diamonds: 2, wormhole: 3, beer: 4 };
+			var idx = typeMap[msg.type];
+			if (idx !== undefined && self.level.kitchen.pot[idx]) {
+				self.level.kitchen.pot[idx].body.push({ x: msg.x, y: msg.y });
+			}
+		});
+
+		// food_eaten: food removed from the map
+		game.network.on('food_eaten', function(msg) {
+			// Remove the food piece at (x,y) from all pot types
+			for (var i = 0; i < self.level.kitchen.pot.length; i++) {
+				for (var j = self.level.kitchen.pot[i].body.length - 1; j >= 0; j--) {
+					if (self.level.kitchen.pot[i].body[j].x === msg.x && self.level.kitchen.pot[i].body[j].y === msg.y) {
+						self.level.kitchen.pot[i].body.splice(j, 1);
+					}
+				}
+			}
+		});
+
+		// chat: relay a chat message to the kill log area
+		game.network.on('chat', function(msg) {
+			var msgId = ++self.level.message_id;
+			if (msgId > 5) { $('#m-br' + (msgId - 5)).remove(); $('#m' + (msgId - 5)).remove(); }
+			var colorStr = '';
+			if (msg.color) {
+				colorStr = ' style="color:' + msg.color + '"';
+			}
+			$('<br id="m-br' + msgId + '"><span id="m' + msgId + '"><span' + colorStr + '>Player ' + msg.playerId + '</span>: ' + msg.message + '</span>').insertAfter('#m' + (msgId - 1));
+			$('#message-log').scrollTop($('#m' + msgId).position().top);
+		});
+
+		// leave: a player disconnected
+		game.network.on('leave', function(msg) {
+			var s = snakesById[msg.playerId];
+			if (s) {
+				// Remove from level.players array
+				for (var i = 0; i < self.level.players.length; i++) {
+					if (self.level.players[i] === s) {
+						self.level.players.splice(i, 1);
+						break;
+					}
+				}
+				// Stop its tick loop
+				if (s.tick) { clearInterval(s.tick); delete s.tick; }
+				s.body.length = 0;
+				delete snakesById[msg.playerId];
+			}
+		});
+
 		this.close();
 		this.scoreboard(true);
-		self.level = new level(1000,560,self.ctx);
+		self.level = new level(1000, 560, self.ctx);
 		this.resize();
-		setInterval(function(){self.level.update()}.bind(this), 500);
-		//game.createText("Use the arrow keys to move, 't' to talk, 'space bar' to pause, 'tab' to show the scoreboard.","Help");
-		//$("#menu").toggle();
-		//$("#multi").css("display", "none");
-		//$("#single").css("display", "none");
-		//$("#settings").css("display", "none");
-		//$("#serverBrowser").css("display", "block");
+		setInterval(function() { self.level.update(); }.bind(this), 500);
+
+		// Auto-join default room (server will send back 'welcome')
+		game.network.joinRoom('game0');
 	};
+
 
 	this.singleplayer = function(self) {
 		//console.log(self);
