@@ -69,6 +69,71 @@
         <input id="message-input" disabled="disabled" placeholder="Message <Enter>" maxlength="100" />
     </div>
 </div>
+<!-- Chat UI — dark semi-transparent panel, bottom-right -->
+<div id="chat-container" style="display:none; position:absolute; right:16px; bottom:16px; width:300px; max-height:280px; background:rgba(0,0,0,0.75); border:1px solid rgba(255,255,255,0.15); border-radius:8px; flex-direction:column; font-family:sans-serif; z-index:10;">
+    <div id="chat-messages" style="flex:1; overflow-y:auto; padding:10px 12px; min-height:60px; max-height:200px; color:#ddd; font-size:0.85em; line-height:1.45;">
+    </div>
+    <input id="chat-input" type="text" placeholder="Type message… Enter to send" maxlength="200" style="width:calc(100% - 16px); margin:0 8px 8px; padding:8px 10px; border:1px solid rgba(255,255,255,0.2); border-radius:4px; background:rgba(255,255,255,0.08); color:#eee; font-size:0.85em; outline:none;" />
+</div>
+
+<script>
+    // Wire Enter-to-send on the chat input (game.network is available globally once connected)
+    document.addEventListener('DOMContentLoaded', function() {
+        var chatInput = document.getElementById('chat-input');
+        if (!chatInput) return;
+
+        chatInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && this.value.trim().length > 0 && game && game.network) {
+                e.preventDefault();
+                game.network.sendChat(this.value.trim());
+                this.value = '';
+            }
+        });
+
+        // Also listen for incoming chat messages and display them in the new UI
+        if (window.addEventListener) {
+            var origOnWelcome = null; // we hook into network events after it's created
+
+            // Poll once to attach our handler when game.network exists
+            var tryAttach = setInterval(function() {
+                if (!game || !game.network) return;
+                clearInterval(tryAttach);
+
+                game.network.on('chat', function(msg) {
+                    var container = document.getElementById('chat-messages');
+                    if (!container) return;
+
+                    var playerColor = '#fff';
+                    if (msg.color) {
+                        if (typeof msg.color === 'string') {
+                            playerColor = msg.color;
+                        } else if (msg.color.r !== undefined) {
+                            playerColor = 'rgb(' + msg.color.r + ',' + msg.color.g + ',' + msg.color.b + ')';
+                        }
+                    }
+
+                    var line = document.createElement('div');
+                    line.style.marginBottom = '3px';
+
+                    var nameSpan = document.createElement('span');
+                    nameSpan.textContent = msg.playerId + ': ';
+                    nameSpan.style.color = playerColor;
+                    nameSpan.style.fontWeight = 'bold';
+
+                    line.appendChild(nameSpan);
+                    line.appendChild(document.createTextNode(msg.message));
+                    container.appendChild(line);
+
+                    while (container.children.length > 50) {
+                        container.removeChild(container.firstChild);
+                    }
+                    container.scrollTop = container.scrollHeight;
+                });
+            }, 100);
+        }
+    });
+</script>
+
 <!--<div id="keypress" style="left:50%;"><span id="input0"></span></div>-->
 </body>
 </html>

@@ -165,6 +165,10 @@ game.prototype._ui = function (self) {
 			document.getElementById('lobby').style.display = 'none';
 			document.getElementById('canvas').style.display = 'block';
 
+			// Show the chat panel once we're in a room
+			var chatEl = document.getElementById('chat-container');
+			if (chatEl) { chatEl.style.display = 'flex'; }
+
 			// Now run the rest of the multiplayer setup (snakes, level, etc.)
 			uiSelf.multiplayerAfterWelcome(msg);
 		});
@@ -342,7 +346,6 @@ game.prototype._ui = function (self) {
 			$('<br id="m-br' + msgId + '"><span id="m' + msgId + '"><span' + colorStr + '>Player ' + msg.playerId + '</span>: ' + msg.message + '</span>').insertAfter('#m' + (msgId - 1));
 			$('#message-log').scrollTop($('#m' + msgId).position().top);
 		});
-
 		game.network.on('leave', function(msg) {
 			var s = snakesById[msg.playerId];
 			if (s) {
