@@ -19,7 +19,16 @@
 </head>
 <body id="body" style="margin:auto;" onload="window.game = new game();">
 <!-- Lets make the most freaken complex snake game...ever... -->
-<canvas id='canvas' width='1000' height='500'></canvas>
+
+<!-- Lobby screen — visible by default, hidden after joining a room -->
+<div id="lobby" style="position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#1a1a2e; color:#eee; font-family:sans-serif;">
+    <h1 style="margin-bottom:8px; font-size:2.4em; letter-spacing:2px;">Multiplayer Snake</h1>
+    <h2 style="margin-top:0; margin-bottom:24px; font-weight:normal; color:#aaa;">Select a Room</h2>
+    <div id="room-list" style="display:flex; flex-direction:column; gap:10px; width:320px;"></div>
+    <p id="lobby-status" style="margin-top:24px; font-size:0.85em; color:#777;">Connecting...</p>
+</div>
+
+<canvas id='canvas' width='1000' height='500' style="display:none;"></canvas>
 <br>
 <div id="viewport" style=" position:absolute; top:0px; margin:auto;">
     <div id="scoreboard" style="display:none; position:relative; margin: 0 auto; padding:0; top:15px;">
@@ -32,7 +41,7 @@
         <h1 id="player3" style="float:right; margin:0; padding:0; text-align: center; font-size:1.2em;">PLAYER 3<br><span id="player3score" style="font-size:0.7em; text-align: left;">Press '3' to Join</span></h1>
     </div>
 
-    <div id="menu">
+    <div id="menu" style="display:none;">
         <h2 style="text-align:center;">Multiplayer Snake</h2><br>
         <h3 id="multi" class="menu">Multiplayer</h3><br>
         <div id="serverBrowser" style="display:none; border:thin solid pink; font-size:0.8em;">

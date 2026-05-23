@@ -109,6 +109,16 @@ network.prototype.joinRoom = function(room) {
     this.sendJSON({ action: 'joinroom', room: room });
 };
 
+/** Send a join-room request (alias for lobby UI). */
+network.prototype.sendJoinRoom = function(room) {
+    this.sendJSON({ action: 'joinroom', room: room });
+};
+
+/** Request the list of available rooms from the server. */
+network.prototype.sendGetRooms = function() {
+    this.sendJSON({ action: 'getrooms' });
+};
+
 /** Send a direction change to the server. */
 network.prototype.sendMove = function(direction) {
     this.sendJSON({ action: 'move', direction: direction });
