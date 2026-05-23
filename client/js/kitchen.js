@@ -82,7 +82,4 @@ food.prototype.spawn = function() {
 			//console.log(link);
 			return true;
 		}
-		console.log(this.self.pot[i].body.indexOf(link));
-	}
-	console.log(link);
 }

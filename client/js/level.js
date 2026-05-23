@@ -31,7 +31,7 @@ function level (width,height,canvas) {
 
 	this.render();
 	window.addEventListener("keydown",function(e){this.eventHandler(e);}.bind(this));
-	console.log(this.cell.x,this.cell.y);
+	//console.log(this.cell.x,this.cell.y);
 	//console.log(this.kitchen.render);
 };
 
@@ -112,7 +112,6 @@ level.prototype.addPlayer = function (config) {
 			this.players[i]=new snake(this,this.requestColor(),config);
 			break;
 		}
-		console.log("player"+i+" taken");
 	}
 }
 

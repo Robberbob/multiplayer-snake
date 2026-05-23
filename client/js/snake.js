@@ -163,28 +163,24 @@ snake.prototype.update = function () {
 			case false:
 				break;
 			case "apple":
-				console.log("Collision with apple");
 				this.level.kitchen.eat(food.index);
 				this.stats.score+=2;
 				this.updateScoreboard();
 				this.grow+=5;
 				break;
 			case "berries":
-				console.log("Collision with berries");
 				this.level.kitchen.eat(food.index);
 				this.stats.score-=1;
 				this.updateScoreboard();
 				this.grow-=3;
 				break;
 			case "diamonds":
-				console.log("Collision with diamonds");
 				this.level.kitchen.eat(food.index);
 				this.stats.score+=5;
 				this.updateScoreboard();
 				this.grow+=10;
 				break;
 			case "wormhole":
-				console.log("Collision with wormhole");
 				var index = Math.floor(Math.random()*10)%this.level.kitchen.pot[3].body.length;
 				switch(this.input[0]) {
 					case this.config.up:
@@ -207,7 +203,6 @@ snake.prototype.update = function () {
 
 				break;
 			case "beer":
-				console.log("Collision with beer");
 				this.level.kitchen.eat(food.index);
 				if(this.body[0].x == this.body[1].x-1)
 					this.input.push(this.config.left);

@@ -12,7 +12,7 @@ function game () {
 	{up:"i",down:"k",right:"l",left:"j",color:this.requestColor(2),scoreboard:document.getElementById("player3score")},
 	{up:"2",down:"5",right:"6",left:"4",color:this.requestColor(3),scoreboard:document.getElementById("player4score")}];
 
-	console.log(this.ctx.canvas);
+			//console.log(this.ctx.canvas);
 	//console.log(Math.round((this.height*1.77777778)/10)*10+"x"+Math.round(this.height/10)*10);
 	this.ui.resize();
 	window.addEventListener("resize", function () {
@@ -46,7 +46,6 @@ game.prototype._ui = function (self) {
 	  if (key === "escape") {
 	    $("#menu").css("display", !!this.oc ? "none" : "inline");
 		this.oc^=true;
-		console.log("esc");
 	  }
 
 	  if(key === "f") {
@@ -73,7 +72,6 @@ game.prototype._ui = function (self) {
 	  }
   }.bind(this));
   this.home = function() {
-		console.log(this);
 		$("#multi").css("display", "block");
 		$("#single").css("display", "block");
 		$("#settings").css("display", "block");
@@ -441,7 +439,6 @@ game.prototype.requestColor = function(index) {
 	for (var i = 1; i < this.players.length; i++)
 		if(typeof this.players !== "undefined") {
 			color = HSV((i * 0.618033988749895) % 1.0, 0.5, Math.sqrt(1.0 - (i * 0.618033988749895) % 0.5));
-			console.log(color);
     		return color;
     	}
 }
