@@ -83,3 +83,4 @@ food.prototype.spawn = function() {
 			return true;
 		}
 }
+}

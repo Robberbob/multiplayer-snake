@@ -11,7 +11,7 @@ const serveStatic = require('serve-static');
 // ---------------------------------------------------------------------------
 
 const HTTP_PORT    = Number(process.env.HTTP_PORT) || 3000;
-const WS_PORT      = Number(process.env.WS_PORT) || 8081; // default 8081 (8080 often occupied by infra)
+const WS_PORT      = Number(process.env.WS_PORT) || 18081; // default 18081 (8080/8081 reserved on Windows)
 const MAP_WIDTH    = 80;   // grid cells (matching old server.js)
 const MAP_HEIGHT   = 56;
 const TICK_MS      = 50;   // game tick interval per room
@@ -382,7 +382,7 @@ httpServer.listen(HTTP_PORT, () => {
 });
 
 // ---------------------------------------------------------------------------
-// WebSocket server — multiplayer game protocol on port 8080
+// WebSocket server — multiplayer game protocol on port 18081
 // ---------------------------------------------------------------------------
 
 const wss = new WebSocketServer({ port: WS_PORT });

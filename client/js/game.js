@@ -32,8 +32,7 @@ game.prototype._ui = function (self) {
 	document.getElementById("back").addEventListener("click", function(){self.ui.home()});
 	document.getElementById("settings").addEventListener("click", function() {self.ui.settings()});
 
-	// ===== Lobby initialization — runs immediately on page load =====
-	self.ui.lobbyInit();
+	// lobbyInit() is defined below; called at end of constructor after all methods exist.
 
 	window.addEventListener("keydown",function(e) {
 	  var key = keyDecode(e);
@@ -430,6 +429,9 @@ game.prototype._ui = function (self) {
  			console.log(e);
  		}
 	}
+	
+	// ===== Lobby initialization - runs after all methods are defined on this object =====
+	self.ui.lobbyInit();
 };
 
 game.prototype.requestColor = function(index) {
