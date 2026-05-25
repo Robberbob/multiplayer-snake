@@ -26,13 +26,18 @@ game.prototype._ui = function (self) {
 	// boolean open/closed
 	this.oc=true;
 	this.fc=false;
-	document.getElementById("single").addEventListener("click", function() {self.ui.singleplayer(self)});
-	document.getElementById("multi").addEventListener("click", function() {self.ui.multiplayer(self)});
-	document.getElementById("refresh").addEventListener("click", function(){network.getServers();} );
-	document.getElementById("back").addEventListener("click", function(){self.ui.home()});
-	document.getElementById("settings").addEventListener("click", function() {self.ui.settings()});
+	var multiBtn = document.getElementById("multi");
+	if (multiBtn) multiBtn.addEventListener("click", function() { self.ui.multiplayer(self); });
+	var singleBtn = document.getElementById("single");
+	if (singleBtn) singleBtn.addEventListener("click", function() { self.ui.singleplayer(self); });
+	var refreshBtn = document.getElementById("refresh");
+	if (refreshBtn) refreshBtn.addEventListener("click", function() { /* no-op for now */ });
+	var backBtn = document.getElementById("back");
+	if (backBtn) backBtn.addEventListener("click", function() { self.ui.home(); });
+	var settingsBtn = document.getElementById("settings");
+	if (settingsBtn) settingsBtn.addEventListener("click", function() { self.ui.settings(); });
 
-	// lobbyInit() is defined below; called at end of constructor after all methods exist.
+	// lobbyInit is defined below; called at end of constructor after all methods exist.
 
 	window.addEventListener("keydown",function(e) {
 	  var key = keyDecode(e);
