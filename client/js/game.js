@@ -302,6 +302,26 @@ game.prototype._ui = function (self) {
 			}
 		});
 
+		self.network.on('positions', function(msg) {
+			msg.players.forEach(function(p) {
+				var s = snakesById[p.id];
+				if (s) {
+					while (s.body.length > 0) s.body.pop();
+					// Server sends x, y, length per player — rebuild body from head position
+					if (p.x !== undefined && p.y !== undefined) {
+						var len = p.length || 5;
+						for (var i = 0; i < len; i++) {
+							s.body.push({ x: p.x - i, y: p.y });
+						}
+					} else if (p.positions && p.positions.length > 0) {
+						p.positions.forEach(function(pos) {
+							s.body.push({ x: pos.x, y: pos.y });
+						});
+					}
+				}
+			});
+		});
+
 		self.network.on('death', function(msg) {
 			var s = snakesById[msg.playerId];
 			if (s) {
