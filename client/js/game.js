@@ -205,6 +205,11 @@ game.prototype._ui = function (self) {
 
 		self.network.playerId = msg.playerId;
 
+		// Create fresh level for this room — server data populates it below.
+		// Without this, self.level is null so: map guard at line 250 skips walls,
+		// snake() constructor gets a null level reference, and kitchen/food never loads.
+		self.level = new level(1000, 560, self.ctx);
+
 		// Registry of ALL snakes by playerId (not just local slot numbers).
 		var snakesById = {};
 
