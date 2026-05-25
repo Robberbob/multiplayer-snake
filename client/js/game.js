@@ -95,7 +95,7 @@ game.prototype._ui = function (self) {
 	this.multiplayer = function() {
 		// Lobby already created game.network on page load.
 		// If the user somehow opens the menu and clicks Multiplayer, just return — nothing extra to do.
-		if (this.self.network && this.self.network.connected) {
+		if (self.network && self.network.connected) {
 			return;
 		}
 	};
@@ -127,22 +127,22 @@ game.prototype._ui = function (self) {
 		var uiSelf = this;
 
 		// Create the network connection immediately (do NOT auto-join a room)
-		this.self.network = new network();
+		self.network = new network();
 
 		// Poll for connection open, then request initial rooms (only once)
 		var _initialRoomsRequested = false;
 		var pollConnection = setInterval(function() {
-			if (!this.self.network || !this.self.network.connected) return;
+			if (!self.network || !self.network.connected) return;
 			clearInterval(pollConnection);
 			document.getElementById('lobby-status').textContent = 'Connected';
 			if (!_initialRoomsRequested) {
 				_initialRoomsRequested = true;
-				this.self.network.sendGetRooms();
+				self.network.sendGetRooms();
 			}
 		}, 200);
 
 		// Handle rooms list from server
-		this.self.network.on('rooms', function(msg) {
+		self.network.on('rooms', function(msg) {
 			var roomListEl = document.getElementById('room-list');
 			roomListEl.innerHTML = ''; // clear existing buttons
 
@@ -160,7 +160,7 @@ game.prototype._ui = function (self) {
 				(function(roomName) {
 					btn.addEventListener('click', function() {
 						document.getElementById('lobby-status').textContent = 'Joining ' + roomName + '...';
-						this.self.network.sendJoinRoom(roomName);
+						self.network.sendJoinRoom(roomName);
 					});
 				})(room.name || room);
 
@@ -169,7 +169,7 @@ game.prototype._ui = function (self) {
 		});
 
 		// Handle welcome (after joining a room) — transition to game
-		this.self.network.on('welcome', function(msg) {
+		self.network.on('welcome', function(msg) {
 			console.log('[lobby] Welcome, playerId=' + msg.playerId);
 			document.getElementById('lobby').style.display = 'none';
 			document.getElementById('canvas').style.display = 'block';
@@ -185,8 +185,8 @@ game.prototype._ui = function (self) {
 
 		// Periodically refresh room list while in lobby (every 3 seconds)
 		self._lobbyRefreshTimer = setInterval(function() {
-			if (document.getElementById('lobby').style.display !== 'none' && this.self.network) {
-				this.self.network.sendGetRooms();
+			if (document.getElementById('lobby').style.display !== 'none' && self.network) {
+				self.network.sendGetRooms();
 			}
 		}, 3000);
 
@@ -194,7 +194,7 @@ game.prototype._ui = function (self) {
 		setInterval(function() {
 			var statusEl = document.getElementById('lobby-status');
 			if (statusEl) {
-				statusEl.textContent = this.self.network && this.self.network.connected ? 'Connected' : 'Connecting...';
+				statusEl.textContent = self.network && self.network.connected ? 'Connected' : 'Connecting...';
 			}
 		}, 1000);
 	};
@@ -203,7 +203,7 @@ game.prototype._ui = function (self) {
 	this.multiplayerAfterWelcome = function(msg) {
 		var uiSelf = this;
 
-		this.self.network.playerId = msg.playerId;
+		self.network.playerId = msg.playerId;
 
 		// Registry of ALL snakes by playerId (not just local slot numbers).
 		var snakesById = {};
@@ -293,7 +293,7 @@ game.prototype._ui = function (self) {
 		}
 
 		// Register remaining event handlers for in-game protocol
-		this.self.network.on('move', function(msg) {
+		self.network.on('move', function(msg) {
 			var s = snakesById[msg.playerId];
 			if (s && msg.direction) {
 				if (!s.input.length || s.input[s.input.length - 1] !== msg.direction) {
@@ -302,7 +302,7 @@ game.prototype._ui = function (self) {
 			}
 		});
 
-		this.self.network.on('death', function(msg) {
+		self.network.on('death', function(msg) {
 			var s = snakesById[msg.playerId];
 			if (s) {
 				window.dispatchEvent(new CustomEvent('log', {
@@ -315,7 +315,7 @@ game.prototype._ui = function (self) {
 			}
 		});
 
-		this.self.network.on('spawn', function(msg) {
+		self.network.on('spawn', function(msg) {
 			var pd = { id: msg.playerId, color: msg.color, x: msg.x, y: msg.y, length: 5, direction: 'right' };
 			var s = createSnakeEntity(pd);
 			snakesById[msg.playerId] = s;
@@ -325,7 +325,7 @@ game.prototype._ui = function (self) {
 			self.level.players.push(s);
 		});
 
-		this.self.network.on('food', function(msg) {
+		self.network.on('food', function(msg) {
 			var typeMap = { apple: 0, berries: 1, diamond: 2, diamonds: 2, wormhole: 3, beer: 4 };
 			var idx = typeMap[msg.type];
 			if (idx !== undefined && self.level.kitchen.pot[idx]) {
@@ -333,7 +333,7 @@ game.prototype._ui = function (self) {
 			}
 		});
 
-		this.self.network.on('food_eaten', function(msg) {
+		self.network.on('food_eaten', function(msg) {
 			for (var i = 0; i < self.level.kitchen.pot.length; i++) {
 				for (var j = self.level.kitchen.pot[i].body.length - 1; j >= 0; j--) {
 					if (self.level.kitchen.pot[i].body[j].x === msg.x && self.level.kitchen.pot[i].body[j].y === msg.y) {
@@ -343,7 +343,7 @@ game.prototype._ui = function (self) {
 			}
 		});
 
-		this.self.network.on('chat', function(msg) {
+		self.network.on('chat', function(msg) {
 			var msgId = ++self.level.message_id;
 			if (msgId > 5) { $('#m-br' + (msgId - 5)).remove(); $('#m' + (msgId - 5)).remove(); }
 			var colorStr = '';
@@ -353,7 +353,7 @@ game.prototype._ui = function (self) {
 			$('<br id="m-br' + msgId + '"><span id="m' + msgId + '"><span' + colorStr + '>Player ' + msg.playerId + '</span>: ' + msg.message + '</span>').insertAfter('#m' + (msgId - 1));
 			$('#message-log').scrollTop($('#m' + msgId).position().top);
 		});
-		this.self.network.on('leave', function(msg) {
+		self.network.on('leave', function(msg) {
 			var s = snakesById[msg.playerId];
 			if (s) {
 				for (var i = 0; i < self.level.players.length; i++) {
