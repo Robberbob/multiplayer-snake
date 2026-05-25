@@ -124,10 +124,17 @@ game.prototype._ui = function (self) {
 		// Create the network connection immediately (do NOT auto-join a room)
 		game.network = new network();
 
-		// Update status line on connect/disconnect
-		game.network.on('connected', function() {
+		// Poll for connection open, then request initial rooms (only once)
+		var _initialRoomsRequested = false;
+		var pollConnection = setInterval(function() {
+			if (!game.network || !game.network.connected) return;
+			clearInterval(pollConnection);
 			document.getElementById('lobby-status').textContent = 'Connected';
-		});
+			if (!_initialRoomsRequested) {
+				_initialRoomsRequested = true;
+				game.network.sendGetRooms();
+			}
+		}, 200);
 
 		// Handle rooms list from server
 		game.network.on('rooms', function(msg) {
@@ -170,12 +177,10 @@ game.prototype._ui = function (self) {
 			uiSelf.multiplayerAfterWelcome(msg);
 		});
 
-		// Request initial rooms list
-		game.network.sendGetRooms();
 
 		// Periodically refresh room list while in lobby (every 3 seconds)
 		self._lobbyRefreshTimer = setInterval(function() {
-			if (document.getElementById('lobby').style.display !== 'none') {
+			if (document.getElementById('lobby').style.display !== 'none' && game.network) {
 				game.network.sendGetRooms();
 			}
 		}, 3000);
@@ -184,7 +189,7 @@ game.prototype._ui = function (self) {
 		setInterval(function() {
 			var statusEl = document.getElementById('lobby-status');
 			if (statusEl) {
-				statusEl.textContent = game.network.connected ? 'Connected' : 'Connecting...';
+				statusEl.textContent = game.network && game.network.connected ? 'Connected' : 'Connecting...';
 			}
 		}, 1000);
 	};
