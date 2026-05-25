@@ -436,7 +436,7 @@ game.prototype._ui = function (self) {
 	}
 	
 	// ===== Lobby initialization - runs after all methods are defined on this object =====
-	self.ui.lobbyInit();
+	this.lobbyInit();
 };
 
 game.prototype.requestColor = function(index) {
