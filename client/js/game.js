@@ -390,7 +390,7 @@ game.prototype._ui = function (self) {
 
 		this.close();
 		this.scoreboard(true);
-		self.level = new level(1000, 560, self.ctx);
+		// multiplayer: self.level already populated from server data above
 		this.resize();
 		setInterval(function() { self.level.update(); }.bind(this), 500);
 	};
