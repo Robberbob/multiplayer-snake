@@ -260,20 +260,28 @@ game.prototype._ui = function (self) {
 		}
 
 		// Create the local player snake in slot 0
-		var localPlayer = null;
 		for (var p = 0; p < msg.players.length; p++) {
 			var pd = msg.players[p];
 			if (pd.id === msg.playerId) {
 				// This is us - use the real player config
-				localPlayer = createSnakeEntity(pd);
+				var localPlayer = createSnakeEntity(pd);
 				snakesById[pd.id] = localPlayer;
-				// Only register keydown listener for the LOCAL player's snake
-				window.addEventListener("keydown", function(e) { localPlayer.eventHandler(e); });
 			} else {
 				var remote = createSnakeEntity(pd);
 				snakesById[pd.id] = remote;
 			}
 		}
+
+		// Register keydown listener for the LOCAL player's snake
+		// We look up the local snake dynamically by playerId so controls still work after death and respawn (which recreates the snake entity)
+		window.addEventListener("keydown", function(e) {
+			if (self.network && self.network.playerId !== undefined) {
+				var currentLocal = snakesById[self.network.playerId];
+				if (currentLocal) {
+					currentLocal.eventHandler(e);
+				}
+			}
+		});
 
 		// Add all snakes to the level's players array for rendering
 		self.level.players.length = 0;

@@ -34,10 +34,8 @@ snake.prototype.spawn = function () {
 		this.body.push({x: i,y:1});
 	}
 	this.input.push(this.config.right);
-	if(typeof this.tick==="undefined") {
-		//console.log(typeof this.tick);
+		if(this.tick) clearInterval(this.tick);
 		this.tick=setInterval(function(){this.update()}.bind(this),this.speed);
-	}
 };
 
 snake.prototype.updateScoreboard = function() {

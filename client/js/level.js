@@ -66,37 +66,50 @@ level.prototype.render = function () {
 };
 
 level.prototype.eventHandler = function(evt) {
-  	evt = evt || window.event;
-    var key = keyDecode(evt);
-    switch(key){
-    	case "1":
-    			if(typeof this.players[0] !== "undefined")
-    				this.players[0].spawn();
-    			else this.players[0]=new snake(this,game.playerConfigs[0]);
-    				//this.addPlayer({up:"up",down:"down",right:"right",left:"left"});
-    		break;
-    	case "2":
-    			if(typeof this.players[1] !== "undefined")
-    				this.players[1].spawn();
-    			else this.players[1]=new snake(this,game.playerConfigs[1]);
-    				//this.addPlayer({up:"w",down:"s",right:"d",left:"a"});
-    		break;
-    	case "3":
-    			if(typeof this.players[2] !== "undefined")
-    				this.players[2].spawn();
-    			else this.players[2]=new snake(this,game.playerConfigs[2]);
-    				//this.addPlayer({up:"w",down:"s",right:"d",left:"a"});
-    		break;
-    	case "4":
-    			if(typeof this.players[3] !== "undefined")
-    				this.players[3].spawn();
-    			else this.players[3]=new snake(this,game.playerConfigs[3]);
-    				//this.addPlayer({up:"w",down:"s",right:"d",left:"a"});
-    		break;
-    	case "r":
-    		this.kitchen.regenerate();
-    		break;
-    }
+	evt = evt || window.event;
+	var key = keyDecode(evt);
+
+	// In multiplayer, ignore local controls like '1' to spawn, since the server handles spawning.
+	if (window.game && window.game.network && window.game.network.connected) {
+		return;
+	}
+
+	switch(key){
+		case "1":
+				if(typeof this.players[0] !== "undefined")
+					this.players[0].spawn();
+				else this.players[0]=new snake(this,game.playerConfigs[0]);
+					//this.addPlayer({up:"up",down:"down",right:"right",left:"left"});
+			break;
+		case "2":
+				if(typeof this.players[1] !== "undefined")
+					this.players[1].spawn();
+				else this.players[1]=new snake(this,game.playerConfigs[1]);
+					//this.addPlayer({up:"w",down:"s",right:"d",left:"a"});
+			break;
+		case "3":
+				if(typeof this.players[2] !== "undefined")
+					this.players[2].spawn();
+				else this.players[2]=new snake(this,game.playerConfigs[2]);
+					//this.addPlayer({up:"w",down:"s",right:"d",left:"a"});
+			break;
+		case "4":
+				if(typeof this.players[3] !== "undefined")
+					this.players[3].spawn();
+				else this.players[3]=new snake(this,game.playerConfigs[3]);
+					//this.addPlayer({up:"w",down:"s",right:"d",left:"a"});
+			break;
+		case "r":
+			this.kitchen.regenerate();
+			break;
+	}
+
+	// Forward key to all spawned players in singleplayer
+	for (var i = 0; i < this.players.length; i++) {
+		if (this.players[i]) {
+			this.players[i].eventHandler(evt);
+		}
+	}
 }
 
 level.prototype.update = function () {
