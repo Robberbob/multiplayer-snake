@@ -14,7 +14,7 @@ const HTTP_PORT    = Number(process.env.HTTP_PORT) || 3000;
 const WS_PORT      = Number(process.env.WS_PORT) || 18081; // default 18081 (8080/8081 reserved on Windows)
 const MAP_WIDTH    = 80;   // grid cells (matching old server.js)
 const MAP_HEIGHT   = 56;
-const TICK_MS      = 50;   // game tick interval per room
+const TICK_MS = 150;   // game tick interval per room
 const ROOM_NAMES   = ['game0', 'game1', 'game2', 'game3', 'game4'];
 
 // Colours assigned in round-robin order
