@@ -418,7 +418,23 @@ wss.on('connection', (ws) => {
       }
 
       case 'getrooms': {
-        safeSend(ws, { type: 'rooms', rooms: Object.keys(rooms) });
+        const roomList = Object.values(rooms).map(r => ({
+          name: r.name,
+          players: Object.keys(r.players).length,
+          maxPlayers: config.playersPerRoom
+        }));
+        safeSend(ws, { type: 'rooms', rooms: roomList });
+        break;
+      }
+
+      case 'createroom': {
+        try {
+          const newName = createRoom();
+          joinRoom(newName, ws);
+          safeSend(ws, { type: 'room_created', roomName: newName, playerId: joinedPlayerId });
+        } catch (err) {
+          safeSend(ws, { type: 'error', message: err.message });
+        }
         break;
       }
 

@@ -123,3 +123,30 @@ network.prototype.sendMove = function(direction) {
 network.prototype.sendChat = function(message) {
     this.sendJSON({ action: 'chat', message: message });
 };
+
+/** Request the list of active rooms from the server. */
+network.prototype.getRooms = function() {
+    if (this._socket && this._socket.readyState === WebSocket.OPEN) {
+        this._socket.send(JSON.stringify({ type: 'getrooms' }));
+    } else {
+        console.warn('[network] Cannot send — socket not open');
+    }
+};
+
+/** Create a new room on the server. */
+network.prototype.createRoom = function() {
+    if (this._socket && this._socket.readyState === WebSocket.OPEN) {
+        this._socket.send(JSON.stringify({ type: 'createroom' }));
+    } else {
+        console.warn('[network] Cannot send — socket not open');
+    }
+};
+
+// Register event handlers for lobby protocol responses
+self.on('rooms', function(msg) {
+    if (self.onRooms) self.onRooms(msg.rooms);
+});
+
+self.on('room_created', function(msg) {
+    if (self.onRoomCreated) self.onRoomCreated(msg.roomName, msg.playerId);
+});
