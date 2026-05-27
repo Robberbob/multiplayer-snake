@@ -394,11 +394,15 @@ wss.on('connection', (ws) => {
         if (!joinedPlayerId) break;
         const room = rooms[joinedRoomName];
         if (!room) break;
-        const p = room.players[joinedPlayerId];
-        if (!p || !p.alive) break;
 
-        // Delegate to processTurn from game-sync (uses turn tolerance validation)
-        processTurn(room, joinedPlayerId, obj.direction, p.x, p.y);
+        // Extract cell anchoring fields from the turn message for validation
+        const cellX = typeof obj.cellX === 'number' ? obj.cellX : 0;
+        const cellY = typeof obj.cellY === 'number' ? obj.cellY : 0;
+
+        const ok = processTurn(room, joinedPlayerId, obj.direction, cellX, cellY);
+        if (!ok) {
+          console.warn(`[server] Turn rejected for ${joinedPlayerId}: cell anchoring validation failed`);
+        }
         break;
       }
 

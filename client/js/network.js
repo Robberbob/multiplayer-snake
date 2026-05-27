@@ -109,9 +109,14 @@ network.prototype.joinRoom = function(room) {
     this.sendJSON({ action: 'joinroom', room: room });
 };
 
-/** Send a direction change to the server. */
+/** Send a direction change to the server with cell anchoring coordinates. */
 network.prototype.sendMove = function(direction) {
-    this.sendJSON({ action: 'move', direction: direction });
+    this.sendJSON({
+        action: 'move',
+        direction: direction,
+        cellX: this.currentCellX || 0,
+        cellY: this.currentCellY || 0
+    });
 };
 
 /** Send a chat message to the server. */
