@@ -1,0 +1,9 @@
+{
+  "port": 8081,
+  "snapshotInterval": 10,
+  "turnTolerance": 1,
+  "maxRooms": 20,
+  "playersPerRoom": 4,
+  "httpPort": 3000,
+  "roomNames": ["alpha","beta","gamma","delta","epsilon"]
+}
