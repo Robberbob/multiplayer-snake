@@ -303,6 +303,7 @@ function gameTick(room) {
     length: p.length,
     direction: p.direction,
     score: p.score,
+    positions: p.body,
   }));
 
   if (playerSnapshot.length > 0) {
@@ -349,6 +350,7 @@ function buildWelcome(room, player) {
     y: p.y,
     length: p.length,
     direction: p.direction,
+    positions: p.body,
   }));
 
   return {

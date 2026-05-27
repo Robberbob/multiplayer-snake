@@ -320,16 +320,17 @@ game.prototype._ui = function (self) {
 				var s = snakesById[p.id];
 				if (s) {
 					while (s.body.length > 0) s.body.pop();
-					// Server sends x, y, length per player — rebuild body from head position
-					if (p.x !== undefined && p.y !== undefined) {
+					// Server sends positions[] per player — use as primary source of truth.
+					if (p.positions && p.positions.length > 0) {
+						p.positions.forEach(function(pos) {
+							s.body.push({ x: pos.x, y: pos.y });
+						});
+					} else if (p.x !== undefined && p.y !== undefined) {
+						// Backward-compatible fallback when positions[] is absent.
 						var len = p.length || 5;
 						for (var i = 0; i < len; i++) {
 							s.body.push({ x: p.x - i, y: p.y });
 						}
-					} else if (p.positions && p.positions.length > 0) {
-						p.positions.forEach(function(pos) {
-							s.body.push({ x: pos.x, y: pos.y });
-						});
 					}
 				}
 			});
@@ -350,7 +351,13 @@ game.prototype._ui = function (self) {
 
 		self.network.on('spawn', function(msg) {
 			var pd = { id: msg.playerId, color: msg.color, x: msg.x, y: msg.y, length: 5, direction: 'right' };
+
+			// Preserve inputs queued on the zombie entity (death → respawn window).
+			var oldSnake = snakesById[msg.playerId];
+			var bufferedInputs = oldSnake && oldSnake.input ? oldSnake.input.slice() : [];
+
 			var s = createSnakeEntity(pd);
+			s.input = bufferedInputs;
 			snakesById[msg.playerId] = s;
 			// Remove old dead snake from players array to avoid ghost accumulation
 			var idx = self.level.players.findIndex(function(psn) { return psn.id === msg.playerId; });
