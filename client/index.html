@@ -15,6 +15,7 @@
     <script src="js/kitchen.js"></script>
     <script src="js/snake.js"></script>
     <script src="js/network.js"></script>
+    <script src="js/lobby.js"></script>
     <script src="js/level.js"></script>
 </head>
 <body id="body" style="margin:auto;" onload="window.game = new game();">
@@ -35,6 +36,16 @@
     <div id="menu">
         <h2 style="text-align:center;">Multiplayer Snake</h2><br>
         <h3 id="multi" class="menu">Multiplayer</h3><br>
+        <div id="lobby" style="display:none;">
+          <h2>Multiplayer Lobby</h2>
+          <button id="create-room">Create Room</button>
+          <table id="room-table">
+            <thead><tr><th>Room</th><th>Players</th><th></th></tr></thead>
+            <tbody id="room-list"></tbody>
+          </table>
+          <p id="lobby-status"></p>
+          <button id="back-to-menu" style="margin-top:10px;">Back to Menu</button>
+        </div>
         <div id="serverBrowser" style="display:none; border:thin solid pink; font-size:0.8em;">
             <table id="serverTable" border="0" style="margin:auto; border-spacing:0px 5px;">
                 <tr id="browserHeader" class="list">
