@@ -88,6 +88,16 @@ game.prototype._ui = function (self) {
 
 	this.multiplayer = function() {
 		game.network = new network();
+		game.lobby = new LobbyController(game.network, game);
+
+		// Hide menu, show lobby
+		document.getElementById('menu').style.display = 'none';
+		game.lobby.show();
+
+		// Wire keyboard input through cell anchoring
+		this._wireCellAnchoredInput();
+
+		// ---- Server event handlers (registered once; fire when a room is joined) ----
 
 		// Registry of ALL snakes by playerId (not just local slot numbers).
 		var snakesById = {};
@@ -129,8 +139,6 @@ game.prototype._ui = function (self) {
 			}
 			return s;
 		}
-
-		// ---- Register event handlers for the new server protocol ----
 
 		// welcome: full game state on join
 		game.network.on('welcome', function(msg) {
@@ -282,9 +290,6 @@ game.prototype._ui = function (self) {
 		self.level = new level(1000, 560, self.ctx);
 		this.resize();
 		setInterval(function() { self.level.update(); }.bind(this), 500);
-
-		// Auto-join default room (server will send back 'welcome')
-		game.network.joinRoom('game0');
 	};
 
 
@@ -373,6 +378,20 @@ game.prototype._ui = function (self) {
  			console.log(e);
  		}
 	}
+
+	this._wireCellAnchoredInput = function() {
+		window.addEventListener('keydown', function(e) {
+			if (!game.network.connected) return;
+			if (game.lobby && game.lobby.$lobby.style.display !== 'none') return;
+
+			var direction = keyDecode(e);
+			if (!direction) return;
+
+			game.network.currentCellX = self.cellX || 0;
+			game.network.currentCellY = self.cellY || 0;
+			game.network.sendMove(direction);
+		});
+	};
 };
 
 game.prototype.requestColor = function(index) {
