@@ -99,10 +99,23 @@ game.prototype._ui = function (self) {
 		// Wire keyboard input through cell anchoring
 		this._wireCellAnchoredInput();
 
-		// ---- Server event handlers (registered once; fire when a room is joined) ----
+		// When the server sends welcome (after joining a room), initialize everything
+		var selfRef = self;
+		game.network.on('welcome', function(msg) {
+			selfRef._initMultiplayerGame(msg);
+		});
+	};
+
+	this._initMultiplayerGame = function(msg) {
+		this.close();
+		this.scoreboard(true);
+		self.level = new level(1000, 560, self.ctx);
+		this.resize();
+		setInterval(function() { self.level.update(); }.bind(this), 500);
 
 		// Registry of ALL snakes by playerId (not just local slot numbers).
 		var snakesById = {};
+		game.network.snakesById = snakesById;
 
 		/** Build a snake config object from server color string. */
 		function makeConfig(colorStr) {
@@ -142,60 +155,57 @@ game.prototype._ui = function (self) {
 			return s;
 		}
 
-		// welcome: full game state on join
-		game.network.on('welcome', function(msg) {
-			console.log('[multiplayer] Welcome, playerId=' + msg.playerId);
-			game.network.playerId = msg.playerId;
+		console.log('[multiplayer] Welcome, playerId=' + msg.playerId);
+		game.network.playerId = msg.playerId;
 
-			// Set the map from server (walls)
-			if (msg.map && self.level) {
-				self.level.body.length = 0; // clear existing walls
-				for (var i = 0; i < msg.map.length; i++) {
-					self.level.body.push({ x: msg.map[i].x, y: msg.map[i].y });
+		// Set the map from server (walls)
+		if (msg.map && self.level) {
+			self.level.body.length = 0; // clear existing walls
+			for (var i = 0; i < msg.map.length; i++) {
+				self.level.body.push({ x: msg.map[i].x, y: msg.map[i].y });
+			}
+		}
+
+		// Create the local player snake in slot 0
+		var localPlayer = null;
+		for (var p = 0; p < msg.players.length; p++) {
+			var pd = msg.players[p];
+			if (pd.id === msg.playerId) {
+				// This is us - use the real player config
+				localPlayer = createSnakeEntity(pd);
+				snakesById[pd.id] = localPlayer;
+			} else {
+				var remote = createSnakeEntity(pd);
+				snakesById[pd.id] = remote;
+			}
+		}
+
+		// Add all snakes to the level's players array for rendering
+		self.level.players.length = 0;
+		for (var sid in snakesById) {
+			if (snakesById.hasOwnProperty(sid)) {
+				self.level.players.push(snakesById[sid]);
+			}
+		}
+
+		// Populate the kitchen with server food data
+		if (msg.food && self.level.kitchen) {
+			for (var f = 0; f < msg.food.length; f++) {
+				var fd = msg.food[f];
+				var typeKey = fd.type || 'apple';
+				// Map server food types to kitchen pot indices
+				var typeMap = { apple: 0, berries: 1, diamonds: 2, wormhole: 3, beer: 4 };
+				var idx = typeMap[typeKey];
+				if (idx !== undefined && self.level.kitchen.pot[idx]) {
+					self.level.kitchen.pot[idx].body.push({ x: fd.x, y: fd.y });
 				}
 			}
+		}
 
-			// Create the local player snake in slot 0
-			var localPlayer = null;
-			for (var p = 0; p < msg.players.length; p++) {
-				var pd = msg.players[p];
-				if (pd.id === msg.playerId) {
-					// This is us - use the real player config
-					localPlayer = createSnakeEntity(pd);
-					snakesById[pd.id] = localPlayer;
-				} else {
-					var remote = createSnakeEntity(pd);
-					snakesById[pd.id] = remote;
-				}
-			}
-
-			// Add all snakes to the level's players array for rendering
-			self.level.players.length = 0;
-			for (var sid in snakesById) {
-				if (snakesById.hasOwnProperty(sid)) {
-					self.level.players.push(snakesById[sid]);
-				}
-			}
-
-			// Populate the kitchen with server food data
-			if (msg.food && self.level.kitchen) {
-				for (var f = 0; f < msg.food.length; f++) {
-					var fd = msg.food[f];
-					var typeKey = fd.type || 'apple';
-					// Map server food types to kitchen pot indices
-					var typeMap = { apple: 0, berries: 1, diamonds: 2, wormhole: 3, beer: 4 };
-					var idx = typeMap[typeKey];
-					if (idx !== undefined && self.level.kitchen.pot[idx]) {
-						self.level.kitchen.pot[idx].body.push({ x: fd.x, y: fd.y });
-					}
-				}
-			}
-
-			// Auto-join the room if not already joined
-			if (msg.room) {
-				game.network.joinRoom(msg.room);
-			}
-		});
+		// Auto-join the room if not already joined
+		if (msg.room) {
+			game.network.joinRoom(msg.room);
+		}
 
 		// move: another player changed direction
 		game.network.on('move', function(msg) {
@@ -308,12 +318,6 @@ game.prototype._ui = function (self) {
 				delete snakesById[msg.playerId];
 			}
 		});
-
-		this.close();
-		this.scoreboard(true);
-		self.level = new level(1000, 560, self.ctx);
-		this.resize();
-		setInterval(function() { self.level.update(); }.bind(this), 500);
 	};
 
 

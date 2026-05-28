@@ -321,7 +321,9 @@ wss.on('connection', (ws) => {
 
   ws.on('pong', () => { ws.isAlive = true; });
 
-  // Create room if needed (or join existing)
+  // Create room if none exist yet — but don't auto-join the player.
+  // The client will send an explicit joinroom message, and that's where
+  // joining + welcome happens (see 'joinroom' handler below).
   function ensureRoom() {
     if (!Object.keys(rooms).length) {
       joinedRoomName = createRoom();
@@ -335,21 +337,6 @@ wss.on('connection', (ws) => {
     } else {
       joinedRoomName = Object.keys(rooms)[0];
     }
-
-    // Join the player to the room via the modular rooms module
-    const { playerId, slot } = joinRoom(joinedRoomName, ws);
-    joinedPlayerId = playerId;
-
-    // Augment with spatial state (position, direction, body)
-    const player = initialisePlayerSpatial(rooms[joinedRoomName], playerId);
-
-    // Send welcome to the joining client
-    safeSend(ws, buildWelcome(rooms[joinedRoomName], player));
-
-    // Broadcast spawn to everyone in the room
-    broadcastRoom(rooms[joinedRoomName], { type: 'spawn', playerId: player.id, color: player.color });
-
-    console.log(`[server] Player ${player.id} (${player.color}) joined ${joinedRoomName}`);
   }
 
   ensureRoom();

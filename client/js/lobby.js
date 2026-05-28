@@ -52,9 +52,9 @@ class LobbyController {
   }
 
   joinRoom(roomName) {
-    // Trigger game.joinRoom — the existing network.joinRoom() should handle it
+    // Hide lobby, tell server we're joining — the welcome message will trigger game init
     this.hide();
-    this.game.joinRoom(roomName);
+    game.network.joinRoom(roomName);
   }
 
   renderRoomList(rooms) {
