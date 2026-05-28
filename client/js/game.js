@@ -90,9 +90,11 @@ game.prototype._ui = function (self) {
 		game.network = new network();
 		game.lobby = new LobbyController(game.network, game);
 
-		// Hide menu, show lobby
-		document.getElementById('menu').style.display = 'none';
-		game.lobby.show();
+			// Hide menu buttons, show lobby (lobby is inside #menu so we need to keep it visible)
+			document.getElementById('multi').style.display = 'none';
+			document.getElementById('single').style.display = 'none';
+			document.getElementById('settings').style.display = 'none';
+			game.lobby.show();
 
 		// Wire keyboard input through cell anchoring
 		this._wireCellAnchoredInput();
