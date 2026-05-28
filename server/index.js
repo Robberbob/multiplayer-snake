@@ -368,11 +368,18 @@ wss.on('connection', (ws) => {
     switch (obj.action) {
 
       case 'joinroom': {
-        const roomName = String(obj.room).trim();
+        let roomName = String(obj.room).trim();
         const room = rooms[roomName];
         if (!room) {
-          safeSend(ws, { type: 'error', message: `Room "${roomName}" does not exist.` });
-          break;
+          // Auto-create a fresh room so the player always has somewhere to go.
+          roomName = createRoom();
+          rooms[roomName].map = generateMap();
+          rooms[roomName].tickTimer = setInterval(() => gameTick(rooms[roomName]), TICK_MS);
+          FOOD_DEFS.forEach((def, i) => {
+            const timer = setInterval(() => spawnFoodForRoom(rooms[roomName], def.type), def.interval + i * 500);
+            rooms[roomName].spawnTimers.push(timer);
+          });
+          safeSend(ws, { type: 'info', message: `Room "${obj.room}" not found — created "${roomName}" for you.` });
         }
         // Leave previous room first
         if (joinedPlayerId && joinedRoomName) {
