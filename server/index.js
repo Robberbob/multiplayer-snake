@@ -381,8 +381,9 @@ wss.on('connection', (ws) => {
           });
           safeSend(ws, { type: 'info', message: `Room "${obj.room}" not found — created "${roomName}" for you.` });
         }
-        // Leave previous room first
-        if (joinedPlayerId && joinedRoomName) {
+        // Leave previous room first — skip if the target is already our current room
+        // (leaving would destroy an otherwise-empty room before we can re-join it).
+        if (joinedPlayerId && joinedRoomName && joinedRoomName !== roomName) {
           leaveRoom(joinedPlayerId, ws);
         }
 
