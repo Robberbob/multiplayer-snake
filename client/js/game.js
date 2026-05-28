@@ -269,6 +269,28 @@ game.prototype._ui = function (self) {
 			$('#message-log').scrollTop($('#m' + msgId).position().top);
 		});
 
+		// positions: periodic player state update from server (every tick)
+		game.network.on('positions', function(msg) {
+			for (var i = 0; i < msg.players.length; i++) {
+				var pd = msg.players[i];
+				var s = snakesById[pd.id];
+				if (!s) continue;
+
+				// Update head position and direction from server state
+				s.body[0].x = pd.x;
+				s.body[0].y = pd.y;
+				s.input.length = 0;
+				s.input.push(pd.direction);
+
+				// Sync score display
+				if (pd.score !== undefined) {
+					s.stats.score = pd.score;
+					s.updateScoreboard();
+				}
+			}
+		});
+
+
 		// leave: a player disconnected
 		game.network.on('leave', function(msg) {
 			var s = snakesById[msg.playerId];
