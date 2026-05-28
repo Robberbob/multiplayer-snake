@@ -142,11 +142,9 @@ network.prototype.createRoom = function() {
     }
 };
 
-// Register event handlers for lobby protocol responses
-self.on('rooms', function(msg) {
-    if (self.onRooms) self.onRooms(msg.rooms);
-});
+// Event handlers for lobby protocol responses are registered on the network instance
+// via its internal event system (self._handlers). They should be attached to a concrete
+// network object, not globally. Remove these orphaned registrations:
+//   self.on('rooms', ...)
+//   self.on('room_created', ...)
 
-self.on('room_created', function(msg) {
-    if (self.onRoomCreated) self.onRoomCreated(msg.roomName, msg.playerId);
-});
