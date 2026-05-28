@@ -352,7 +352,8 @@ wss.on('connection', (ws) => {
     }
     if (!obj || typeof obj !== 'object') return;
 
-    switch (obj.action) {
+    const msgAction = obj.action || obj.type;
+    switch (msgAction) {
 
       case 'joinroom': {
         let roomName = String(obj.room).trim();
