@@ -375,14 +375,20 @@ wss.on('connection', (ws) => {
           leaveRoom(joinedPlayerId, ws);
         }
 
-        const joinResult = joinRoom(roomName, ws);
-        joinedPlayerId = joinResult.playerId;
-        joinedRoomName = roomName;
+        try {
+          const joinResult = joinRoom(roomName, ws);
+          joinedPlayerId = joinResult.playerId;
+          joinedRoomName = roomName;
 
-        const player = initialisePlayerSpatial(rooms[joinedRoomName], joinedPlayerId);
-        safeSend(ws, buildWelcome(rooms[joinedRoomName], player));
-        broadcastRoom(rooms[joinedRoomName], { type: 'spawn', playerId: player.id, color: player.color });
-        console.log(`[server] Player ${player.id} joined ${roomName}`);
+          const player = initialisePlayerSpatial(rooms[joinedRoomName], joinedPlayerId);
+          safeSend(ws, buildWelcome(rooms[joinedRoomName], player));
+          broadcastRoom(rooms[joinedRoomName], { type: 'spawn', playerId: player.id, color: player.color });
+          console.log(`[server] Player ${player.id} joined ${roomName}`);
+        } catch (err) {
+          // Room is full or another join error — inform the client instead of crashing.
+          safeSend(ws, { type: 'error', message: err.message || 'Could not join room' });
+          console.warn(`[server] Failed to join ${roomName}: ${err.message}`);
+        }
         break;
       }
 

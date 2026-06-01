@@ -100,9 +100,13 @@ game.prototype._ui = function (self) {
 		// Wire keyboard input through cell anchoring
 		this._wireCellAnchoredInput();
 
-		// When the server sends welcome (after joining a room), initialize everything
+		// When the server sends welcome (after joining a room), initialize everything.
+		// Only run once per connection — guard against duplicate welcomes.
 		var selfRef = this;
+		selfRef._multiplayerInitialized = false;
 		game.network.on('welcome', function(msg) {
+			if (selfRef._multiplayerInitialized) return;
+			selfRef._multiplayerInitialized = true;
 			selfRef._initMultiplayerGame(msg);
 		});
 	};

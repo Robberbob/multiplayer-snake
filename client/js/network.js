@@ -12,6 +12,7 @@ function network() {
     self._handlers = {};
     self._socket = null;
     self._reconnectTimer = null;
+    self._reconnecting = false;
 
     // Open connection immediately on construction
     self.connect();
@@ -62,7 +63,13 @@ network.prototype.connect = function() {
     self._socket.onclose = function(event) {
         console.log('[network] Disconnected (code=' + event.code + '). Reconnecting in 2s...');
         self.connected = false;
-        // Reconnect after 2 seconds
+        // Clear stale socket reference so no callbacks fire on a closed socket
+        self._socket = null;
+        // Prevent concurrent reconnect attempts if multiple close events arrive
+        if (self._reconnectTimer) {
+            clearTimeout(self._reconnectTimer);
+            self._reconnectTimer = null;
+        }
         self._reconnectTimer = setTimeout(function() {
             self.connect();
         }, 2000);
@@ -70,6 +77,7 @@ network.prototype.connect = function() {
 
     self._socket.onerror = function(event) {
         console.error('[network] WebSocket error');
+        // Don't try to close the socket in an error state — let onclose handle cleanup
     };
 
     // Graceful close on page unload
