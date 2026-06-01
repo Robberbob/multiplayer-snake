@@ -21,7 +21,7 @@ function network() {
 network.prototype.connect = function() {
     var self = this;
     var host = window.location.hostname || 'localhost';
-    var url = 'ws://' + host + ':8080';
+    var url = 'ws://' + host + ':8081';
 
     // Clean up any existing socket first
     if (self._socket) {
