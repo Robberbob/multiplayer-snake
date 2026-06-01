@@ -108,6 +108,7 @@ game.prototype._ui = function (self) {
 
 	this._initMultiplayerGame = function(msg) {
 		this.close();
+		if (game.lobby && game.lobby.hide) game.lobby.hide();
 		this.scoreboard(true);
 		self.level = new level(1000, 560, self.ctx);
 		this.resize();
