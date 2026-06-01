@@ -18,7 +18,9 @@
     "uuid": "^9.0.0",
     "ws": "^8.16.0"
   },
-  "devDependencies": {},
   "bundleDependencies": [],
-  "main": "wsEngine.js"
+  "main": "wsEngine.js",
+  "devDependencies": {
+    "playwright": "^1.60.0"
+  }
 }

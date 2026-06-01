@@ -5,5 +5,11 @@
   "maxRooms": 20,
   "playersPerRoom": 4,
   "httpPort": 3000,
-  "roomNames": ["alpha","beta","gamma","delta","epsilon"]
+  "roomNames": [
+    "alpha",
+    "beta",
+    "gamma",
+    "delta",
+    "epsilon"
+  ]
 }

@@ -143,11 +143,15 @@ network.prototype.createRoom = function() {
 };
 
 // Wire lobby protocol responses through to the callback properties that lobby.js sets up
-self.on('rooms', function(msg) {
-    if (self.onRooms) self.onRooms(msg.rooms);
-});
+network.prototype._wireLobbyHandlers = function() {
+    var self = this;
 
-self.on('room_created', function(msg) {
-    if (self.onRoomCreated) self.onRoomCreated(msg.roomName, msg.playerId);
-});
+    self.on('rooms', function(msg) {
+        if (self.onRooms) self.onRooms(msg.rooms);
+    });
+
+    self.on('room_created', function(msg) {
+        if (self.onRoomCreated) self.onRoomCreated(msg.roomName, msg.playerId);
+    });
+};
 

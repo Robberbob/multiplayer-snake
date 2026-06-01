@@ -88,6 +88,7 @@ game.prototype._ui = function (self) {
 
 	this.multiplayer = function() {
 		game.network = new network();
+		game.network._wireLobbyHandlers();
 		game.lobby = new LobbyController(game.network, game);
 
 			// Hide menu buttons, show lobby (lobby is inside #menu so we need to keep it visible)
@@ -100,7 +101,7 @@ game.prototype._ui = function (self) {
 		this._wireCellAnchoredInput();
 
 		// When the server sends welcome (after joining a room), initialize everything
-		var selfRef = self;
+		var selfRef = this;
 		game.network.on('welcome', function(msg) {
 			selfRef._initMultiplayerGame(msg);
 		});

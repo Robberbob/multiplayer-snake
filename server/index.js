@@ -437,6 +437,8 @@ wss.on('connection', (ws) => {
 
           const joinResult = joinRoom(newName, ws);
           joinedPlayerId = joinResult.playerId;
+          initialisePlayerSpatial(rooms[newName], joinedPlayerId);
+
           safeSend(ws, { type: 'room_created', roomName: newName, playerId: joinedPlayerId });
 
           // Also send welcome so the client can initialise the game screen.
