@@ -29,7 +29,6 @@ class LobbyController {
 
     // When server confirms room creation, auto-join that room
     this.network.onRoomCreated = (roomName, playerId) => {
-      this.hide();
       this.game.joinRoom(roomName, playerId);
     };
   }
@@ -54,7 +53,7 @@ class LobbyController {
   joinRoom(roomName) {
     // Hide lobby, tell server we're joining — the welcome message will trigger game init
     this.hide();
-    game.network.joinRoom(roomName);
+    this.game.network.joinRoom(roomName);
   }
 
   renderRoomList(rooms) {
