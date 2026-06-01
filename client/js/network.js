@@ -65,6 +65,10 @@ network.prototype.connect = function() {
         self.connected = false;
         // Clear stale socket reference so no callbacks fire on a closed socket
         self._socket = null;
+        // Wipe all registered handlers so stale callbacks don't fire against
+        // dead game state when the socket reconnects. The multiplayer init
+        // routine will re-register them on the next welcome message.
+        self._handlers = {};
         // Prevent concurrent reconnect attempts if multiple close events arrive
         if (self._reconnectTimer) {
             clearTimeout(self._reconnectTimer);
