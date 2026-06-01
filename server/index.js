@@ -426,8 +426,24 @@ wss.on('connection', (ws) => {
       case 'createroom': {
         try {
           const newName = createRoom();
-          joinRoom(newName, ws);
+
+          // Initialise the game map and tick loop before sending welcome.
+          rooms[newName].map = generateMap();
+          rooms[newName].tickTimer = setInterval(() => gameTick(rooms[newName]), TICK_MS);
+          FOOD_DEFS.forEach((def, i) => {
+            const timer = setInterval(() => spawnFoodForRoom(rooms[newName], def.type), def.interval + i * 500);
+            rooms[newName].spawnTimers.push(timer);
+          });
+
+          const joinResult = joinRoom(newName, ws);
+          joinedPlayerId = joinResult.playerId;
           safeSend(ws, { type: 'room_created', roomName: newName, playerId: joinedPlayerId });
+
+          // Also send welcome so the client can initialise the game screen.
+          const player = rooms[newName].players[joinedPlayerId];
+          if (player) {
+            safeSend(ws, buildWelcome(rooms[newName], player));
+          }
         } catch (err) {
           safeSend(ws, { type: 'error', message: err.message });
         }

@@ -27,9 +27,11 @@ class LobbyController {
     // When server sends room list, render it
     this.network.onRooms = (rooms) => { this.renderRoomList(rooms); };
 
-    // When server confirms room creation, auto-join that room
+    // The createroom handler on the server already joins us into the room.
+    // Don't send another joinroom — that creates a duplicate player entry.
+    // Just hide the lobby; game.js's 'welcome' listener will init the screen.
     this.network.onRoomCreated = (roomName, playerId) => {
-      this.game.joinRoom(roomName, playerId);
+      this.hide();
     };
   }
 
