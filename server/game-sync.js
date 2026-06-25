@@ -23,9 +23,6 @@ function broadcastRoom(room, msg) {
     const socket = p.ws || p.socket;
     if (socket && typeof socket.send === 'function') {
       try { socket.send(data); } catch (_) {}
-    } else if (typeof room.broadcast === 'function') {
-      // Fallback for test harnesses that provide a simple broadcast stub.
-      room.broadcast(msg);
     }
   }
 }

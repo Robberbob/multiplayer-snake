@@ -13,6 +13,12 @@ function network() {
     self._socket = null;
     self._reconnectTimer = null;
     self._reconnecting = false;
+    self._lastJoinedRoomName = null;
+
+    // Internal handler: track our room from any welcome message (covers joinroom and createroom paths)
+    self.on('welcome', function(msg) {
+        if (msg.room) self._lastJoinedRoomName = msg.room;
+    });
 
     // Open connection immediately on construction
     self.connect();
@@ -38,6 +44,13 @@ network.prototype.connect = function() {
         if (self._reconnectTimer) {
             clearTimeout(self._reconnectTimer);
             self._reconnectTimer = null;
+        }
+        // Auto-rejoin last room on reconnect so the server sends a fresh welcome.
+        // Without this, the reconnected socket stays anonymous and never learns its identity.
+        if (self._lastJoinedRoomName) {
+            console.log('[network] Reconnecting — rejoining room "' + self._lastJoinedRoomName + '"');
+            self.playerId = null;  // clear stale identity before re-identifying
+            self.sendJSON({ action: 'joinroom', room: self._lastJoinedRoomName });
         }
     };
 
@@ -65,10 +78,11 @@ network.prototype.connect = function() {
         self.connected = false;
         // Clear stale socket reference so no callbacks fire on a closed socket
         self._socket = null;
-        // Wipe all registered handlers so stale callbacks don't fire against
-        // dead game state when the socket reconnects. The multiplayer init
-        // routine will re-register them on the next welcome message.
-        self._handlers = {};
+        // Keep _handlers intact across reconnects. The handlers are closures
+        // over game objects that persist, and they already validate incoming
+        // messages against current state (e.g. playerId checks). Wiping them
+        // would leave the client permanently deaf — there is no mechanism to
+        // re-register after reconnect because the welcome handler fires only once.
         // Prevent concurrent reconnect attempts if multiple close events arrive
         if (self._reconnectTimer) {
             clearTimeout(self._reconnectTimer);
@@ -118,6 +132,8 @@ network.prototype.sendJSON = function(obj) {
 
 /** Tell the server we want to join a room. */
 network.prototype.joinRoom = function(room) {
+    // Track room name as belt-and-suspenders (primary tracking is via welcome handler).
+    this._lastJoinedRoomName = room;
     this.sendJSON({ action: 'joinroom', room: room });
 };
 

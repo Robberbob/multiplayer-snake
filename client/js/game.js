@@ -101,17 +101,24 @@ game.prototype._ui = function (self) {
 		this._wireCellAnchoredInput();
 
 		// When the server sends welcome (after joining a room), initialize everything.
-		// Only run once per connection — guard against duplicate welcomes.
+		// Guard against duplicate welcomes on the same connection, but allow re-init
+		// when playerId differs - that means we reconnected and need fresh game state.
 		var selfRef = this;
 		selfRef._multiplayerInitialized = false;
 		game.network.on('welcome', function(msg) {
-			if (selfRef._multiplayerInitialized) return;
+			if (selfRef._multiplayerInitialized && msg.playerId === game.network.playerId) return;
 			selfRef._multiplayerInitialized = true;
 			selfRef._initMultiplayerGame(msg);
 		});
 	};
 
 	this._initMultiplayerGame = function(msg) {
+		// Clear any pending lobby recovery timer and stale error/timeout message
+		if (game.lobby && game.lobby.clearRecoveryTimer) {
+			game.lobby.clearRecoveryTimer();
+			game.lobby.$status.textContent = '';
+		}
+
 		this.close();
 		if (game.lobby && game.lobby.hide) game.lobby.hide();
 		this.scoreboard(true);

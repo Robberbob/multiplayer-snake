@@ -117,7 +117,8 @@ function initialisePlayerSpatial(room, playerId) {
     y: pos.y,
     length: 5,
     direction: directions[Math.floor(Math.random() * directions.length)],
-    body: []
+    body: [],
+    lastMoveTime: Date.now() // for per-player move rate limiting
   });
 
   return p;
@@ -149,8 +150,6 @@ function broadcastRoom(room, msg) {
     const socket = p.ws || p.socket;
     if (socket && typeof socket.send === 'function') {
       safeSend(socket, msg);
-    } else if (typeof room.broadcast === 'function') {
-      room.broadcast(msg);
     }
   }
 }
@@ -321,25 +320,9 @@ wss.on('connection', (ws) => {
 
   ws.on('pong', () => { ws.isAlive = true; });
 
-  // Create room if none exist yet — but don't auto-join the player.
-  // The client will send an explicit joinroom message, and that's where
-  // joining + welcome happens (see 'joinroom' handler below).
-  function ensureRoom() {
-    if (!Object.keys(rooms).length) {
-      joinedRoomName = createRoom();
-      const room = rooms[joinedRoomName];
-      room.map = generateMap();
-      room.tickTimer = setInterval(() => gameTick(room), TICK_MS);
-      FOOD_DEFS.forEach((def, i) => {
-        const timer = setInterval(() => spawnFoodForRoom(room, def.type), def.interval + i * 500);
-        room.spawnTimers.push(timer);
-      });
-    } else {
-      joinedRoomName = Object.keys(rooms)[0];
-    }
-  }
-
-  ensureRoom();
+  // Room creation is handled by the 'joinroom' handler, which auto-creates
+  // a room if the requested name doesn't exist. This avoids orphan rooms
+  // from being created on connection before any player joins.
 
   ws.on('message', (raw) => {
     let obj;
@@ -369,15 +352,16 @@ wss.on('connection', (ws) => {
           });
           safeSend(ws, { type: 'info', message: `Room "${obj.room}" not found — created "${roomName}" for you.` });
         }
-        // Leave previous room first — skip if the target is already our current room
-        // (leaving would destroy an otherwise-empty room before we can re-join it).
-        if (joinedPlayerId && joinedRoomName && joinedRoomName !== roomName) {
+        // Always leave the previous player entry first to prevent ghost players
+        // from a double joinroom (same or different room).
+        if (joinedPlayerId) {
           leaveRoom(joinedPlayerId, ws);
         }
 
         try {
           const joinResult = joinRoom(roomName, ws);
           joinedPlayerId = joinResult.playerId;
+          ws._joinedPlayerId = joinedPlayerId;
           joinedRoomName = roomName;
 
           const player = initialisePlayerSpatial(rooms[joinedRoomName], joinedPlayerId);
@@ -397,6 +381,16 @@ wss.on('connection', (ws) => {
         const room = rooms[joinedRoomName];
         if (!room) break;
 
+        // Per-player rate limit: ignore moves faster than TICK_MS / 2 (25 ms).
+        // An abusive or buggy client can flood the server otherwise.
+        const p = room.players[joinedPlayerId];
+        if (p && p.lastMoveTime !== undefined) {
+          const now = Date.now();
+          if (now - p.lastMoveTime < TICK_MS / 2) {
+            break; // silently drop — no feedback to abusive client
+          }
+        }
+
         // Extract cell anchoring fields from the turn message for validation
         const cellX = typeof obj.cellX === 'number' ? obj.cellX : 0;
         const cellY = typeof obj.cellY === 'number' ? obj.cellY : 0;
@@ -404,7 +398,10 @@ wss.on('connection', (ws) => {
         const ok = processTurn(room, joinedPlayerId, obj.direction, cellX, cellY);
         if (!ok) {
           console.warn(`[server] Turn rejected for ${joinedPlayerId}: cell anchoring validation failed`);
+        } else if (p) {
+          p.lastMoveTime = Date.now();
         }
+
         break;
       }
 
@@ -443,6 +440,8 @@ wss.on('connection', (ws) => {
 
           const joinResult = joinRoom(newName, ws);
           joinedPlayerId = joinResult.playerId;
+          ws._joinedPlayerId = joinedPlayerId;
+          joinedRoomName = newName;
           initialisePlayerSpatial(rooms[newName], joinedPlayerId);
 
           safeSend(ws, { type: 'room_created', roomName: newName, playerId: joinedPlayerId });
@@ -490,6 +489,10 @@ const heartbeatInterval = setInterval(() => {
   wss.clients.forEach((ws) => {
     if (ws.isAlive === false) {
       console.log('[server] Terminating dead client');
+      // Clean up game state before forcing termination — 'close' may not fire
+      if (ws._joinedPlayerId) {
+        leaveRoom(ws._joinedPlayerId, ws);
+      }
       ws.terminate();
       return;
     }

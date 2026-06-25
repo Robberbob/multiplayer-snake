@@ -10,8 +10,9 @@ const ROOM_GREEK = [
   'rho','sigma','tau','upsilon'
 ];
 
+// Prototype-safe room store
 // rooms[name] -> { name, map, players: {}, food: [], tickTimer, spawnTimers, colorIndex, playerCount }
-const rooms = {};
+const rooms = Object.create(null);
 
 /**
  * Pick a Greek-letter room name that isn't already taken.
@@ -63,14 +64,36 @@ function pickSlot(room) {
   throw new Error('No available slots');
 }
 
+// Allowed characters for user-supplied room names
+// Only ASCII letters, digits and spaces; trimmed.
+const ROOM_NAME_RE = /^[A-Za-z0-9 ]+$/;
+
+/**
+ * Validate a user-supplied room name.
+ * Returns the sanitized (trimmed) name or throws with 'Invalid room name'.
+ */
+function validateRoomName(roomName) {
+  if (typeof roomName !== 'string') {
+    throw new Error('Invalid room name');
+  }
+  const trimmed = roomName.trim();
+  if (!trimmed || !ROOM_NAME_RE.test(trimmed)) {
+    throw new Error('Invalid room name');
+  }
+  return trimmed;
+}
+
 /**
  * Add a player to the named room.
  * Returns `{ playerId, slot }`.
  * Throws if room doesn't exist or is full.
  */
 function joinRoom(roomName, ws) {
-  const room = rooms[roomName];
-  if (!room) throw new Error('Room not found: ' + roomName);
+  // Validate and sanitize roomName (prototype pollution / injection defense)
+  const sanitized = validateRoomName(roomName);
+
+  const room = rooms[sanitized];
+  if (!room) throw new Error('Room not found: ' + sanitized);
 
   // Check capacity (slot-based; pickSlot throws if none available).
   const slot = pickSlot(room);
