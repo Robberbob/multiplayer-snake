@@ -13,12 +13,12 @@ function validateTurn(player, reportedX, reportedY, tolerance) {
 }
 
 /**
- * Send a JSON message to every alive player in the room via their WebSocket.
+ * Send a JSON message to every player in the room via their WebSocket.
+ * Dead players remain connected and receive updates until respawn.
  */
 function broadcastRoom(room, msg) {
   const data = JSON.stringify(msg);
   for (const p of Object.values(room.players)) {
-    if (!p.alive) continue;
     // Players may use either `ws` or `socket` as the connection handle.
     const socket = p.ws || p.socket;
     if (socket && typeof socket.send === 'function') {

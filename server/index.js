@@ -253,11 +253,12 @@ function killPlayer(room, playerId, killerId) {
   p.body = [];
   broadcastRoom(room, { type: 'death', playerId: p.id, killerId });
 
+  // Respawn after 5 seconds so dead players continue receiving game updates
   setTimeout(() => {
     if (room.players[playerId] && room.players[playerId].ws) {
       respawnPlayer(room, playerId);
     }
-  }, 3000);
+  }, 5000);
 }
 
 // ---------------------------------------------------------------------------
